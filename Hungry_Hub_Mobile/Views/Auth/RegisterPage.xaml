@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hungry_Hub_Mobile.Views.Auth.RegisterPage"
+             xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
+             Title="Регистрация">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+
+            <Label Text="Hungry Hub" 
+                   FontSize="32" 
+                   HorizontalOptions="Center" 
+                   FontAttributes="Bold"/>
+
+            <Label Text="Създайте нов профил" 
+                   HorizontalOptions="Center" 
+                   TextColor="Gray"/>
+
+            <!-- Email поле -->
+            <Entry Placeholder="Email"
+                   Text="{Binding Email}"
+                   Keyboard="Email"
+                   ReturnType="Next"/>
+
+            <!-- Password поле -->
+            <Entry Placeholder="Парола"
+                   Text="{Binding Password}"
+                   IsPassword="True"
+                   ReturnType="Next"/>
+
+            <!-- Confirm Password поле -->
+            <Entry Placeholder="Потвърдете парола"
+                   Text="{Binding ConfirmPassword}"
+                   IsPassword="True"
+                   ReturnType="Next"/>
+
+            <!-- Picker за тип потребител -->
+            <Picker Title="Изберете тип потребител"
+                    ItemsSource="{Binding UserTypes}"
+                    SelectedItem="{Binding SelectedUserType}"
+                    Margin="0,10,0,10"/>
+
+            <!-- Error message -->
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
+                   HorizontalOptions="Center"/>
+
+            <!-- Register бутон -->
+            <Button Text="Регистрация"
+                    Command="{Binding RegisterCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    BackgroundColor="#4CAF50"/>
+
+            <!-- Activity indicator -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                              IsVisible="{Binding IsBusy}"/>
+
+            <!-- Link to login -->
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Label Text="Вече имате профил? "/>
+                <Label Text="Вход"
+                       TextColor="Blue">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToLoginCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

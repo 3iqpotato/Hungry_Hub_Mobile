@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hungry_Hub_Mobile.Views.Auth.LoginPage"
+             xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
+             Title="Вход">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+
+            <Label Text="Hungry Hub" 
+                   FontSize="32" 
+                   HorizontalOptions="Center" 
+                   FontAttributes="Bold"/>
+
+            <Label Text="Влезте в профила си" 
+                   HorizontalOptions="Center" 
+                   TextColor="Gray"/>
+
+            <!-- Email поле -->
+            <Entry Placeholder="Email"
+                   Text="{Binding Email}"
+                   Keyboard="Email"
+                   ReturnType="Next"/>
+
+            <!-- Password поле -->
+            <Entry Placeholder="Парола"
+                   Text="{Binding Password}"
+                   IsPassword="True"
+                   ReturnType="Done"/>
+
+            <!-- Error message -->
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
+                   HorizontalOptions="Center"/>
+
+            <!-- Login бутон -->
+            <Button Text="Вход"
+                    Command="{Binding LoginCommand}"
+                    IsEnabled="{Binding IsNotBusy}"/>
+
+            <!-- Activity indicator -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                              IsVisible="{Binding IsBusy}"/>
+
+            <!-- Link to register -->
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Label Text="Нямате профил? "/>
+                <Label Text="Регистрирайте се"
+                       TextColor="Blue">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoToRegisterCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

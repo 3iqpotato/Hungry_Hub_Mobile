@@ -1,0 +1,225 @@
+﻿using System.Text.Json;
+using Hungry_Hub_Mobile.Core.DTOs.Auth;
+using Microsoft.Maui.Storage;
+
+namespace Hungry_Hub_Mobile.Core.Helpers;
+
+public static class TokenStorage
+{
+    private const string AccessTokenKey = "access_token";
+    private const string RefreshTokenKey = "refresh_token";
+    private const string UserKey = "user_data";
+    private const string UserTypeKey = "user_type";
+    private const string HasProfileKey = "has_profile";
+    private const string NextRouteKey = "next_route";
+    private const string ProfileIdKey = "profile_id";
+    public static async Task SaveLoginResponseAsync(LoginResponseDto response)
+    {
+        try
+        {
+            // Запази tokens
+            await SecureStorage.Default.SetAsync(AccessTokenKey, response.Access);
+            await SecureStorage.Default.SetAsync(RefreshTokenKey, response.Refresh);
+
+            // Запази user данни
+            if (response.User != null)
+            {
+                var userJson = JsonSerializer.Serialize(response.User);
+                await SecureStorage.Default.SetAsync(UserKey, userJson);
+                await SecureStorage.Default.SetAsync(UserTypeKey, response.User.Type);
+            }
+
+            // Запази дали има профил и накъде да отиде
+            bool hasProfile = response.ProfileId.HasValue || string.IsNullOrEmpty(response.Next);
+            await SecureStorage.Default.SetAsync(HasProfileKey, hasProfile.ToString());
+
+            if (!string.IsNullOrEmpty(response.Next))
+            {
+                await SecureStorage.Default.SetAsync(NextRouteKey, response.Next);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Грешка при запазване: {ex.Message}");
+        }
+    }
+
+
+    public static async Task<T> GetUserAsync<T>()
+    {
+        try
+        {
+            var json = await SecureStorage.Default.GetAsync(UserKey);
+            if (string.IsNullOrEmpty(json))
+            {
+                System.Diagnostics.Debug.WriteLine($"ℹ️ Няма запазени user данни");
+                return default;
+            }
+
+            var result = JsonSerializer.Deserialize<T>(json);
+            System.Diagnostics.Debug.WriteLine($"✅ User data loaded: {typeof(T).Name}");
+            return result;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка при вземане на user: {ex.Message}");
+            return default;
+        }
+    }
+    public static async Task<string> GetUserTypeAsync()
+    {
+        return await SecureStorage.Default.GetAsync(UserTypeKey);
+    }
+
+    public static async Task<bool> HasCompleteProfileAsync()
+    {
+        var hasProfile = await SecureStorage.Default.GetAsync(HasProfileKey);
+        return hasProfile == "True";
+    }
+
+    public static async Task<string> GetNextRouteAsync()
+    {
+        return await SecureStorage.Default.GetAsync(NextRouteKey);
+    }
+
+    /// <summary>
+    /// Запазва tokens след login/register
+    /// </summary>
+    /// 
+
+    public static async Task SaveTokensAsync(string accessToken, string refreshToken)
+    {
+        try
+        {
+            await SecureStorage.Default.SetAsync(AccessTokenKey, accessToken);
+            await SecureStorage.Default.SetAsync(RefreshTokenKey, refreshToken);
+        }
+        catch (Exception ex)
+        {
+            // Ако има проблем със SecureStorage (рядко), логваме
+            System.Diagnostics.Debug.WriteLine($"Грешка при запазване на tokens: {ex.Message}");
+        }
+    }
+
+    public static async Task<string> GetAccessTokenAsync()
+    {
+        try
+        {
+            return await SecureStorage.Default.GetAsync(AccessTokenKey);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public static async Task<string> GetRefreshTokenAsync()
+    {
+        try
+        {
+            return await SecureStorage.Default.GetAsync(RefreshTokenKey);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Проверява дали потребителя е логнат (има access token)
+    /// </summary>
+    public static async Task<bool> IsAuthenticatedAsync()
+    {
+        var token = await GetAccessTokenAsync();
+        return !string.IsNullOrEmpty(token);
+    }
+
+    /// <summary>
+    /// Изтрива всички tokens (при logout)
+    /// </summary>
+    public static void RemoveTokens()
+    {
+        try
+        {
+            SecureStorage.Default.Remove(AccessTokenKey);
+            SecureStorage.Default.Remove(RefreshTokenKey);
+            SecureStorage.Default.Remove(UserKey);
+            SecureStorage.Default.Remove(UserTypeKey);
+            SecureStorage.Default.Remove(HasProfileKey);
+            SecureStorage.Default.Remove(NextRouteKey);
+            SecureStorage.Default.Remove(ProfileIdKey);  // ← добави това
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Грешка при изтриване на tokens: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Запазва данните на потребителя (опционално)
+    /// </summary>
+    public static async Task SaveUserAsync<T>(T user)
+    {
+        try
+        {
+            var json = JsonSerializer.Serialize(user);
+            await SecureStorage.Default.SetAsync(UserKey, json);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Грешка при запазване на user: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Взема запазените данни на потребителя
+    /// </summary>
+
+
+    public static async Task SaveProfileIdAsync(int profileId)
+    {
+        try
+        {
+            await SecureStorage.Default.SetAsync(ProfileIdKey, profileId.ToString());
+            System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id в storage: {profileId}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка при запазване на profile_id: {ex.Message}");
+        }
+    }
+
+    public static async Task<int?> GetProfileIdAsync()
+    {
+        try
+        {
+            var value = await SecureStorage.Default.GetAsync(ProfileIdKey);
+            if (int.TryParse(value, out int result))
+            {
+                System.Diagnostics.Debug.WriteLine($"✅ Взет profile_id от storage: {result}");
+                return result;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка при вземане на profile_id: {ex.Message}");
+        }
+
+        return null;
+    }
+
+    public static async Task SaveNextRouteAsync(string nextRoute)
+    {
+        try
+        {
+            await SecureStorage.Default.SetAsync(NextRouteKey, nextRoute);
+            System.Diagnostics.Debug.WriteLine($"✅ Запазен next route: {nextRoute}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка при запазване на next route: {ex.Message}");
+        }
+    }
+
+
+}

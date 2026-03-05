@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hungry_Hub_Mobile.Views.StartPage"
+             Title="Hungry Hub">
+
+    <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+
+        <Image Source="logo.png" 
+               HeightRequest="100"
+               HorizontalOptions="Center"/>
+
+        <Label Text="Hungry Hub"
+               FontSize="32"
+               HorizontalOptions="Center"
+               FontAttributes="Bold"/>
+
+        <Label Text="Доставка на храна"
+               HorizontalOptions="Center"
+               TextColor="Gray"/>
+
+        <ActivityIndicator IsRunning="{Binding IsChecking}"
+                          IsVisible="{Binding IsChecking}"/>
+
+        <!-- Бутони за нелогнати потребители -->
+        <VerticalStackLayout Spacing="10"
+                             IsVisible="{Binding IsNotLoggedIn}">
+            <Button Text="Вход"
+                    Command="{Binding GoToLoginCommand}"
+                    BackgroundColor="#2196F3"/>
+
+            <Button Text="Регистрация"
+                    Command="{Binding GoToRegisterCommand}"
+                    BackgroundColor="#4CAF50"/>
+        </VerticalStackLayout>
+
+        <!-- Бутони за логнати потребители -->
+        <VerticalStackLayout Spacing="10"
+                             IsVisible="{Binding IsLoggedIn}">
+            <Label Text="{Binding WelcomeMessage}"
+                   HorizontalOptions="Center"/>
+
+            <Button Text="Начало"
+                    Command="{Binding GoToHomeCommand}"
+                    BackgroundColor="#2196F3"/>
+
+            <Button Text="Изход"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="#F44336"/>
+        </VerticalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

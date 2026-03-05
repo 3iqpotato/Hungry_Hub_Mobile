@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hungry_Hub_Mobile.Views.User.UserHomePage"
+             xmlns:viewModels="clr-namespace:Hungry_Hub_Mobile.ViewModels.User" 
+             xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
+             xmlns:local="clr-namespace:Hungry_Hub_Mobile.Views.User"
+             Title="Начало">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+
+            <!-- Шаблон за ресторант -->
+            <DataTemplate x:Key="RestaurantTemplate">
+                <Frame Margin="10,5" 
+                       Padding="10"
+                       CornerRadius="10"
+                       BorderColor="LightGray"
+                       BackgroundColor="White">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Снимка -->
+                        <Frame Grid.RowSpan="3"
+                               HeightRequest="70" 
+                               WidthRequest="70" 
+                               CornerRadius="10"
+                               BorderColor="LightGray"
+                               Padding="0">
+                            <Image Source="{Binding Img}"
+                                   Aspect="AspectFill"
+                                   HeightRequest="70"
+                                   WidthRequest="70"/>
+                        </Frame>
+
+                        <!-- Име -->
+                        <Label Grid.Row="0" Grid.Column="1"
+                               Text="{Binding Name}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               Margin="10,0"/>
+
+                        <!-- Рейтинг -->
+                        <HorizontalStackLayout Grid.Row="1" Grid.Column="1" 
+                                              Spacing="5"
+                                              Margin="10,0">
+                            <Label Text="⭐"/>
+                            <Label Text="{Binding Rating, StringFormat='{0:F1}'}"/>
+                        </HorizontalStackLayout>
+
+                        <!-- Такса доставка -->
+                        <Label Grid.Row="2" Grid.Column="1"
+                               Text="{Binding DeliveryFee, StringFormat='Доставка: {0} лв'}"
+                               TextColor="Gray"
+                               FontSize="12"
+                               Margin="10,0"/>
+
+                        <!-- Gesture за натискане -->
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:UserHomeViewModel}}, Path=SelectRestaurantCommand}"
+                                CommandParameter="{Binding .}"/>
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </Frame>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Горна лента с навигация -->
+        <HorizontalStackLayout Grid.Row="0"
+                               Spacing="15"
+                               Padding="15,10"
+                               BackgroundColor="#2196F3">
+
+            <Button Text="Изход"
+                    Command="{Binding LogoutCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"/>
+
+            <Label Text="🏠" 
+                   FontSize="20"
+                   TextColor="White"
+                   VerticalOptions="Center"/>
+
+            <Label Text="Hungry Hub" 
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="Center"/>
+
+            <Button Text="🛒"
+                    Command="{Binding GoToCartCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="20"/>
+
+            <Button Text="📦"
+                    Command="{Binding GoToOrdersCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="20"/>
+
+            <Button Text="👤"
+                    Command="{Binding GoToProfileCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="20"/>
+        </HorizontalStackLayout>
+
+        <!-- Списък с ресторанти -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Restaurants}"
+                        ItemTemplate="{StaticResource RestaurantTemplate}"
+
+                        VerticalOptions="FillAndExpand">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Spacing="10" 
+                                     Padding="20"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center">
+                    <Label Text="🍽️"
+                           FontSize="48"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Няма налични ресторанти"
+                           FontSize="16"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+
+        <!-- Долен бутон за грешка -->
+        <Label Grid.Row="2"
+               Text="{Binding ErrorMessage}"
+               TextColor="Red"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
+               HorizontalOptions="Center"
+               Margin="10"/>
+    </Grid>
+</ContentPage>

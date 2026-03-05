@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hungry_Hub_Mobile.Views.User.CompleteUserProfilePage"
+             xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
+             Title="Завършете профила">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+
+            <Label Text="Завършете своя профил"
+                   FontSize="24"
+                   HorizontalOptions="Center"
+                   FontAttributes="Bold"/>
+
+            <Label Text="Моля попълнете вашите данни"
+                   HorizontalOptions="Center"
+                   TextColor="Gray"/>
+
+            <!-- Profile Image -->
+            <Frame HeightRequest="100" 
+                   WidthRequest="100" 
+                   CornerRadius="50"
+                   HorizontalOptions="Center"
+                   BorderColor="LightGray">
+                <Image Source="{Binding ProfileImage}"
+                       Aspect="AspectFill"
+                       HeightRequest="100"
+                       WidthRequest="100">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
+                    </Image.GestureRecognizers>
+                </Image>
+            </Frame>
+
+            <Label Text="Натиснете за да добавите снимка"
+                   HorizontalOptions="Center"
+                   FontSize="12"
+                   TextColor="Gray">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+
+            <!-- Name поле -->
+            <Entry Placeholder="Име"
+                   Text="{Binding Name}"
+                   ReturnType="Next"/>
+
+            <!-- Phone поле -->
+            <Entry Placeholder="Телефон"
+                   Text="{Binding PhoneNumber}"
+                   Keyboard="Telephone"
+                   ReturnType="Next"/>
+
+            <!-- Address поле -->
+            <Editor Placeholder="Адрес"
+                    Text="{Binding Address}"
+                    AutoSize="TextChanges"
+                    HeightRequest="100"/>
+
+            <!-- Error message -->
+            <Label Text="{Binding ErrorMessage}"
+                   TextColor="Red"
+                   IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
+                   HorizontalOptions="Center"/>
+
+            <!-- Save бутон -->
+            <Button Text="Запази"
+                    Command="{Binding SaveProfileCommand}"
+                    IsEnabled="{Binding IsNotBusy}"
+                    BackgroundColor="#4CAF50"/>
+
+            <!-- Activity indicator -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                              IsVisible="{Binding IsBusy}"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

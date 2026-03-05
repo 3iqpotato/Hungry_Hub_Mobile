@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    
+<Shell x:Class="Hungry_Hub_Mobile.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:auth="clr-namespace:Hungry_Hub_Mobile.Views.Auth">
+    <!--xmlns:user="clr-namespace:Hungry_Hub_Mobile.Views.User"> -->
+
+    <!-- Маршрути за навигация -->
+    <ShellContent Title="Login"
+                  Route="login"
+                  ContentTemplate="{DataTemplate auth:LoginPage}" />
+
+    <!-- <ShellContent Title="Register"
+                  Route="register"
+                  ContentTemplate="{DataTemplate auth:RegisterPage}" /> -->
+
+    <!-- След вход - според типа потребител
+    <ShellContent Route="user/home"
+                  ContentTemplate="{DataTemplate user:UserHomePage}" />  -->
+
+</Shell>
