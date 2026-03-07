@@ -1,4 +1,5 @@
 ﻿using Hungry_Hub_Mobile.Services.Interfaces;
+using Hungry_Hub_Mobile.ViewModels.User;
 
 namespace Hungry_Hub_Mobile.Services;
 
@@ -63,8 +64,45 @@ public class NavigationService : INavigationService
 
     public async Task GoToAsync(string route, Dictionary<string, object> parameters)
     {
-        // За сега просто игнорираме parameters
-        await GoToAsync(route);
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"👉 Опит за навигация към: {route} с параметри");
+
+            var navigation = GetNavigation();
+            if (navigation == null)
+            {
+                System.Diagnostics.Debug.WriteLine("❌ Navigation е null!");
+                return;
+            }
+
+            var pageType = GetPageTypeFromRoute(route);
+            if (pageType == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Не може да намери страница за route: {route}");
+                return;
+            }
+
+            var page = MauiProgram.Services.GetService(pageType) as Page;
+            if (page == null)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Не може да създаде страница от тип: {pageType.Name}");
+                return;
+            }
+
+            // Ако страницата поддържа инициализация с параметри
+            if (page.BindingContext is RestaurantDetailViewModel vm && parameters.ContainsKey("restaurantId"))
+            {
+                var restaurantId = (int)parameters["restaurantId"];
+                await vm.InitializeAsync(restaurantId);
+            }
+
+            await navigation.PushAsync(page);
+            System.Diagnostics.Debug.WriteLine($"✅ Успешна навигация към {route}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка при навигация: {ex.Message}");
+        }
     }
 
     public async Task GoBackAsync()
@@ -93,6 +131,7 @@ public class NavigationService : INavigationService
             "user/home" => typeof(Views.User.UserHomePage),
             "user/profile" => typeof(Views.User.ProfilePage),
             "user/edit-profile" => typeof(Views.User.EditProfilePage),
+            "restaurant/details" => typeof(Views.User.RestaurantDetailPage),
             //"supplier/home" => typeof(Views.Supplier.SupplierHomePage),
             //"restaurant/home" => typeof(Views.Restaurant.RestaurantHomePage),
             "complete_user_profile" => typeof(Views.User.CompleteUserProfilePage),

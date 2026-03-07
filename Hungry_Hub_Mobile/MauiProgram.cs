@@ -40,6 +40,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IRestaurantProfileService, RestaurantProfileService>();
         builder.Services.AddSingleton<ISupplierProfileService, SupplierProfileService>();
         builder.Services.AddSingleton<IUserHomeService, UserHomeService>();
+        builder.Services.AddSingleton<IRestaurantMenuService, RestaurantMenuService>();
 
         // ========== VIEWMODELS ==========
         builder.Services.AddTransient<StartPageViewModel>();
@@ -51,6 +52,7 @@ public static class MauiProgram
         builder.Services.AddTransient<UserHomeViewModel>();
         builder.Services.AddTransient<ProfileViewModel>();
         builder.Services.AddTransient<EditProfileViewModel>();
+        builder.Services.AddTransient<RestaurantDetailViewModel>();
         // Добави и други ViewModels като ги създаваме
 
         // ========== VIEWS (PAGES) ==========
@@ -63,6 +65,7 @@ public static class MauiProgram
         builder.Services.AddTransient<UserHomePage>();
         builder.Services.AddTransient<ProfilePage>();
         builder.Services.AddTransient<EditProfilePage>();
+        builder.Services.AddTransient<RestaurantDetailPage>();
 
         // ⚠️ ВАЖНО: Страници за попълване на профил (ако ги създадем после)
         // builder.Services.AddTransient<CompleteUserProfilePage>();

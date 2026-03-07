@@ -10,9 +10,14 @@ public class UserProfileDto
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }
+    private string? _img;
 
     [JsonPropertyName("img")]
-    public string? Img { get; set; }
+    public string? Img
+    {
+        get => string.IsNullOrEmpty(_img) ? null : $"http://10.0.2.2:8000{_img}";
+        set => _img = value;
+    }
 
     [JsonPropertyName("name")]
     public string? Name { get; set; } = string.Empty;

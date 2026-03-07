@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Hungry_Hub_Mobile.Core.DTOs.Restaurants;
 
-namespace Hungry_Hub_Mobile.Services.Interfaces
+namespace Hungry_Hub_Mobile.Services.Interfaces;
+
+public interface IRestaurantMenuService
 {
-    internal class IRestaurantMenuService
-    {
-    }
+    /// <summary>
+    /// Взема менюто за ресторант с опционален филтър по тип храна
+    /// </summary>
+    Task<MenuForUsersDto> GetMenuForUsersAsync(int restaurantId, string? foodType = null);
 }

@@ -54,8 +54,14 @@ public class RestaurantMiniDto
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
+    private string? _img;
+
     [JsonPropertyName("img")]
-    public string Img { get; set; }
+    public string? Img   // it was for the test i know it is not right to be like that and it only works at localhost!!!
+    {
+        get => string.IsNullOrEmpty(_img) ? null : $"http://10.0.2.2:8000{_img}";
+        set => _img = value;
+    }
 
     //[JsonPropertyName("rating")]
     //public double Rating { get; set; }

@@ -136,10 +136,14 @@ public class UserHomeViewModel : BaseViewModel
     {
         if (restaurant != null)
         {
+            System.Diagnostics.Debug.WriteLine($"👉 Избран ресторант: {restaurant.Name} (ID: {restaurant.Id})");
+
+            // Подай restaurantId като параметър
             var parameters = new Dictionary<string, object>
-            {
-                { "restaurantId", restaurant.Id }
-            };
+        {
+            { "restaurantId", restaurant.Id }
+        };
+
             await _navigationService.GoToAsync("restaurant/details", parameters);
         }
     }
