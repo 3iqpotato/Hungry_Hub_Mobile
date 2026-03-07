@@ -4,7 +4,6 @@
              x:Class="Hungry_Hub_Mobile.Views.User.UserHomePage"
              xmlns:viewModels="clr-namespace:Hungry_Hub_Mobile.ViewModels.User" 
              xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
-             xmlns:local="clr-namespace:Hungry_Hub_Mobile.Views.User"
              Title="Начало">
 
     <ContentPage.Resources>
@@ -78,53 +77,63 @@
 
     <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- Горна лента с навигация -->
-        <HorizontalStackLayout Grid.Row="0"
-                               Spacing="15"
-                               Padding="15,10"
-                               BackgroundColor="#2196F3">
+        <!-- ОПРАВЕНА Горна лента с навигация -->
+        <Grid Grid.Row="0"
+              Padding="10,5"
+              BackgroundColor="#2196F3"
+              ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto">
 
-            <Button Text="Изход"
+            <!-- Бутон Изход -->
+            <Button Grid.Column="0"
+                    Text="Изход"
                     Command="{Binding LogoutCommand}"
                     BackgroundColor="Transparent"
-                    TextColor="White"/>
+                    TextColor="White"
+                    FontSize="14"
+                    Padding="5,0"/>
 
-            <Label Text="🏠" 
-                   FontSize="20"
-                   TextColor="White"
-                   VerticalOptions="Center"/>
-
-            <Label Text="Hungry Hub" 
+            <!-- Заглавие (по средата) -->
+            <Label Grid.Column="1"
+                   Text="Hungry Hub"
                    FontSize="18"
                    FontAttributes="Bold"
                    TextColor="White"
-                   HorizontalOptions="CenterAndExpand"
+                   HorizontalOptions="Center"
                    VerticalOptions="Center"/>
 
-            <Button Text="🛒"
-                    Command="{Binding GoToCartCommand}"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
-                    FontSize="20"/>
-
-            <Button Text="📦"
-                    Command="{Binding GoToOrdersCommand}"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
-                    FontSize="20"/>
-
-            <Button Text="👤"
+            <!-- Бутон Профил -->
+            <Button Grid.Column="2"
+                    Text="👤 Профил"
                     Command="{Binding GoToProfileCommand}"
                     BackgroundColor="Transparent"
                     TextColor="White"
-                    FontSize="20"/>
-        </HorizontalStackLayout>
+                    FontSize="14"
+                    Padding="5,0"/>
+
+            <!-- Бутон Количка -->
+            <Button Grid.Column="3"
+                    Text="🛒 Количка"
+                    Command="{Binding GoToCartCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="14"
+                    Padding="5,0"/>
+
+            <!-- Бутон Моите поръчки -->
+            <Button Grid.Column="4"
+                    Text="📦 Поръчки"
+                    Command="{Binding GoToOrdersCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="14"
+                    Padding="5,0"/>
+
+        </Grid>
 
         <!-- Списък с ресторанти -->
         <CollectionView Grid.Row="1"
                         ItemsSource="{Binding Restaurants}"
                         ItemTemplate="{StaticResource RestaurantTemplate}"
-
                         VerticalOptions="FillAndExpand">
 
             <CollectionView.EmptyView>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hungry_Hub_Mobile.Views.User.EditProfilePage"
+             xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
+             Title="Редактиране на профил">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Горна навигационна лента -->
+        <Grid Grid.Row="0"
+              Padding="10,5"
+              BackgroundColor="#2196F3"
+              ColumnDefinitions="Auto,*,Auto">
+
+            <!-- Бутон Отказ -->
+            <Button Grid.Column="0"
+                    Text="❌ Отказ"
+                    Command="{Binding CancelCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="14"
+                    Padding="5,0"/>
+
+            <!-- Заглавие -->
+            <Label Grid.Column="1"
+                   Text="Редактиране"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"/>
+
+            <!-- Бутон Запази -->
+            <Button Grid.Column="2"
+                    Text="💾 Запази"
+                    Command="{Binding SaveCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="14"
+                    Padding="5,0"/>
+        </Grid>
+
+        <!-- Форма за редакция -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="20" Padding="20">
+
+                <!-- Снимка (кликаема за смяна) -->
+                <Frame HeightRequest="120" 
+                       WidthRequest="120" 
+                       CornerRadius="60"
+                       HorizontalOptions="Center"
+                       BorderColor="LightGray"
+                       Padding="0">
+                    <Image Source="{Binding ProfileImage}"
+                           Aspect="AspectFill"
+                           HeightRequest="120"
+                           WidthRequest="120">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
+                        </Image.GestureRecognizers>
+                    </Image>
+                </Frame>
+
+                <Label Text="Натиснете снимката за да я промените"
+                       HorizontalOptions="Center"
+                       FontSize="12"
+                       TextColor="Gray">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <!-- Име -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Име"
+                           FontSize="14"
+                           TextColor="Gray"/>
+                    <Entry Text="{Binding Name}"
+                           Placeholder="Въведете име"
+                           FontSize="16"/>
+                </VerticalStackLayout>
+
+                <!-- Телефон -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Телефон"
+                           FontSize="14"
+                           TextColor="Gray"/>
+                    <Entry Text="{Binding PhoneNumber}"
+                           Placeholder="Въведете телефон"
+                           Keyboard="Telephone"
+                           FontSize="16"/>
+                </VerticalStackLayout>
+
+                <!-- Адрес -->
+                <VerticalStackLayout Spacing="5">
+                    <Label Text="Адрес"
+                           FontSize="14"
+                           TextColor="Gray"/>
+                    <Editor Text="{Binding Address}"
+                            Placeholder="Въведете адрес"
+                            AutoSize="TextChanges"
+                            HeightRequest="100"
+                            FontSize="16"/>
+                </VerticalStackLayout>
+
+                <!-- Activity индикатор -->
+                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                  IsVisible="{Binding IsBusy}"/>
+
+                <!-- Съобщение за грешка -->
+                <Label Text="{Binding ErrorMessage}"
+                       TextColor="Red"
+                       IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

@@ -11,6 +11,11 @@ public interface IUserProfileService
     Task<UserProfileDto> GetProfileAsync();
 
     /// <summary>
+    /// РЕДАКТИРА съществуващ профил (PUT/PATCH)
+    /// </summary>
+    Task<UserProfileDto> EditProfileAsync(UpdateUserProfileDto profile);
+
+    /// <summary>
     /// Създава или обновява профила
     /// </summary>
     Task<CompleteProfileResponseDto> UpdateProfileAsync(UpdateUserProfileDto profile);

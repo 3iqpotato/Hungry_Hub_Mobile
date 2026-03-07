@@ -91,6 +91,8 @@ public class NavigationService : INavigationService
             "register" => typeof(Views.Auth.RegisterPage),
             "user_home" => typeof(Views.User.UserHomePage),
             "user/home" => typeof(Views.User.UserHomePage),
+            "user/profile" => typeof(Views.User.ProfilePage),
+            "user/edit-profile" => typeof(Views.User.EditProfilePage),
             //"supplier/home" => typeof(Views.Supplier.SupplierHomePage),
             //"restaurant/home" => typeof(Views.Restaurant.RestaurantHomePage),
             "complete_user_profile" => typeof(Views.User.CompleteUserProfilePage),

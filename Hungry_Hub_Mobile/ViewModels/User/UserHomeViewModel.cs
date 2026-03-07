@@ -30,6 +30,7 @@ public class UserHomeViewModel : BaseViewModel
         LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
         GoToCartCommand = new Command(async () => await _navigationService.GoToAsync("cart"));
         GoToOrdersCommand = new Command(async () => await _navigationService.GoToAsync("my-orders"));
+        // В конструктора - промени командата за профил
         GoToProfileCommand = new Command(async () => await _navigationService.GoToAsync("user/profile"));
         RefreshCommand = new Command(async () => await LoadUserHomeAsync());
         SelectRestaurantCommand = new Command<RestaurantMiniDto>(async (restaurant) =>
