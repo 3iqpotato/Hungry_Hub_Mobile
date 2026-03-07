@@ -1,7 +1,8 @@
-﻿using System.Windows.Input;
-using Hungry_Hub_Mobile.Core.DTOs.Articles;
+﻿using Hungry_Hub_Mobile.Core.DTOs.Articles;
 using Hungry_Hub_Mobile.Core.DTOs.Restaurants;
+using Hungry_Hub_Mobile.Services;
 using Hungry_Hub_Mobile.Services.Interfaces;
+using System.Windows.Input;
 
 namespace Hungry_Hub_Mobile.ViewModels.User;
 
@@ -9,12 +10,14 @@ public class RestaurantDetailViewModel : BaseViewModel
 {
     private readonly IRestaurantMenuService _menuService;
     private readonly INavigationService _navigationService;
+    private readonly ICartService _cartService;
 
     private RestaurantMiniDto _restaurant = new();
     private MenuDto _menu = new();
     private List<ArticleDto> _articles = new();
     private string _selectedFilter;
     private int _restaurantId;
+
 
     // Списък с налични филтри
     public List<string> FoodFilters { get; } = new()
@@ -38,15 +41,20 @@ public class RestaurantDetailViewModel : BaseViewModel
 
     public RestaurantDetailViewModel(
         IRestaurantMenuService menuService,
-        INavigationService navigationService)
+        INavigationService navigationService,
+        ICartService cartService)
+
     {
         _menuService = menuService;
+        _cartService = cartService;
         _navigationService = navigationService;
+
 
         GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());
         FilterChangedCommand = new Command<string>(async (filter) => await ApplyFilterAsync(filter));
         SelectArticleCommand = new Command<ArticleDto>(async (article) => await ExecuteSelectArticleAsync(article));
         AddToCartCommand = new Command<ArticleDto>(async (article) => await ExecuteAddToCartAsync(article));
+        _cartService=cartService;
     }
 
     public RestaurantMiniDto Restaurant
@@ -105,13 +113,29 @@ public class RestaurantDetailViewModel : BaseViewModel
 
     private async Task ExecuteAddToCartAsync(ArticleDto article)
     {
-        if (article != null)
+        if (article == null) return;
+
+        await ExecuteAsync(async () =>
         {
-            System.Diagnostics.Debug.WriteLine($"👉 Добавяне в количка: {article.Name}");
-            // Тук после ще добавим логика за количката
-            await Application.Current.MainPage.DisplayAlert("Добавено",
-                $"{article.Name} е добавен в количката", "OK");
-        }
+            System.Diagnostics.Debug.WriteLine($"👉 Добавяне в количка: {article.Name} (ID: {article.Id})");
+
+            var response = await _cartService.AddToCartAsync(article.Id);
+
+            if (response?.Success == true)
+            {
+                // Покажи съобщение за успех
+                await Application.Current.MainPage.DisplayAlert(
+                    "Добавено",
+                    $"{article.Name} е добавен в количката",
+                    "OK");
+
+                System.Diagnostics.Debug.WriteLine($"✅ Добавено. Сега в количката: {response.Cart?.Items?.Count} артикула");
+            }
+            else
+            {
+                ErrorMessage = "Грешка при добавяне в количката";
+            }
+        }, "Грешка при добавяне в количката");
     }
 
     private async Task LoadMenuAsync()
