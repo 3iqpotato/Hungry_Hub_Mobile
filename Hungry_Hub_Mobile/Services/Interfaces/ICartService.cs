@@ -12,5 +12,10 @@ public interface ICartService
     /// <summary>
     /// Взема текущата количка
     /// </summary>
-    Task<CartDto> GetCartAsync();
+    Task<CartResponseDto> GetCartAsync();  // ← ПРОМЕНИ ОТ CartDto НА CartResponseDto
+
+    /// <summary>
+    /// Премахва артикул от количката
+    /// </summary>
+    Task<CartResponseDto> RemoveFromCartAsync(int articleId);
 }

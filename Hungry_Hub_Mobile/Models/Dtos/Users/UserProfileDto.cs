@@ -10,6 +10,7 @@ public class UserProfileDto
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }
+
     private string? _img;
 
     [JsonPropertyName("img")]

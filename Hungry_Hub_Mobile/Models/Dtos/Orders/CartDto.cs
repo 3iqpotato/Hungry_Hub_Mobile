@@ -46,6 +46,15 @@ public class CartItemDto
     [JsonPropertyName("article_id")]
     public int ArticleId { get; set; }
 
+    private string? _img;
+
+    [JsonPropertyName("article_img")]
+    public string? Img
+    {
+        get => string.IsNullOrEmpty(_img) ? null : $"http://10.0.2.2:8000/media/{_img}";
+        set => _img = value;
+    }
+
     [JsonPropertyName("article_name")]
     public string ArticleName { get; set; } = string.Empty;
 
@@ -146,6 +155,15 @@ public class CartDto
     }
 }
 
+public class CartResponseDto
+{
+    [JsonPropertyName("user_profile_id")]
+    public int UserProfileId { get; set; }
+
+    [JsonPropertyName("cart")]
+    public CartDto Cart { get; set; } = new();
+}
+
 // За добавяне на артикул в кошницата
 public class AddToCartResponseDto
 {
@@ -161,63 +179,3 @@ public class AddToCartRequestDto
 {
     // Празен - article_id е в URL-то
 }
-
-// За кошница - съответства на CartSerializer
-//public class CartDto
-//{
-//    [JsonPropertyName("id")]
-//    public int Id { get; set; }
-
-//    [JsonPropertyName("items")]
-//    public List<CartItemDto> Items { get; set; } = new();
-
-//    // 🔥 ПРОМЕНИ ОТ decimal НА string
-//    [JsonPropertyName("subtotal")]
-//    public string Subtotal { get; set; } = "0.00";
-
-//    [JsonPropertyName("delivery_fee")]
-//    public string DeliveryFee { get; set; } = "0.00";
-
-//    [JsonPropertyName("total")]
-//    public string Total { get; set; } = "0.00";
-
-//    [JsonIgnore]
-//    public bool IsEmpty => Items == null || Items.Count == 0;
-
-//    // Helper properties
-//    [JsonIgnore]
-//    public decimal SubtotalDecimal
-//    {
-//        get
-//        {
-//            if (decimal.TryParse(Subtotal, System.Globalization.NumberStyles.Any,
-//                System.Globalization.CultureInfo.InvariantCulture, out var result))
-//                return result;
-//            return 0;
-//        }
-//    }
-
-//    [JsonIgnore]
-//    public decimal DeliveryFeeDecimal
-//    {
-//        get
-//        {
-//            if (decimal.TryParse(DeliveryFee, System.Globalization.NumberStyles.Any,
-//                System.Globalization.CultureInfo.InvariantCulture, out var result))
-//                return result;
-//            return 0;
-//        }
-//    }
-
-//    [JsonIgnore]
-//    public decimal TotalDecimal
-//    {
-//        get
-//        {
-//            if (decimal.TryParse(Total, System.Globalization.NumberStyles.Any,
-//                System.Globalization.CultureInfo.InvariantCulture, out var result))
-//                return result;
-//            return 0;
-//        }
-//    }
-//}

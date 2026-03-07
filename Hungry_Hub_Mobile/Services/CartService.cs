@@ -35,28 +35,49 @@ public class CartService : BaseApiService, ICartService
         }
     }
 
-    public async Task<CartDto> GetCartAsync()
+    public async Task<CartResponseDto> GetCartAsync()  // ← Промени типа на връщане
     {
         try
         {
             System.Diagnostics.Debug.WriteLine("👉 Вземане на количката");
 
-            // Трябва да вземем profile_id, за да направим заявка към user_cart_api
             var profileId = await TokenStorage.GetProfileIdAsync();
             if (!profileId.HasValue)
             {
                 throw new Exception("Няма profile_id");
             }
 
-            var cart = await GetAsync<CartDto>(ApiRoutes.Users.UserCart(profileId.Value));
+            // Това вече връща CartResponseDto
+            var response = await GetAsync<CartResponseDto>(ApiRoutes.Users.UserCart(profileId.Value));
 
-            System.Diagnostics.Debug.WriteLine($"✅ Количката заредена. Брой артикули: {cart?.Items?.Count ?? 0}");
+            System.Diagnostics.Debug.WriteLine($"✅ Количката заредена. Брой артикули: {response?.Cart?.Items?.Count ?? 0}");
 
-            return cart;
+            return response;
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"❌ Грешка при вземане на количка: {ex}");
+            throw;
+        }
+    }
+
+    public async Task<CartResponseDto> RemoveFromCartAsync(int articleId)
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"👉 Премахване на артикул {articleId} от количката");
+
+            var response = await PostAsync<object, CartResponseDto>(
+                ApiRoutes.Orders.RemoveFromCart(articleId),
+                new { });
+
+            System.Diagnostics.Debug.WriteLine($"✅ Артикулът премахнат");
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка при премахване от количка: {ex}");
             throw;
         }
     }

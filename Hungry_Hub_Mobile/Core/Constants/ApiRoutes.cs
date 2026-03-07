@@ -65,6 +65,7 @@ public static class ApiRoutes
 
         public static string Add(int menuId) => $"{Prefix}article/add/{menuId}/";
         public static string Edit(int articleId) => $"{Prefix}article/{articleId}/edit/";
+
         public static string Delete => $"{Prefix}article/delete/"; // предполагам POST с ID в body
     }
 
