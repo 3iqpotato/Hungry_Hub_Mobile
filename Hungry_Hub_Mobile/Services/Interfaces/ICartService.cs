@@ -17,5 +17,6 @@ public interface ICartService
     /// <summary>
     /// Премахва артикул от количката
     /// </summary>
-    Task<CartResponseDto> RemoveFromCartAsync(int articleId);
+    //Task<CartResponseDto> RemoveFromCartAsync(int articleId);
+    Task<CartDto> RemoveFromCartAsync(int cartItemId);
 }

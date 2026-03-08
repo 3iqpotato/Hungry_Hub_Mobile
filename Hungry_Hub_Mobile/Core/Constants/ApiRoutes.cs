@@ -75,7 +75,8 @@ public static class ApiRoutes
         private static string Prefix => $"{Base}orders/";
 
         public static string AddToCart(int articleId) => $"{Prefix}add-to-cart/{articleId}/";
-        public static string RemoveFromCart(int articleId) => $"{Prefix}remove-from-cart/{articleId}/";
+        //public static string RemoveFromCart(int articleId) => $"{Prefix}remove-from-cart/{articleId}/";
+        public static string RemoveFromCart(int cartItemId) => $"{Prefix}remove-from-cart/{cartItemId}/";
         public static string CreateOrder => $"{Prefix}orders/create_order/";
         public static string OrderDetail(int orderId) => $"{Prefix}order/{orderId}/";
         public static string MarkReady(int orderId) => $"{Prefix}order/{orderId}/ready/";

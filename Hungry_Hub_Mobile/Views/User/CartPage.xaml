@@ -192,6 +192,7 @@
             <Button Grid.Column="1"
                     Text="Поръчай сега"
                     Command="{Binding CheckoutCommand}"
+                    IsVisible="{Binding IsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=invert}"
                     BackgroundColor="#4CAF50"
                     TextColor="White"
                     Margin="5"/>

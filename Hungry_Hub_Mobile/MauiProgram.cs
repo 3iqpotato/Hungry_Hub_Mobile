@@ -2,11 +2,13 @@
 using Hungry_Hub_Mobile.Services.Interfaces;
 using Hungry_Hub_Mobile.ViewModels;
 using Hungry_Hub_Mobile.ViewModels.Auth;
+using Hungry_Hub_Mobile.ViewModels.Orders;
 using Hungry_Hub_Mobile.ViewModels.Restaurant;
 using Hungry_Hub_Mobile.ViewModels.Supplier;
 using Hungry_Hub_Mobile.ViewModels.User;
 using Hungry_Hub_Mobile.Views;
 using Hungry_Hub_Mobile.Views.Auth;
+using Hungry_Hub_Mobile.Views.Orders;
 using Hungry_Hub_Mobile.Views.Restaurant;
 using Hungry_Hub_Mobile.Views.Supplier;
 using Hungry_Hub_Mobile.Views.User;
@@ -42,6 +44,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IUserHomeService, UserHomeService>();
         builder.Services.AddSingleton<IRestaurantMenuService, RestaurantMenuService>();
         builder.Services.AddSingleton<ICartService, CartService>();
+        builder.Services.AddSingleton<IOrderService, OrderService>();
 
         // ========== VIEWMODELS ==========
         builder.Services.AddTransient<StartPageViewModel>();
@@ -55,6 +58,7 @@ public static class MauiProgram
         builder.Services.AddTransient<EditProfileViewModel>();
         builder.Services.AddTransient<RestaurantDetailViewModel>();
         builder.Services.AddTransient<CartViewModel>();
+        builder.Services.AddTransient<CheckoutViewModel>();
         // Добави и други ViewModels като ги създаваме
 
         // ========== VIEWS (PAGES) ==========
@@ -69,6 +73,7 @@ public static class MauiProgram
         builder.Services.AddTransient<EditProfilePage>();
         builder.Services.AddTransient<RestaurantDetailPage>();
         builder.Services.AddTransient<CartPage>();
+        builder.Services.AddTransient<CheckoutPage>();
 
         // ⚠️ ВАЖНО: Страници за попълване на профил (ако ги създадем после)
         // builder.Services.AddTransient<CompleteUserProfilePage>();

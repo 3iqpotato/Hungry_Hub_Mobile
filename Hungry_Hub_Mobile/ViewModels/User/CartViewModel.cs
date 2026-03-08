@@ -11,6 +11,7 @@ public class CartViewModel : BaseViewModel
 
     private CartDto _cart = new();
     private int _userProfileId;
+    private bool _isRefreshing;
 
     public CartViewModel(
         ICartService cartService,
@@ -40,6 +41,8 @@ public class CartViewModel : BaseViewModel
             OnPropertyChanged(nameof(DeliveryFeeText));
             OnPropertyChanged(nameof(TotalText));
             OnPropertyChanged(nameof(ShowDeliveryFee));
+
+            (CheckoutCommand as Command)?.ChangeCanExecute();
         }
     }
 
@@ -53,6 +56,16 @@ public class CartViewModel : BaseViewModel
         }
     }
 
+    public bool IsRefreshing
+    {
+        get => _isRefreshing;
+        set
+        {
+            _isRefreshing = value;
+            OnPropertyChanged();
+        }
+    }
+
     // Helper properties за UI
     public string SubtotalText => $"Сума на продуктите: {Cart.SubtotalDecimal:F2} лв.";
     public string DeliveryFeeText => $"Такса доставка: {Cart.DeliveryFeeDecimal:F2} лв.";
@@ -60,26 +73,37 @@ public class CartViewModel : BaseViewModel
     public bool ShowDeliveryFee => Cart.DeliveryFeeDecimal > 0;
 
     public ICommand GoToHomeCommand { get; }
+    public ICommand RefreshCommand { get; }
     public ICommand GoToProfileCommand { get; }
     public ICommand GoToOrdersCommand { get; }
     public ICommand LogoutCommand { get; }
     public ICommand RemoveItemCommand { get; }
     public ICommand CheckoutCommand { get; }
 
-    private async Task LoadCartAsync()
+    public async Task LoadCartAsync()
     {
         try
         {
             IsBusy = true;
+            System.Diagnostics.Debug.WriteLine("👉 LoadCartAsync започва...");
 
-            var response = await _cartService.GetCartAsync();  // ← Това вече връща CartResponseDto
+            var response = await _cartService.GetCartAsync();
 
             if (response != null)
             {
-                UserProfileId = response.UserProfileId;  // ← Това идва от CartResponseDto
-                Cart = response.Cart;                    // ← Това идва от CartResponseDto.Cart
+                UserProfileId = response.UserProfileId;
+                Cart = response.Cart ?? new CartDto();  // ← Ако Cart е null, създай нов
 
-                System.Diagnostics.Debug.WriteLine($"✅ Количката заредена. {Cart.Items.Count} артикула");
+                System.Diagnostics.Debug.WriteLine($"✅ Количката заредена. Артикули: {Cart.Items?.Count ?? 0}");
+
+                // 🔥 Логвай всеки артикул
+                if (Cart.Items != null && Cart.Items.Any())
+                {
+                    foreach (var item in Cart.Items)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"   - {item.ArticleName} (ID: {item.Id}, Кол: {item.Quantity})");
+                    }
+                }
             }
         }
         catch (Exception ex)
@@ -97,39 +121,27 @@ public class CartViewModel : BaseViewModel
     {
         if (item == null) return;
 
-        bool confirm = await Application.Current.MainPage.DisplayAlert(
-            "Потвърждение",
-            $"Премахване на {item.ArticleName} от количката?",
-            "Да", "Не");
-
-        if (!confirm) return;
-
         await ExecuteAsync(async () =>
         {
-            System.Diagnostics.Debug.WriteLine($"👉 Премахване: {item.ArticleName}");
+            System.Diagnostics.Debug.WriteLine($"👉 Премахване на артикул: {item.ArticleName} (ID: {item.Id})");
 
-            var response = await _cartService.RemoveFromCartAsync(item.ArticleId);
+            var updatedCart = await _cartService.RemoveFromCartAsync(item.Id);
 
-            if (response?.Cart != null)
+            if (updatedCart != null)
             {
-                Cart = response.Cart;
-                System.Diagnostics.Debug.WriteLine($"✅ Премахнато. Остават {Cart.Items.Count} артикула");
+                // 🔥 Обнови само Cart, не прави нов запрос
+                Cart = updatedCart;
+
+                System.Diagnostics.Debug.WriteLine($"✅ Артикулът премахнат. Остават {Cart.Items?.Count ?? 0} артикула");
             }
-        }, "Грешка при премахване");
+        }, "Грешка при премахване на артикул");
     }
 
     private async Task ExecuteCheckoutAsync()
     {
-        if (Cart.IsEmpty)
-        {
-            await Application.Current.MainPage.DisplayAlert("Количката е празна",
-                "Добавете продукти, преди да поръчате.", "OK");
-            return;
-        }
+        if (Cart.IsEmpty) return;
 
-        // Тук после ще добавим навигация към страница за поръчка
-        await Application.Current.MainPage.DisplayAlert("Поръчка",
-            "Функционалността за поръчка предстои", "OK");
+        await _navigationService.GoToAsync("checkout");
     }
 
     private async Task ExecuteLogoutAsync()

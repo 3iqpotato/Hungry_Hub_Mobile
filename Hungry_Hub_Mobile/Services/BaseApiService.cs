@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Hungry_Hub_Mobile.Core.Constants;
+using Hungry_Hub_Mobile.Core.DTOs.Orders;
 using Hungry_Hub_Mobile.Core.Helpers;
 
 namespace Hungry_Hub_Mobile.Services;
@@ -76,7 +77,24 @@ public abstract class BaseApiService
 
             await EnsureSuccessStatusCode(response);
 
-            return JsonSerializer.Deserialize<TResponse>(responseJson, _jsonOptions);
+            var result = JsonSerializer.Deserialize<TResponse>(responseJson, _jsonOptions);
+
+            if (result is CartDto cart)
+            {
+                System.Diagnostics.Debug.WriteLine($"=== ДЕСЕРИАЛИЗИРАН CART ===");
+                System.Diagnostics.Debug.WriteLine($"Cart ID: {cart.Id}");
+                System.Diagnostics.Debug.WriteLine($"Items count: {cart.Items?.Count ?? 0}");
+
+                if (cart.Items != null)
+                {
+                    foreach (var item in cart.Items)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"  - Item ID: {item.Id}, Name: {item.ArticleName}");
+                    }
+                }
+            }
+
+            return result;
         }
         catch (Exception ex)
         {

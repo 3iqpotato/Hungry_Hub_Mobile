@@ -22,20 +22,23 @@ public static class OrderStatus
             _ => status
         };
     }
-
-    // За цветове в UI
-    //public static Colors GetStatusColor(string status)
-    //{
-    //    return status switch
-    //    {
-    //        Pending => Colors.Orange,
-    //        ReadyForPickup => Colors.Blue,
-    //        OnDelivery => Colors.Purple,
-    //        Delivered => Colors.Green,
-    //        _ => Colors.Gray
-    //    };
-    //}
 }
+
+public class CreateOrderResponseDto
+{
+    [JsonPropertyName("status")]
+    public string Status { get; set; } = string.Empty;
+
+    [JsonPropertyName("order")]
+    public OrderDto Order { get; set; } = new();
+
+    [JsonPropertyName("next")]
+    public string Next { get; set; } = string.Empty;
+
+    [JsonPropertyName("order_id")]
+    public int OrderId { get; set; }
+}
+
 
 // За OrderItem - съответства на OrderItemSerializer
 public class OrderItemDto
@@ -50,14 +53,27 @@ public class OrderItemDto
     public string ArticleName { get; set; } = string.Empty;
 
     [JsonPropertyName("price")]
-    public decimal Price { get; set; }
+    public string Price { get; set; } = "0.00";
 
     [JsonPropertyName("quantity")]
     public int Quantity { get; set; }
 
     [JsonPropertyName("total_price")]
     public decimal TotalPrice { get; set; }
+
+    [JsonIgnore]
+    public decimal PriceDecimal
+    {
+        get
+        {
+            if (decimal.TryParse(Price, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var result))
+                return result;
+            return 0;
+        }
+    }
 }
+
 
 // За поръчка - съответства на OrderSerializer
 public class OrderDto
@@ -66,7 +82,7 @@ public class OrderDto
     public int Id { get; set; }
 
     [JsonPropertyName("status")]
-    public string Status { get; set; } = OrderStatus.Pending;
+    public string Status { get; set; } = string.Empty;
 
     [JsonPropertyName("address_for_delivery")]
     public string AddressForDelivery { get; set; } = string.Empty;
@@ -75,35 +91,60 @@ public class OrderDto
     public DateTime OrderDateTime { get; set; }
 
     [JsonPropertyName("delivery_time")]
-    public DateTime? DeliveryTime { get; set; }  // Може да е null
+    public DateTime? DeliveryTime { get; set; }
 
     [JsonPropertyName("delivery_fee")]
-    public decimal DeliveryFee { get; set; }
+    public string DeliveryFee { get; set; } = "0.00";
 
     [JsonPropertyName("total_price")]
-    public decimal TotalPrice { get; set; }
+    public string TotalPrice { get; set; } = "0.00";
 
     [JsonPropertyName("restaurant")]
-    public int? RestaurantId { get; set; }  // Може да е null (SET_NULL)
+    public int? RestaurantId { get; set; }
 
     [JsonPropertyName("restaurant_name")]
-    public string? RestaurantName { get; set; }  // Може да е null
+    public string? RestaurantName { get; set; }
 
     [JsonPropertyName("supplier")]
-    public int? SupplierId { get; set; }  // Може да е null
+    public int? SupplierId { get; set; }
 
     [JsonPropertyName("supplier_name")]
-    public string? SupplierName { get; set; }  // Може да е null
+    public string? SupplierName { get; set; }
 
     [JsonPropertyName("items")]
     public List<OrderItemDto> Items { get; set; } = new();
 
-    // Helper properties за UI
+    [JsonIgnore]
+    public decimal DeliveryFeeDecimal
+    {
+        get
+        {
+            if (decimal.TryParse(DeliveryFee, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var result))
+                return result;
+            return 0;
+        }
+    }
+
+    [JsonIgnore]
+    public decimal TotalPriceDecimal
+    {
+        get
+        {
+            if (decimal.TryParse(TotalPrice, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out var result))
+                return result;
+            return 0;
+        }
+    }
+
     public string StatusDisplayName => OrderStatus.GetDisplayName(Status);
-    //public Color StatusColor => OrderStatus.GetStatusColor(Status);
-    public string FormattedTotal => TotalPrice.ToString("F2") + " лв.";
+    public string FormattedTotal => $"{TotalPriceDecimal:F2} лв";
+    public string FormattedDeliveryFee => $"{DeliveryFeeDecimal:F2} лв";
     public string FormattedDateTime => OrderDateTime.ToString("dd.MM.yyyy HH:mm");
+    public int ItemsCount => Items?.Count ?? 0;
 }
+
 
 // За създаване на поръчка
 public class CreateOrderDto
