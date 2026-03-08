@@ -69,4 +69,23 @@ public class OrderService : BaseApiService, IOrderService
             throw;
         }
     }
+
+    public async Task<OrderDetailResponseDto> GetOrderDetailAsync(int orderId)
+    {
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"👉 Вземане на детайли за поръчка {orderId}");
+
+            var response = await GetAsync<OrderDetailResponseDto>(ApiRoutes.Orders.OrderDetail(orderId));
+
+            System.Diagnostics.Debug.WriteLine($"✅ Детайли заредени за поръчка {orderId}");
+
+            return response;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка: {ex.Message}");
+            throw;
+        }
+    }
 }

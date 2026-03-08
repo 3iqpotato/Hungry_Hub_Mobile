@@ -60,6 +60,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CartViewModel>();
         builder.Services.AddTransient<CheckoutViewModel>();
         builder.Services.AddTransient<MyOrdersViewModel>();
+        builder.Services.AddTransient<OrderDetailViewModel>();
         // Добави и други ViewModels като ги създаваме
 
         // ========== VIEWS (PAGES) ==========
@@ -76,6 +77,7 @@ public static class MauiProgram
         builder.Services.AddTransient<CartPage>();
         builder.Services.AddTransient<CheckoutPage>();
         builder.Services.AddTransient<MyOrdersPage>();
+        builder.Services.AddTransient<OrderDetailPage>();
 
         // ⚠️ ВАЖНО: Страници за попълване на профил (ако ги създадем после)
         // builder.Services.AddTransient<CompleteUserProfilePage>();

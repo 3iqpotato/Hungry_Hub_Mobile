@@ -18,4 +18,6 @@ public interface IOrderService
     /// Взема всички поръчки на потребителя
     /// </summary>
     Task<List<OrderDto>> GetMyOrdersAsync();
+
+    Task<OrderDetailResponseDto> GetOrderDetailAsync(int orderId);
 }

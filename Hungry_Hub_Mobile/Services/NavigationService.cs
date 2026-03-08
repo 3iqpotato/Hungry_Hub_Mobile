@@ -75,6 +75,13 @@ public class NavigationService : INavigationService
                 return;
             }
 
+            string cleanRoute = route;
+            if (route.Contains('?'))
+            {
+                cleanRoute = route.Split('?')[0];
+            }
+
+
             var pageType = GetPageTypeFromRoute(route);
             if (pageType == null)
             {
@@ -87,6 +94,19 @@ public class NavigationService : INavigationService
             {
                 System.Diagnostics.Debug.WriteLine($"❌ Не може да създаде страница от тип: {pageType.Name}");
                 return;
+            }
+
+            if (parameters != null && page.BindingContext != null)
+            {
+                var viewModelType = page.BindingContext.GetType();
+
+                // Опитай да намериш пропърти OrderId и да му зададеш стойност
+                var orderIdProperty = viewModelType.GetProperty("OrderId");
+                if (orderIdProperty != null && parameters.ContainsKey("orderId"))
+                {
+                    orderIdProperty.SetValue(page.BindingContext, parameters["orderId"]);
+                    System.Diagnostics.Debug.WriteLine($"✅ Зададен OrderId: {parameters["orderId"]}");
+                }
             }
 
             // Ако страницата поддържа инициализация с параметри
@@ -135,6 +155,7 @@ public class NavigationService : INavigationService
             "checkout" => typeof(Views.Orders.CheckoutPage),
             "my-orders" => typeof(Views.Orders.MyOrdersPage),
             "my_orders" => typeof(Views.Orders.MyOrdersPage),
+            "order_detail" => typeof(Views.Orders.OrderDetailPage),
             "restaurant/details" => typeof(Views.User.RestaurantDetailPage),
             //"supplier/home" => typeof(Views.Supplier.SupplierHomePage),
             //"restaurant/home" => typeof(Views.Restaurant.RestaurantHomePage),

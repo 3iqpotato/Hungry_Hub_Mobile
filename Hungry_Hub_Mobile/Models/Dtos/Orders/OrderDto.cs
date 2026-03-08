@@ -105,6 +105,13 @@ public class OrderDto
     [JsonPropertyName("restaurant_name")]
     public string? RestaurantName { get; set; }
 
+    // 🔥 НОВИ ПОЛЕТА - попитай Django дали ги връща
+    [JsonPropertyName("restaurant_address")]
+    public string? RestaurantAddress { get; set; }
+
+    [JsonPropertyName("restaurant_phone")]
+    public string? RestaurantPhone { get; set; }
+
     [JsonPropertyName("supplier")]
     public int? SupplierId { get; set; }
 
@@ -141,16 +148,14 @@ public class OrderDto
 
     public string StatusDisplayName => GetStatusDisplayName(Status);
     public string FormattedTotal => $"{TotalPriceDecimal:F2} лв";
+    public string FormattedDeliveryFee => $"{DeliveryFeeDecimal:F2} лв";
     public string FormattedDateTime => OrderDateTime.ToString("dd.MM.yyyy HH:mm");
     public int ItemsCount => Items?.Count ?? 0;
-    public string ShortStatus => Status switch
-    {
-        "pending" => "⏳ Чакаща",
-        "ready_for_pickup" => "✅ Готова",
-        "on_delivery" => "🚚 В доставка",
-        "delivered" => "📦 Доставена",
-        _ => Status
-    };
+
+    // 🔥 Обновени helper properties
+    public bool HasRestaurant => RestaurantId != null;
+    public string DisplayRestaurantAddress => !string.IsNullOrEmpty(RestaurantAddress) ? RestaurantAddress : "Няма адрес";
+    public string DisplayRestaurantPhone => !string.IsNullOrEmpty(RestaurantPhone) ? RestaurantPhone : "Няма телефон";
 
     private string GetStatusDisplayName(string status)
     {

@@ -98,13 +98,24 @@ public class MyOrdersViewModel : BaseViewModel
     {
         if (order == null) return;
 
-        SelectedOrder = order;
+        try
+        {
+            System.Diagnostics.Debug.WriteLine($"👉 Избрана поръчка #{order.Id}");
 
-        var parameters = new Dictionary<string, object>
+            SelectedOrder = order;
+
+            // 🔥 Използвай Dictionary за параметри
+            var parameters = new Dictionary<string, object>
         {
             { "orderId", order.Id }
         };
 
-        await _navigationService.GoToAsync("order_detail", parameters);
+            await _navigationService.GoToAsync("order_detail", parameters);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Грешка при отваряне на поръчка: {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка: {ex}");
+        }
     }
 }

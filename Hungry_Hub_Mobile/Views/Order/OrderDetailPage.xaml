@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hungry_Hub_Mobile.Views.Orders.OrderDetailPage"
+             Title="Детайли на поръчка">
+    
+    <Grid RowDefinitions="Auto,*">
+        
+        <!-- Горна лента -->
+        <HorizontalStackLayout Grid.Row="0"
+                               Spacing="15"
+                               Padding="15,10"
+                               BackgroundColor="#2196F3">
+            
+            <Button Text="←"
+                    Command="{Binding GoBackCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="20"/>
+            
+            <Label Text="{Binding Order.Id, StringFormat='Поръчка #{0}'}" 
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="Center"/>
+            
+            <Button Text="⟳"
+                    Command="{Binding RefreshCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="20"/>
+        </HorizontalStackLayout>
+
+        <!-- Съдържание -->
+        <ScrollView Grid.Row="1"
+                    IsVisible="{Binding HasOrder}">
+            <VerticalStackLayout Spacing="15" Padding="20">
+                
+                <!-- Статус банер -->
+                <Frame CornerRadius="10"
+                       Padding="15"
+                       BackgroundColor="{Binding StatusColor}">
+                    <Label Text="{Binding StatusText}"
+                           TextColor="White"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"/>
+                </Frame>
+                
+                <!-- Информация за поръчката -->
+                <Frame CornerRadius="10" Padding="15">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Информация за поръчката"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                        
+                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
+                            <Label Grid.Row="0" Grid.Column="0" Text="Дата: " FontAttributes="Bold"/>
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding FormattedOrderDate}"/>
+                            
+                            <Label Grid.Row="1" Grid.Column="0" Text="Доставка: " FontAttributes="Bold"/>
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding FormattedDeliveryDate}"/>
+                            
+                            <Label Grid.Row="2" Grid.Column="0" Text="Адрес: " FontAttributes="Bold"/>
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding Order.AddressForDelivery}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+                
+                <!-- Информация за ресторанта -->
+                <Frame CornerRadius="10" Padding="15"
+                       IsVisible="{Binding HasRestaurant}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Ресторант"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                        
+                        <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="5">
+                            <Label Grid.Row="0" Grid.Column="0" Text="Име: " FontAttributes="Bold"/>
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Order.RestaurantName}"/>
+                            
+                            <Label Grid.Row="1" Grid.Column="0" Text="Адрес: " FontAttributes="Bold"/>
+                            <Label Grid.Row="1" Grid.Column="1" Text="{Binding Order.RestaurantAddress}"/>
+                            
+                            <Label Grid.Row="2" Grid.Column="0" Text="Телефон: " FontAttributes="Bold"/>
+                            <Label Grid.Row="2" Grid.Column="1" Text="{Binding Order.RestaurantPhone}"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+                
+                <!-- Артикули -->
+                <Frame CornerRadius="10" Padding="15">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="Артикули"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                        
+                        <CollectionView ItemsSource="{Binding Order.Items}">
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid ColumnDefinitions="*,Auto,Auto,Auto" Padding="5">
+                                        <Label Grid.Column="0" 
+                                               Text="{Binding ArticleName}"
+                                               LineBreakMode="TailTruncation"/>
+                                        
+                                        <Label Grid.Column="1" 
+                                               Text="{Binding Quantity, StringFormat='x{0}'}"
+                                               TextColor="Gray"
+                                               Margin="10,0"/>
+                                        
+                                        <Label Grid.Column="2" 
+                                               Text="{Binding PriceDecimal, StringFormat='{0:F2} лв'}"
+                                               Margin="10,0"/>
+                                        
+                                        <Label Grid.Column="3" 
+                                               Text="{Binding TotalPrice, StringFormat='={0:F2} лв'}"
+                                               FontAttributes="Bold"
+                                               TextColor="#4CAF50"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+                        </CollectionView>
+                        
+                        <BoxView HeightRequest="1" Color="LightGray" Margin="0,5"/>
+                        
+                        <!-- Суми -->
+                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto" RowSpacing="5">
+                            <Label Grid.Row="0" Grid.Column="0" Text="Такса доставка:"/>
+                            <Label Grid.Row="0" Grid.Column="1" Text="{Binding FormattedDeliveryFee}"/>
+                            
+                            <Label Grid.Row="1" Grid.Column="0" Text="ОБЩО:" FontAttributes="Bold"/>
+                            <Label Grid.Row="1" Grid.Column="1" 
+                                   Text="{Binding FormattedTotal}" 
+                                   FontAttributes="Bold"
+                                   TextColor="#4CAF50"/>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Frame>
+                
+                <!-- Действия (ако има) -->
+                <FlexLayout JustifyContent="Center"
+                            IsVisible="{Binding CanUpdate}">
+                    <Button Text="Маркирай като готова"
+                            BackgroundColor="#4CAF50"
+                            TextColor="White"
+                            Margin="5"/>
+                </FlexLayout>
+                
+                <!-- История на статусите (опростена) -->
+                <Frame CornerRadius="10" Padding="15">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="История"
+                               FontSize="16"
+                               FontAttributes="Bold"/>
+                        
+                        <Label Text="{Binding FormattedOrderDate, StringFormat='Създадена на {0}'}"
+                               FontSize="14"/>
+                        
+                        <Label Text="{Binding StatusText, StringFormat='Текущ статус: {0}'}"
+                               FontSize="14"
+                               TextColor="{Binding StatusColor}"/>
+                    </VerticalStackLayout>
+                </Frame>
+                
+            </VerticalStackLayout>
+        </ScrollView>
+        
+        <!-- Loading / Error -->
+        <Grid Grid.Row="1"
+              IsVisible="{Binding IsRefreshing}"
+              BackgroundColor="#80000000">
+            <ActivityIndicator IsRunning="True"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+        </Grid>
+        
+        <Label Grid.Row="1"
+               Text="{Binding ErrorMessage}"
+               TextColor="Red"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               Margin="20"/>
+    </Grid>
+</ContentPage>
