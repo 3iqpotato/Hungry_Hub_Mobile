@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Hungry_Hub_Mobile.Views.Orders.MyOrdersPage"
+             Title="Моите поръчки">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Горна лента -->
+        <HorizontalStackLayout Grid.Row="0"
+                               Spacing="15"
+                               Padding="15,10"
+                               BackgroundColor="#2196F3">
+
+            <Button Text="←"
+                    Command="{Binding GoBackCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="20"/>
+
+            <Label Text="Моите поръчки" 
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="CenterAndExpand"
+                   VerticalOptions="Center"/>
+
+            <Button Text="⟳"
+                    Command="{Binding RefreshCommand}"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    FontSize="20"/>
+        </HorizontalStackLayout>
+
+        <!-- Списък с поръчки -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Orders}"
+                        Margin="10">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Spacing="10" 
+                                     Padding="20"
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Center">
+                    <Label Text="📦"
+                           FontSize="48"
+                           HorizontalOptions="Center"/>
+                    <Label Text="Все още нямате поръчки"
+                           FontSize="16"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Margin="0,5" 
+                           Padding="15"
+                           CornerRadius="10"
+                           BorderColor="LightGray">
+                        <VerticalStackLayout Spacing="10">
+
+                            <!-- Горен ред: номер и статус -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" 
+                                       Text="{Binding Id, StringFormat='Поръчка #{0}'}"
+                                       FontAttributes="Bold"
+                                       FontSize="16"/>
+
+                                <Label Grid.Column="1"
+                                       Text="{Binding Status}"
+                                       TextColor="{Binding Status, Converter={StaticResource StatusColorConverter}}"
+                                       FontSize="12"
+                                       FontAttributes="Bold"/>
+                            </Grid>
+
+                            <!-- Ресторант -->
+                            <Label Text="{Binding RestaurantName}"
+                                   FontSize="14"
+                                   TextColor="#2196F3"/>
+
+                            <!-- Дата и час -->
+                            <Label Text="{Binding FormattedDateTime}"
+                                   FontSize="12"
+                                   TextColor="Gray"/>
+
+                            <!-- Брой артикули -->
+                            <Label Text="{Binding ItemsCount, StringFormat='Артикули: {0}'}"
+                                   FontSize="12"/>
+
+                            <!-- Обща сума -->
+                            <Label Text="{Binding FormattedTotal}"
+                                   FontAttributes="Bold"
+                                   FontSize="16"
+                                   TextColor="#4CAF50"
+                                   HorizontalOptions="End"/>
+
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Съобщение за грешка -->
+        <Label Grid.Row="1"
+               Text="{Binding ErrorMessage}"
+               TextColor="Red"
+               IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               Margin="20"/>
+    </Grid>
+</ContentPage>

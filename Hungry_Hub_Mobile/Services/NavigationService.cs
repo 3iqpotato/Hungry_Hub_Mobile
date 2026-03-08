@@ -133,6 +133,8 @@ public class NavigationService : INavigationService
             "user/edit-profile" => typeof(Views.User.EditProfilePage),
             "cart" => typeof(Views.User.CartPage),
             "checkout" => typeof(Views.Orders.CheckoutPage),
+            "my-orders" => typeof(Views.Orders.MyOrdersPage),
+            "my_orders" => typeof(Views.Orders.MyOrdersPage),
             "restaurant/details" => typeof(Views.User.RestaurantDetailPage),
             //"supplier/home" => typeof(Views.Supplier.SupplierHomePage),
             //"restaurant/home" => typeof(Views.Restaurant.RestaurantHomePage),

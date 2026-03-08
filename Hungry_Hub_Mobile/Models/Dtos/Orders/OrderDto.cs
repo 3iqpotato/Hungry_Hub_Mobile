@@ -114,6 +114,7 @@ public class OrderDto
     [JsonPropertyName("items")]
     public List<OrderItemDto> Items { get; set; } = new();
 
+    // Helper properties
     [JsonIgnore]
     public decimal DeliveryFeeDecimal
     {
@@ -138,11 +139,30 @@ public class OrderDto
         }
     }
 
-    public string StatusDisplayName => OrderStatus.GetDisplayName(Status);
+    public string StatusDisplayName => GetStatusDisplayName(Status);
     public string FormattedTotal => $"{TotalPriceDecimal:F2} лв";
-    public string FormattedDeliveryFee => $"{DeliveryFeeDecimal:F2} лв";
     public string FormattedDateTime => OrderDateTime.ToString("dd.MM.yyyy HH:mm");
     public int ItemsCount => Items?.Count ?? 0;
+    public string ShortStatus => Status switch
+    {
+        "pending" => "⏳ Чакаща",
+        "ready_for_pickup" => "✅ Готова",
+        "on_delivery" => "🚚 В доставка",
+        "delivered" => "📦 Доставена",
+        _ => Status
+    };
+
+    private string GetStatusDisplayName(string status)
+    {
+        return status switch
+        {
+            "pending" => "Чакаща",
+            "ready_for_pickup" => "Готова за вземане",
+            "on_delivery" => "В доставка",
+            "delivered" => "Доставена",
+            _ => status
+        };
+    }
 }
 
 
