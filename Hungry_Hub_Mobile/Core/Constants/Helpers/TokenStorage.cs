@@ -1,7 +1,8 @@
 ﻿using System.Text.Json;
 using Hungry_Hub_Mobile.Core.DTOs.Auth;
 using Microsoft.Maui.Storage;
-
+using System.IdentityModel.Tokens.Jwt;
+using Hungry_Hub_Mobile.Services.Interfaces;  // Инсталирай NuGet: System.IdentityModel.Tokens.Jwt
 namespace Hungry_Hub_Mobile.Core.Helpers;
 
 public static class TokenStorage
@@ -131,7 +132,35 @@ public static class TokenStorage
     public static async Task<bool> IsAuthenticatedAsync()
     {
         var token = await GetAccessTokenAsync();
-        return !string.IsNullOrEmpty(token);
+
+        // 1. Провери дали има token
+        if (string.IsNullOrEmpty(token))
+            return false;
+
+        // 2. Провери дали token-ът не е изтекъл (локално)
+        if (!IsTokenValid(token))
+        {
+            System.Diagnostics.Debug.WriteLine("⏰ Token-ът е изтекъл, опит за refresh...");
+
+            // 3. Опитай да го обновиш
+            var authService = MauiProgram.Services.GetService<IAuthService>();
+            if (authService != null)
+            {
+                var refreshed = await authService.RefreshTokenAsync();
+                if (refreshed)
+                {
+                    // Вземи новия token
+                    token = await GetAccessTokenAsync();
+                    return !string.IsNullOrEmpty(token) && IsTokenValid(token);
+                }
+            }
+
+            // Ако refresh не успее, изчисти всичко
+            RemoveTokens();
+            return false;
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -220,6 +249,38 @@ public static class TokenStorage
             System.Diagnostics.Debug.WriteLine($"❌ Грешка при запазване на next route: {ex.Message}");
         }
     }
+
+
+
+public static bool IsTokenValid(string token)
+{
+    if (string.IsNullOrEmpty(token))
+        return false;
+    
+    try
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+        
+        // Провери дали token-ът е изтекъл
+        var exp = jwtToken.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
+        if (exp != null)
+        {
+            var expDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(exp)).UtcDateTime;
+            if (expDate < DateTime.UtcNow)
+            {
+                System.Diagnostics.Debug.WriteLine("⏰ Token-ът е изтекъл");
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    catch
+    {
+        return false;
+    }
+}
 
 
 }

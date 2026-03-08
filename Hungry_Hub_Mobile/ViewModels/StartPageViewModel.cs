@@ -144,12 +144,15 @@ public class StartPageViewModel : BaseViewModel
             }
             else
             {
+                TokenStorage.RemoveTokens();
                 IsLoggedIn = false;
+                WelcomeMessage = string.Empty;
             }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"❌ Грешка при проверка: {ex}");
+            TokenStorage.RemoveTokens();
             IsLoggedIn = false;
         }
         finally
@@ -206,6 +209,8 @@ public class StartPageViewModel : BaseViewModel
 
             IsLoggedIn = false;
             WelcomeMessage = string.Empty;
+
+            await _navigationService.GoToAsync("///start");
 
             System.Diagnostics.Debug.WriteLine("✅ Успешен logout");
         }, "Грешка при изход");

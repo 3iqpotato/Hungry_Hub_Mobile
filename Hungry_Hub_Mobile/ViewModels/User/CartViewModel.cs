@@ -7,18 +7,22 @@ namespace Hungry_Hub_Mobile.ViewModels.User;
 public class CartViewModel : BaseViewModel
 {
     private readonly ICartService _cartService;
+    private readonly IAuthService _authService;
     private readonly INavigationService _navigationService;
 
     private CartDto _cart = new();
     private int _userProfileId;
     private bool _isRefreshing;
 
+
     public CartViewModel(
         ICartService cartService,
+        IAuthService authService,
         INavigationService navigationService)
     {
         _cartService = cartService;
         _navigationService = navigationService;
+        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
 
         GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));
         GoToProfileCommand = new Command(async () => await _navigationService.GoToAsync("user/profile"));
@@ -27,7 +31,7 @@ public class CartViewModel : BaseViewModel
         RemoveItemCommand = new Command<CartItemDto>(async (item) => await ExecuteRemoveItemAsync(item));
         CheckoutCommand = new Command(async () => await ExecuteCheckoutAsync());
 
-        Task.Run(LoadCartAsync);
+        //Task.Run(LoadCartAsync);
     }
 
     public CartDto Cart
@@ -146,6 +150,16 @@ public class CartViewModel : BaseViewModel
 
     private async Task ExecuteLogoutAsync()
     {
-        // Логика за logout (ще я добавим после)
+        await ExecuteAsync(async () =>
+        {
+            System.Diagnostics.Debug.WriteLine("👉 Logout от количката...");
+
+            await _authService.LogoutAsync();
+
+            // Отиди на началната страница
+            await _navigationService.GoToAsync("start");
+
+            System.Diagnostics.Debug.WriteLine("✅ Успешен logout от количката");
+        }, "Грешка при изход");
     }
 }

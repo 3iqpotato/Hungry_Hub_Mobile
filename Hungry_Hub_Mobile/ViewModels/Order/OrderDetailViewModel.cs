@@ -18,8 +18,8 @@ public class OrderDetailViewModel : BaseViewModel
 
     public OrderDetailViewModel(IOrderService orderService, INavigationService navigationService)
     {
-        _orderService = orderService;
-        _navigationService = navigationService;
+        _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
 
         RefreshCommand = new Command(async () => await LoadOrderDetailAsync());
         GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());
@@ -36,7 +36,7 @@ public class OrderDetailViewModel : BaseViewModel
             // Зареди детайлите веднага щом получим ID
             if (value > 0)
             {
-                Task.Run(LoadOrderDetailAsync);
+                MainThread.BeginInvokeOnMainThread(async () => await LoadOrderDetailAsync());
             }
         }
     }

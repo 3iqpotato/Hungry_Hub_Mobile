@@ -122,8 +122,7 @@ public class CheckoutViewModel : BaseViewModel
         bool confirm = await Application.Current.MainPage.DisplayAlert(
             "Потвърждение",
             $"Сигурни ли сте, че искате да направите поръчка за {FormattedTotal}?",
-            "Да",
-            "Не");
+            "Да", "Не");
 
         if (!confirm) return;
 
@@ -139,27 +138,44 @@ public class CheckoutViewModel : BaseViewModel
             {
                 System.Diagnostics.Debug.WriteLine($"✅ Поръчката създадена! ID: {response.OrderId}");
 
-                // Успешно съобщение
-                await Application.Current.MainPage.DisplayAlert(
-                    "Успех",
-                    $"Поръчката ви е създадена успешно! Номер: {response.OrderId}",
-                    "OK");
-
-                // Пренасочване според next параметъра
-                if (!string.IsNullOrEmpty(response.Next))
+                // 🔥 Използвай MainThread за навигация
+                await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    await _navigationService.GoToAsync(response.Next);
-                }
-                else
-                {
-                    // Ако няма next, отиваме на детайли на поръчката
-                    var parameters = new Dictionary<string, object>
+                    try
                     {
-                        { "orderId", response.OrderId }
-                    };
-                    await _navigationService.GoToAsync("order_detail", parameters);
-                }
+                        // Първо покажи съобщението
+                        await Application.Current.MainPage.DisplayAlert(
+                            "Успех",
+                            $"Поръчката ви е създадена успешно! Номер: {response.OrderId}",
+                            "OK");
+
+                        // 🔥 МАЛКА ПАУЗА
+                        await Task.Delay(100);
+
+                        // 🔥 ПРОВЕРКА ЗА NULL
+                        if (Shell.Current != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"👉 Навигация към order_detail?orderId={response.OrderId}");
+                            await Shell.Current.GoToAsync($"order_detail?orderId={response.OrderId}");
+                        }
+                        else if (_navigationService != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine("⚠️ Shell.Current е null, ползвам _navigationService");
+                            var parameters = new Dictionary<string, object> { { "orderId", response.OrderId } };
+                            await _navigationService.GoToAsync("order_detail", parameters);
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine("❌ Няма навигационен сервис!");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Грешка при навигация: {ex.Message}");
+                    }
+                });
             }
+
         }, "Грешка при създаване на поръчка");
     }
 }

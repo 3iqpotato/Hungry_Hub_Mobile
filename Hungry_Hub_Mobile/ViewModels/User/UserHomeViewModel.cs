@@ -128,7 +128,7 @@ public class UserHomeViewModel : BaseViewModel
         await ExecuteAsync(async () =>
         {
             await _authService.LogoutAsync();
-            await _navigationService.GoToAsync("///start");
+            await _navigationService.GoToAsync("start");
         }, "Грешка при изход");
     }
 

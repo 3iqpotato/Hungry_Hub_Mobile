@@ -145,6 +145,7 @@ public class NavigationService : INavigationService
     {
         return route.ToLower() switch
         {
+            "start" => typeof(Views.StartPage),
             "login" => typeof(Views.Auth.LoginPage),
             "register" => typeof(Views.Auth.RegisterPage),
             "user_home" => typeof(Views.User.UserHomePage),

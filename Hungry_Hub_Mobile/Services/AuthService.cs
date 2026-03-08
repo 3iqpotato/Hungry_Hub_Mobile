@@ -142,13 +142,19 @@ public class AuthService : BaseApiService, IAuthService
             {
                 // Запазваме новия access token (refresh token остава същия)
                 await TokenStorage.SaveTokensAsync(response.Access, refreshToken);
+
+                if (response.User != null)
+                {
+                    await TokenStorage.SaveUserAsync(response.User);
+                }
                 return true;
             }
 
             return false;
         }
-        catch
+        catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка при refresh: {ex.Message}");
             return false;
         }
     }

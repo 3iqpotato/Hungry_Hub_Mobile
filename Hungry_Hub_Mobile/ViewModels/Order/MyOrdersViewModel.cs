@@ -23,7 +23,7 @@ public class MyOrdersViewModel : BaseViewModel
         SelectOrderCommand = new Command<OrderDto>(async (order) => await ExecuteSelectOrderAsync(order));
         GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());
 
-        Task.Run(LoadOrdersAsync);
+        //Task.Run(LoadOrdersAsync);
     }
 
     public List<OrderDto> Orders
