@@ -9,6 +9,7 @@ public class EditProfileViewModel : BaseViewModel
 {
     private readonly IUserProfileService _userProfileService;
     private readonly INavigationService _navigationService;
+    private readonly ILocationService _locationService;
 
     private string _name;
     private string _phoneNumber;
@@ -18,14 +19,18 @@ public class EditProfileViewModel : BaseViewModel
 
     public EditProfileViewModel(
         IUserProfileService userProfileService,
+        ILocationService locationService,
         INavigationService navigationService)
+
     {
         _userProfileService = userProfileService;
+        _locationService = locationService;
         _navigationService = navigationService;
 
         SaveCommand = new Command(async () => await ExecuteSaveAsync());
         CancelCommand = new Command(async () => await _navigationService.GoBackAsync());
         PickImageCommand = new Command(async () => await ExecutePickImageAsync());
+        UseCurrentLocationCommand = new Command(async () => await ExecuteUseCurrentLocationAsync());
 
         // Зареди съществуващия профил
         Task.Run(LoadProfileAsync);
@@ -74,6 +79,8 @@ public class EditProfileViewModel : BaseViewModel
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
     public ICommand PickImageCommand { get; }
+
+    public ICommand UseCurrentLocationCommand { get; }
 
     private async Task LoadProfileAsync()
     {
@@ -132,6 +139,26 @@ public class EditProfileViewModel : BaseViewModel
         {
             ErrorMessage = $"Грешка при избор на снимка: {ex.Message}";
         }
+    }
+
+    private async Task ExecuteUseCurrentLocationAsync()
+    {
+        await ExecuteAsync(async () =>
+        {
+            System.Diagnostics.Debug.WriteLine("👉 Опит за взимане на текуща локация...");
+
+            var address = await _locationService.GetCurrentAddressAsync();
+
+            if (!string.IsNullOrEmpty(address))
+            {
+                Address = address;
+                System.Diagnostics.Debug.WriteLine($"✅ Адресът е попълнен: {address}");
+            }
+            else
+            {
+                ErrorMessage = "Не можа да се вземе текущата локация. Проверете дали GPS-ът е включен.";
+            }
+        }, "Грешка при взимане на локация");
     }
 
     private async Task ExecuteSaveAsync()

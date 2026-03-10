@@ -115,6 +115,11 @@ public class RegisterViewModel : BaseViewModel
                 System.Diagnostics.Debug.WriteLine($"✅ Успешна регистрация!");
                 System.Diagnostics.Debug.WriteLine($"👉 Next route: {response.Next}");
 
+                if (response.ProfileId.HasValue)
+                {
+                    await TokenStorage.SaveProfileIdAsync(response.ProfileId.Value);
+                }
+
                 // Пренасочване според next параметъра
                 if (!string.IsNullOrEmpty(response.Next))
                 {

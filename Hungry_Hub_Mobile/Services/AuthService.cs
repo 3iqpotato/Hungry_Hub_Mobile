@@ -108,6 +108,17 @@ public class AuthService : BaseApiService, IAuthService
                 });
             }
 
+            if (response.ProfileId.HasValue)
+            {
+                await TokenStorage.SaveProfileIdAsync(response.ProfileId.Value);
+                System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id от register: {response.ProfileId.Value}");
+            }
+
+            if (response.User != null)
+            {
+                await TokenStorage.SaveUserAsync(response.User);
+            }
+
             return response;
         }
         catch (Exception ex)

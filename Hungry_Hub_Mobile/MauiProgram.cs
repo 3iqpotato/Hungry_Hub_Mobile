@@ -45,6 +45,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<IRestaurantMenuService, RestaurantMenuService>();
         builder.Services.AddSingleton<ICartService, CartService>();
         builder.Services.AddSingleton<IOrderService, OrderService>();
+        builder.Services.AddSingleton<ILocationService, LocationService>();
 
         // ========== VIEWMODELS ==========
         builder.Services.AddTransient<StartPageViewModel>();

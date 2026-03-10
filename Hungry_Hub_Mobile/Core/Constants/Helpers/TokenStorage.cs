@@ -30,6 +30,12 @@ public static class TokenStorage
                 await SecureStorage.Default.SetAsync(UserTypeKey, response.User.Type);
             }
 
+            if (response.ProfileId.HasValue)
+            {
+                await SecureStorage.Default.SetAsync(ProfileIdKey, response.ProfileId.Value.ToString());
+                System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id в storage: {response.ProfileId.Value}");
+            }
+
             // Запази дали има профил и накъде да отиде
             bool hasProfile = response.ProfileId.HasValue || string.IsNullOrEmpty(response.Next);
             await SecureStorage.Default.SetAsync(HasProfileKey, hasProfile.ToString());

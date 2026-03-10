@@ -45,6 +45,12 @@ public class UserProfileService : BaseApiService, IUserProfileService
 
             System.Diagnostics.Debug.WriteLine($"✅ Профилът обновен. Next: {response?.Next}");
 
+            if (response?.ProfileId.HasValue == true)
+            {
+                await TokenStorage.SaveProfileIdAsync(response.ProfileId.Value);
+                System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id от update: {response.ProfileId.Value}");
+            }
+
             return response;
         }
         catch (Exception ex)
