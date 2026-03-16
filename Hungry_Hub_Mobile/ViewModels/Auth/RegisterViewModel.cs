@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
 using Hungry_Hub_Mobile.Core.DTOs.Auth;
 using Hungry_Hub_Mobile.Core.Helpers;
 using Hungry_Hub_Mobile.Services.Interfaces;
@@ -32,7 +34,7 @@ public class RegisterViewModel : BaseViewModel
         RegisterCommand = new Command(async () => await ExecuteRegisterAsync());
         GoToLoginCommand = new Command(async () => await _navigationService.GoToAsync("login"));
     }
-
+    [StringLength(30,MinimumLength = 5)]
     public string Email
     {
         get => _email;

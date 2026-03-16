@@ -4,10 +4,9 @@ public static class AppConstants
 {
     // Базов API URL - различен според средата
 #if DEBUG
-    public const string BaseApiUrl = "http://10.0.2.2:8000/"; // Android Emulator
-                                                              // public const string BaseApiUrl = "http://localhost:8000/"; // iOS Simulator
+    public const string BaseApiUrl = "http://10.0.2.2:8000/";
 #else
-    //public const string BaseApiUrl = "https://api.hungryhub.com/";
+    public const string BaseApiUrl = "http://10.0.2.2:8000/";
 #endif
 
     // API версия (ако я ползваш)

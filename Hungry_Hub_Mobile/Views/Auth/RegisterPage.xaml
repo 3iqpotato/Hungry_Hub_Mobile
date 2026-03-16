@@ -42,6 +42,7 @@
                    ReturnType="Next"/>
 
             <!-- Picker за тип потребител -->
+
             <Picker Title="Изберете тип потребител"
                     ItemsSource="{Binding UserTypes}"
                     SelectedItem="{Binding SelectedUserType}"

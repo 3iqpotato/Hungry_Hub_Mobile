@@ -22,7 +22,7 @@ public class ProfileViewModel : BaseViewModel
         GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));
         GoToEditCommand = new Command(async () => await _navigationService.GoToAsync("user/edit-profile"));
 
-        Task.Run(LoadProfileAsync);
+        //Task.Run(LoadProfileAsync);
 
     }
 
