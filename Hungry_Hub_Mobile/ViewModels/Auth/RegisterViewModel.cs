@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
+﻿using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Hungry_Hub_Mobile.Core.DTOs.Auth;
 using Hungry_Hub_Mobile.Core.Helpers;
@@ -16,9 +15,7 @@ public class RegisterViewModel : BaseViewModel
     private string _password;
     private string _confirmPassword;
     private string _selectedUserType;
-    private bool _isRegistrationSuccessful;
 
-    // Списък с типове потребители за падащото меню
     public List<string> UserTypes { get; } = new()
     {
         "user",
@@ -34,7 +31,7 @@ public class RegisterViewModel : BaseViewModel
         RegisterCommand = new Command(async () => await ExecuteRegisterAsync());
         GoToLoginCommand = new Command(async () => await _navigationService.GoToAsync("login"));
     }
-    [StringLength(30,MinimumLength = 5)]
+
     public string Email
     {
         get => _email;
@@ -80,28 +77,19 @@ public class RegisterViewModel : BaseViewModel
 
     private async Task ExecuteRegisterAsync()
     {
-        // Валидация
-        if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
-        {
-            ErrorMessage = "Моля попълнете всички полета";
-            return;
-        }
+        ErrorMessage = string.Empty;
 
-        if (Password != ConfirmPassword)
-        {
-            ErrorMessage = "Паролите не съвпадат";
-            return;
-        }
+        var validationErrors = ValidateRegisterForm();
 
-        if (string.IsNullOrWhiteSpace(SelectedUserType))
+        if (validationErrors.Any())
         {
-            ErrorMessage = "Моля изберете тип потребител";
+            ErrorMessage = string.Join(Environment.NewLine, validationErrors);
             return;
         }
 
         var request = new RegisterRequestDto
         {
-            Email = Email,
+            Email = Email.Trim(),
             Password = Password,
             Type = SelectedUserType
         };
@@ -114,7 +102,7 @@ public class RegisterViewModel : BaseViewModel
 
             if (response?.User != null)
             {
-                System.Diagnostics.Debug.WriteLine($"✅ Успешна регистрация!");
+                System.Diagnostics.Debug.WriteLine("✅ Успешна регистрация!");
                 System.Diagnostics.Debug.WriteLine($"👉 Next route: {response.Next}");
 
                 if (response.ProfileId.HasValue)
@@ -122,21 +110,81 @@ public class RegisterViewModel : BaseViewModel
                     await TokenStorage.SaveProfileIdAsync(response.ProfileId.Value);
                 }
 
-                // Пренасочване според next параметъра
                 if (!string.IsNullOrEmpty(response.Next))
                 {
                     await _navigationService.GoToAsync(response.Next);
                 }
                 else
                 {
-                    // Ако няма next, отиваме на StartPage
                     await _navigationService.GoToAsync("///start");
                 }
             }
             else
             {
-                ErrorMessage = "Невалиден отговор от сървъра";
+                ErrorMessage = "Невалиден отговор от сървъра.";
             }
         }, "Грешка при регистрация");
+    }
+
+    private List<string> ValidateRegisterForm()
+    {
+        var errors = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(Email))
+        {
+            errors.Add("• Полето за имейл е задължително.");
+        }
+        else
+        {
+            var email = Email.Trim();
+
+            if (!IsValidGmail(email))
+            {
+                errors.Add("• Моля въведете валиден Gmail адрес.");
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(Password))
+        {
+            errors.Add("• Полето за парола е задължително.");
+        }
+        else
+        {
+            if (Password.Length < 6)
+            {
+                errors.Add("• Паролата трябва да е поне 6 символа.");
+            }
+
+            if (!Password.Any(char.IsUpper))
+            {
+                errors.Add("• Паролата трябва да съдържа поне една главна буква.");
+            }
+
+            if (!Password.Any(char.IsDigit))
+            {
+                errors.Add("• Паролата трябва да съдържа поне една цифра.");
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(ConfirmPassword))
+        {
+            errors.Add("• Полето за потвърждение на парола е задължително.");
+        }
+        else if (Password != ConfirmPassword)
+        {
+            errors.Add("• Паролите не съвпадат.");
+        }
+
+        if (string.IsNullOrWhiteSpace(SelectedUserType))
+        {
+            errors.Add("• Моля изберете тип потребител.");
+        }
+
+        return errors;
+    }
+
+    private bool IsValidGmail(string email)
+    {
+        return Regex.IsMatch(email, @"^[A-Za-z0-9._%+-]+@gmail\.com$");
     }
 }

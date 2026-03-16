@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Text.RegularExpressions;
+using System.Windows.Input;
 using Hungry_Hub_Mobile.Core.DTOs.Auth;
 using Hungry_Hub_Mobile.Services.Interfaces;
 
@@ -46,15 +47,19 @@ public class LoginViewModel : BaseViewModel
 
     private async Task ExecuteLoginAsync()
     {
-        if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+        ErrorMessage = string.Empty;
+
+        var validationErrors = ValidateLoginForm();
+
+        if (validationErrors.Any())
         {
-            ErrorMessage = "Моля попълнете email и парола";
+            ErrorMessage = string.Join(Environment.NewLine, validationErrors);
             return;
         }
 
         var request = new LoginRequestDto
         {
-            Email = Email,
+            Email = Email.Trim(),
             Password = Password
         };
 
@@ -66,23 +71,56 @@ public class LoginViewModel : BaseViewModel
 
             if (response?.User != null)
             {
-                // Успешен вход - пренасочваме според типа потребител
                 if (response.User.Type == "user")
-
                 {
                     System.Diagnostics.Debug.WriteLine($"👉 Отиваме към: {response.Next}");
                     await _navigationService.GoToAsync(response.Next);
                 }
                 else if (response.User.Type == "supplier")
+                {
                     await _navigationService.GoToAsync("///supplier/home");
+                }
                 else if (response.User.Type == "restaurant")
+                {
                     await _navigationService.GoToAsync("///restaurant/home");
+                }
             }
             else
             {
-                ErrorMessage = "Невалиден отговор от сървъра";
+                ErrorMessage = "Невалиден отговор от сървъра.";
             }
         }, "Грешка при вход. Проверете email и парола.");
+    }
+
+    private List<string> ValidateLoginForm()
+    {
+        var errors = new List<string>();
+
+        if (string.IsNullOrWhiteSpace(Email))
+        {
+            errors.Add("• Полето за имейл е задължително.");
+        }
+        else
+        {
+            var email = Email.Trim();
+
+            if (!IsValidGmail(email))
+            {
+                errors.Add("• Моля въведете валиден Gmail адрес.");
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(Password))
+        {
+            errors.Add("• Полето за парола е задължително.");
+        }
+
+        return errors;
+    }
+
+    private bool IsValidGmail(string email)
+    {
+        return Regex.IsMatch(email, @"^[A-Za-z0-9._%+-]+@gmail\.com$");
     }
 
     private async Task ExecuteGoToRegisterAsync()
