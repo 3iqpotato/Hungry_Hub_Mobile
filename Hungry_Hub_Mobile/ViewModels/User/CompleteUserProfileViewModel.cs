@@ -153,52 +153,39 @@ public class CompleteUserProfileViewModel : BaseViewModel
 
     private async Task ExecuteSaveProfileAsync()
     {
-        // Валидация
-        if (string.IsNullOrWhiteSpace(Name))
-        {
-            ErrorMessage = "Моля въведете име";
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(PhoneNumber))
-        {
-            ErrorMessage = "Моля въведете телефонен номер";
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(Address))
-        {
-            ErrorMessage = "Моля въведете адрес";
-            return;
-        }
+        if (string.IsNullOrWhiteSpace(Name)) { ErrorMessage = "Моля въведете име"; return; }
+        if (string.IsNullOrWhiteSpace(PhoneNumber)) { ErrorMessage = "Моля въведете телефонен номер"; return; }
+        if (string.IsNullOrWhiteSpace(Address)) { ErrorMessage = "Моля въведете адрес"; return; }
 
         var profile = new UpdateUserProfileDto
         {
-            Name = Name,
+            Name        = Name,
             PhoneNumber = PhoneNumber,
-            Address = Address,
-            Img = ProfileImage  // За сега само пътя
+            Address     = Address,
+            // Img вече го няма тук
         };
+
+        // Вземи байтовете ако има избрана снимка
+        byte[]? imageBytes = null;
+        string? imageFileName = null;
+
+        if (!string.IsNullOrEmpty(ProfileImage) && File.Exists(ProfileImage))
+        {
+            imageBytes    = await File.ReadAllBytesAsync(ProfileImage);
+            imageFileName = Path.GetFileName(ProfileImage);
+        }
 
         await ExecuteAsync(async () =>
         {
             System.Diagnostics.Debug.WriteLine("👉 Запазване на профил...");
-
-            var response = await _userProfileService.UpdateProfileAsync(profile);
-
+            var response = await _userProfileService.UpdateProfileAsync(profile, imageBytes, imageFileName);
             if (response != null)
             {
                 System.Diagnostics.Debug.WriteLine($"✅ Профилът запазен. Next: {response.Next}");
-
-                // Пренасочване според next параметъра
                 if (!string.IsNullOrEmpty(response.Next))
-                {
                     await _navigationService.GoToAsync(response.Next);
-                }
                 else
-                {
                     await _navigationService.GoToAsync("user/home");
-                }
             }
         }, "Грешка при запазване на профила");
     }

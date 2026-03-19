@@ -44,21 +44,31 @@ public class UpdateUserProfileDto
 
     [JsonPropertyName("address")]
     public string Address { get; set; } = string.Empty;
-
-    [JsonPropertyName("img")]
-    public string? Img { get; set; }
 }
 
-// Това е за home page на user - събира информация от различни източници
-//public class UserHomeDto
-//{
-//    [JsonPropertyName("profile")]
-//    public UserProfileDto Profile { get; set; }
+public class CompleteProfileResponseDto
+{
+    [JsonPropertyName("status")]
+    public string Status { get; set; } = string.Empty;
 
+    [JsonPropertyName("user")]
+    public UserProfileDto? User { get; set; }
 
-//    [JsonPropertyName("recent_orders")]
-//    public List<OrderDto>? RecentOrders { get; set; }  // Слагаме ? защото може да няма скорошни поръчки
+    [JsonPropertyName("profile")]
+    public UserProfileDto? Profile { get; set; }
 
-//    [JsonPropertyName("recommended_restaurants")]
-//    public List<RestaurantMiniDto> RecommendedRestaurants { get; set; }
-//}
+    [JsonPropertyName("next")]
+    public string Next { get; set; } = string.Empty;
+
+    [JsonPropertyName("profileid")]
+    public int? ProfileId { get; set; }
+}
+
+public class EditProfileResponseDto
+{
+    [JsonPropertyName("status")]
+    public string Status { get; set; } = string.Empty;
+
+    [JsonPropertyName("profile")]
+    public UserProfileDto Profile { get; set; } = new();
+}

@@ -163,46 +163,40 @@ public class EditProfileViewModel : BaseViewModel
 
     private async Task ExecuteSaveAsync()
     {
-        // Валидация
-        if (string.IsNullOrWhiteSpace(Name))
-        {
-            ErrorMessage = "Моля въведете име";
-            return;
-        }
+        if (string.IsNullOrWhiteSpace(Name)) { ErrorMessage = "Моля въведете име"; return; }
+        if (string.IsNullOrWhiteSpace(PhoneNumber)) { ErrorMessage = "Моля въведете телефонен номер"; return; }
+        if (string.IsNullOrWhiteSpace(Address)) { ErrorMessage = "Моля въведете адрес"; return; }
 
-        if (string.IsNullOrWhiteSpace(PhoneNumber))
+        var profileDto = new UpdateUserProfileDto
         {
-            ErrorMessage = "Моля въведете телефонен номер";
-            return;
-        }
-
-        if (string.IsNullOrWhiteSpace(Address))
-        {
-            ErrorMessage = "Моля въведете адрес";
-            return;
-        }
-
-        var profile = new UpdateUserProfileDto
-        {
-            Name = Name,
+            Name        = Name,
             PhoneNumber = PhoneNumber,
-            Address = Address,
-            Img = ProfileImage
+            Address     = Address,
+            // Img вече го няма тук
         };
+
+        // Вземи байтовете ако има избрана нова снимка
+        byte[]? imageBytes = null;
+        string? imageFileName = null;
+
+        if (!string.IsNullOrEmpty(ProfileImage)
+            && !ProfileImage.StartsWith("http")) // не е стар URL — нова снимка
+        {
+            if (File.Exists(ProfileImage))
+            {
+                imageBytes    = await File.ReadAllBytesAsync(ProfileImage);
+                imageFileName = Path.GetFileName(ProfileImage);
+            }
+        }
 
         await ExecuteAsync(async () =>
         {
-            System.Diagnostics.Debug.WriteLine("👉 Запазване на промените...");
+            var updated = await _userProfileService.EditProfileAsync(
+                profileDto, imageBytes, imageFileName);
 
-            var updatedProfile = await _userProfileService.EditProfileAsync(profile);
-
-            if (updatedProfile != null)
-            {
-                System.Diagnostics.Debug.WriteLine($"✅ Профилът обновен");
-
-                // Върни се към профила
+            if (updated != null)
                 await _navigationService.GoBackAsync();
-            }
+
         }, "Грешка при запазване");
     }
 }

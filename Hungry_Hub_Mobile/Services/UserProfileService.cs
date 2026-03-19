@@ -2,6 +2,7 @@
 using Hungry_Hub_Mobile.Core.DTOs.Users;
 using Hungry_Hub_Mobile.Core.Helpers;
 using Hungry_Hub_Mobile.Services.Interfaces;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -29,29 +30,43 @@ public class UserProfileService : BaseApiService, IUserProfileService
         }
     }
 
-    public async Task<CompleteProfileResponseDto> UpdateProfileAsync(UpdateUserProfileDto profile)
+    public async Task<CompleteProfileResponseDto> UpdateProfileAsync(
+    UpdateUserProfileDto profile,
+    byte[]? imageBytes = null,
+    string? imageFileName = null)
     {
         try
         {
             System.Diagnostics.Debug.WriteLine("👉 Обновяване на user profile");
-            System.Diagnostics.Debug.WriteLine($"Name: {profile.Name}");
-            System.Diagnostics.Debug.WriteLine($"Phone: {profile.PhoneNumber}");
-            System.Diagnostics.Debug.WriteLine($"Address: {profile.Address}");
 
-            // Използваме POST към същия endpoint
-            var response = await PostAsync<UpdateUserProfileDto, CompleteProfileResponseDto>(
-                ApiRoutes.Users.CompleteProfile,
-                profile);
+            using var content = new MultipartFormDataContent();
+            content.Add(new StringContent(profile.Name), "name");
+            content.Add(new StringContent(profile.PhoneNumber), "phone_number");
+            content.Add(new StringContent(profile.Address), "address");
 
-            System.Diagnostics.Debug.WriteLine($"✅ Профилът обновен. Next: {response?.Next}");
-
-            if (response?.ProfileId.HasValue == true)
+            if (imageBytes != null && imageBytes.Length > 0)
             {
-                await TokenStorage.SaveProfileIdAsync(response.ProfileId.Value);
-                System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id от update: {response.ProfileId.Value}");
+                var imageContent = new ByteArrayContent(imageBytes);
+                imageContent.Headers.ContentType =
+                    new MediaTypeHeaderValue("image/jpeg");
+                content.Add(imageContent, "img", imageFileName ?? "profile.jpg");
             }
 
-            return response;
+            var response = await _httpClient.PostAsync(ApiRoutes.Users.CompleteProfile, content);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<CompleteProfileResponseDto>(json);
+
+            System.Diagnostics.Debug.WriteLine($"✅ Профилът обновен. Next: {result?.Next}");
+
+            if (result?.ProfileId.HasValue == true)
+            {
+                await TokenStorage.SaveProfileIdAsync(result.ProfileId.Value);
+                System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id: {result.ProfileId.Value}");
+            }
+
+            return result;
         }
         catch (Exception ex)
         {
@@ -60,46 +75,40 @@ public class UserProfileService : BaseApiService, IUserProfileService
         }
     }
 
-    public async Task<UserProfileDto> EditProfileAsync(UpdateUserProfileDto profile)
+    public async Task<UserProfileDto> EditProfileAsync(
+        UpdateUserProfileDto profile,
+        byte[]? imageBytes = null,
+        string? imageFileName = null)
     {
-        try
+        var profileId = await TokenStorage.GetProfileIdAsync();
+        if (!profileId.HasValue)
+            throw new Exception("Няма profile_id в storage");
+
+        using var content = new MultipartFormDataContent();
+
+        content.Add(new StringContent(profile.Name), "name");
+        content.Add(new StringContent(profile.PhoneNumber), "phone_number");
+        content.Add(new StringContent(profile.Address), "address");
+
+        if (imageBytes != null && imageBytes.Length > 0)
         {
-            System.Diagnostics.Debug.WriteLine("👉 Редакция на user profile");
-            System.Diagnostics.Debug.WriteLine($"Name: {profile.Name}");
-            System.Diagnostics.Debug.WriteLine($"Phone: {profile.PhoneNumber}");
-            System.Diagnostics.Debug.WriteLine($"Address: {profile.Address}");
-
-            // Вземи profile_id, за да формираш пълния URL
-            var profileId = await TokenStorage.GetProfileIdAsync();
-            if (!profileId.HasValue)
-            {
-                throw new Exception("Няма profile_id в storage");
-            }
-
-            // Използваме PUT заявка към edit endpoint-а
-            var response = await PutAsync<UpdateUserProfileDto, EditProfileResponseDto>(
-                ApiRoutes.Users.EditUserProfile(profileId.Value),
-                profile);
-
-            System.Diagnostics.Debug.WriteLine($"✅ Профилът редактиран");
-
-            return response?.Profile;
+            var imageContent = new ByteArrayContent(imageBytes);
+            imageContent.Headers.ContentType =
+                new MediaTypeHeaderValue("image/jpeg");
+            content.Add(imageContent, "img", imageFileName ?? "profile.jpg");
         }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"❌ Грешка при редакция на профил: {ex}");
-            throw;
-        }
+
+        var url = ApiRoutes.Users.EditUserProfile(profileId.Value);
+
+        // ← само това се промени, всичко друго е същото
+        var response = await _httpClient.PutAsync(url, content);
+        response.EnsureSuccessStatusCode();
+
+        var json = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<EditProfileResponseDto>(json);
+        return result?.Profile ?? throw new Exception("Празен отговор от сървъра");
     }
 
-    // Добави и този response DTO във файла
-    public class EditProfileResponseDto
-    {
-        [JsonPropertyName("status")]
-        public string Status { get; set; } = string.Empty;
-
-        [JsonPropertyName("profile")]
-        public UserProfileDto Profile { get; set; } = new();
-    }
+    // Добави и този response DTO във файл
 }
 

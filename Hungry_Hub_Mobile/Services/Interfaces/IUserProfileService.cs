@@ -13,28 +13,14 @@ public interface IUserProfileService
     /// <summary>
     /// РЕДАКТИРА съществуващ профил (PUT/PATCH)
     /// </summary>
-    Task<UserProfileDto> EditProfileAsync(UpdateUserProfileDto profile);
-
+    Task<UserProfileDto> EditProfileAsync(UpdateUserProfileDto profile,
+        byte[]? imageBytes = null,      // ← добави
+        string? imageFileName = null); 
     /// <summary>
     /// Създава или обновява профила
     /// </summary>
-    Task<CompleteProfileResponseDto> UpdateProfileAsync(UpdateUserProfileDto profile);
+    Task<CompleteProfileResponseDto> UpdateProfileAsync(UpdateUserProfileDto profile,
+    byte[]? imageBytes = null,
+    string? imageFileName = null);
 }
 
-public class CompleteProfileResponseDto
-{
-    [JsonPropertyName("status")]
-    public string Status { get; set; } = string.Empty;
-
-    [JsonPropertyName("user")]
-    public UserProfileDto? User { get; set; }
-
-    [JsonPropertyName("profile")]
-    public UserProfileDto? Profile { get; set; }
-
-    [JsonPropertyName("next")]
-    public string Next { get; set; } = string.Empty;
-
-    [JsonPropertyName("profileid")]
-    public int? ProfileId { get; set; }
-}

@@ -109,23 +109,32 @@ public class AuthenticatedHttpClientHandler : HttpClientHandler
     {
         var clone = new HttpRequestMessage(request.Method, request.RequestUri);
 
-        // Копирай headers
         foreach (var header in request.Headers)
-        {
             clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
-        }
 
-        // Копирай content ако има
         if (request.Content != null)
         {
-            var content = await request.Content.ReadAsStringAsync();
-            clone.Content = new StringContent(content, System.Text.Encoding.UTF8, "application/json");
+            // Запази оригиналния Content-Type
+            var contentType = request.Content.Headers.ContentType?.ToString();
 
-            // Копирай content headers
-            foreach (var header in request.Content.Headers)
+            if (contentType != null && contentType.Contains("multipart/form-data"))
             {
-                clone.Content.Headers.TryAddWithoutValidation(header.Key, header.Value);
+                // Multipart не може да се клонира като стринг — прочети като байтове
+                var bytes = await request.Content.ReadAsByteArrayAsync();
+                clone.Content = new ByteArrayContent(bytes);
             }
+            else
+            {
+                var content = await request.Content.ReadAsStringAsync();
+                clone.Content = new StringContent(
+                    content,
+                    System.Text.Encoding.UTF8,
+                    "application/json");
+            }
+
+            // Копирай ВСИЧКИ content headers от оригинала (включително boundary за multipart)
+            foreach (var header in request.Content.Headers)
+                clone.Content.Headers.TryAddWithoutValidation(header.Key, header.Value);
         }
 
         return clone;
