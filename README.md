@@ -19,7 +19,7 @@
 ---
 🔗 Backend
 Приложението работи съвместно с Django API. За да го стартирате локално, вижте:
-👉 Hungry Hub Backend
+👉 [Hungry Hub Backend](https://github.com/3iqpotato/HungryHub)
 ---
 📄 Лиценз
 Създадено с учебна цел.
