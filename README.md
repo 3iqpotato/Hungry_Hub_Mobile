@@ -22,9 +22,12 @@
 	
 Платформа	.NET MAUI (Android)
 
+
 Архитектура	MVVM
 
+
 Комуникация	REST API (Django backend)
+
 
 Автентикация	JWT с автоматичен refresh
 
