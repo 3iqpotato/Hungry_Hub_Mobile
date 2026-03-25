@@ -23,26 +23,25 @@
                    HorizontalOptions="Center"
                    TextColor="Gray"/>
 
+            <!-- Email поле -->
             <Entry Placeholder="Gmail"
                    Text="{Binding Email}"
                    Keyboard="Email"
                    ReturnType="Next"/>
 
+            <!-- Парола поле -->
             <Entry Placeholder="Парола"
                    Text="{Binding Password}"
                    IsPassword="True"
                    ReturnType="Next"/>
 
+            <!-- Потвърди парола поле -->
             <Entry Placeholder="Потвърдете парола"
                    Text="{Binding ConfirmPassword}"
                    IsPassword="True"
-                   ReturnType="Next"/>
+                   ReturnType="Done"/>
 
-            <Picker Title="Изберете тип потребител"
-                    ItemsSource="{Binding UserTypes}"
-                    SelectedItem="{Binding SelectedUserType}"
-                    Margin="0,10,0,10"/>
-
+            <!-- Грешка -->
             <Label Text="{Binding ErrorMessage}"
                    TextColor="Red"
                    FontSize="14"
@@ -51,6 +50,7 @@
                    HorizontalOptions="Fill"
                    VerticalOptions="Center" />
 
+            <!-- Регистрация бутон -->
             <Button Text="Регистрация"
                     Command="{Binding RegisterCommand}"
                     IsEnabled="{Binding IsNotBusy}"
@@ -60,6 +60,7 @@
             <ActivityIndicator IsRunning="{Binding IsBusy}"
                                IsVisible="{Binding IsBusy}"/>
 
+            <!-- Линк за вход -->
             <HorizontalStackLayout HorizontalOptions="Center">
                 <Label Text="Вече имате профил? "/>
                 <Label Text="Вход"

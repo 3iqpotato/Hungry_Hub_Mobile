@@ -49,9 +49,14 @@ public class CartItemDto
     private string? _img;
 
     [JsonPropertyName("article_img")]
+    //public string? Img
+    //{
+    //    get => string.IsNullOrEmpty(_img) ? null : $"http://10.0.2.2:8000/media/{_img}";  // for local use
+    //    set => _img = value;
+    //}
     public string? Img
     {
-        get => string.IsNullOrEmpty(_img) ? null : $"http://10.0.2.2:8000/media/{_img}";
+        get => string.IsNullOrEmpty(_img) ? null : _img;
         set => _img = value;
     }
 

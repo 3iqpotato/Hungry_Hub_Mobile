@@ -16,11 +16,17 @@ public class RestaurantProfileResponseDto
 
 public class UpdateRestaurantProfileDto
 {
+    private string? _img;
+
     [JsonPropertyName("name")]
     public string Name { get; set; } = string.Empty;
 
     [JsonPropertyName("img")]
-    public string? Img { get; set; }
+    public string? Img
+    {
+        get => string.IsNullOrEmpty(_img) ? null : _img;
+        set => _img = value;
+    }
 
     [JsonPropertyName("phone_number")]
     public string PhoneNumber { get; set; } = string.Empty;
@@ -57,9 +63,15 @@ public class RestaurantMiniDto
     private string? _img;
 
     [JsonPropertyName("img")]
-    public string? Img   // it was for the test i know it is not right to be like that and it only works at localhost!!!
+    //public string? Img   // it was for the test i know it is not right to be like that and it only works at localhost!!!
+    //{
+    //    get => string.IsNullOrEmpty(_img) ? null : $"http://10.0.2.2:8000{_img}";
+    //    set => _img = value;
+    //}
+
+    public string? Img
     {
-        get => string.IsNullOrEmpty(_img) ? null : $"http://10.0.2.2:8000{_img}";
+        get => string.IsNullOrEmpty(_img) ? null : _img;
         set => _img = value;
     }
 

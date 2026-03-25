@@ -49,9 +49,16 @@ public class ArticleDto
     [JsonPropertyName("img")]
     public string? Img
     {
-        get => string.IsNullOrEmpty(_img) ? null : $"http://10.0.2.2:8000{_img}";
+        get => string.IsNullOrEmpty(_img) ? null : _img;
         set => _img = value;
     }
+
+    //[JsonPropertyName("img")]
+    //public string? Img
+    //{ 
+    //    get => string.IsNullOrEmpty(_img) ? null : $"http://10.0.2.2:8000{_img}";  // for local use
+    //    set => _img = value;
+    //}
 
     [JsonPropertyName("type")]
     public string Type { get; set; } = string.Empty;
