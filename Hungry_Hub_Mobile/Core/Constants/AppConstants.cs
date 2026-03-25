@@ -6,7 +6,7 @@ public static class AppConstants
 #if DEBUG
     public const string BaseApiUrl = "http://10.0.2.2:8000/";
 #else
-    public const string BaseApiUrl = "http://10.0.2.2:8000/";
+    public const string BaseApiUrl = "https://hungryhub.azurewebsites.net/";
 #endif
 
     // API версия (ако я ползваш)

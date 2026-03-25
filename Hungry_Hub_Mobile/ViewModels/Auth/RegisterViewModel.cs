@@ -14,14 +14,16 @@ public class RegisterViewModel : BaseViewModel
     private string _email;
     private string _password;
     private string _confirmPassword;
-    private string _selectedUserType;
 
-    public List<string> UserTypes { get; } = new()
-    {
-        "user",
-        "supplier",
-        "restaurant"
-    };
+    // 🔥 МАХНАТО - вече няма нужда
+    // public List<string> UserTypes { get; } = new()
+    // {
+    //     "user",
+    //     "supplier", 
+    //     "restaurant"
+    // };
+    //
+    // public string SelectedUserType { get; set; }
 
     public RegisterViewModel(IAuthService authService, INavigationService navigationService)
     {
@@ -62,16 +64,6 @@ public class RegisterViewModel : BaseViewModel
         }
     }
 
-    public string SelectedUserType
-    {
-        get => _selectedUserType;
-        set
-        {
-            _selectedUserType = value;
-            OnPropertyChanged();
-        }
-    }
-
     public ICommand RegisterCommand { get; }
     public ICommand GoToLoginCommand { get; }
 
@@ -87,16 +79,17 @@ public class RegisterViewModel : BaseViewModel
             return;
         }
 
+        // 🔥 ТИПЪТ ВИНАГИ Е "user"
         var request = new RegisterRequestDto
         {
             Email = Email.Trim(),
             Password = Password,
-            Type = SelectedUserType
+            Type = "user"  // ← Задаваме user по подразбиране
         };
 
         await ExecuteAsync(async () =>
         {
-            System.Diagnostics.Debug.WriteLine($"👉 Опит за регистрация: {Email}, тип: {SelectedUserType}");
+            System.Diagnostics.Debug.WriteLine($"👉 Опит за регистрация: {Email}, тип: user");
 
             var response = await _authService.RegisterAsync(request);
 
@@ -175,10 +168,11 @@ public class RegisterViewModel : BaseViewModel
             errors.Add("• Паролите не съвпадат.");
         }
 
-        if (string.IsNullOrWhiteSpace(SelectedUserType))
-        {
-            errors.Add("• Моля изберете тип потребител.");
-        }
+        // 🔥 МАХНАТА проверка за SelectedUserType
+        // if (string.IsNullOrWhiteSpace(SelectedUserType))
+        // {
+        //     errors.Add("• Моля изберете тип потребител.");
+        // }
 
         return errors;
     }
