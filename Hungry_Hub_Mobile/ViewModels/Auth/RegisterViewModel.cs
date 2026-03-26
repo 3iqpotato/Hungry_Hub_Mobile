@@ -32,6 +32,7 @@ public class RegisterViewModel : BaseViewModel
 
         RegisterCommand = new Command(async () => await ExecuteRegisterAsync());
         GoToLoginCommand = new Command(async () => await _navigationService.GoToAsync("login"));
+        GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());
     }
 
     public string Email
@@ -64,6 +65,7 @@ public class RegisterViewModel : BaseViewModel
         }
     }
 
+    public ICommand GoBackCommand { get; }
     public ICommand RegisterCommand { get; }
     public ICommand GoToLoginCommand { get; }
 

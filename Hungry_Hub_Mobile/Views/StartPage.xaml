@@ -2,51 +2,89 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hungry_Hub_Mobile.Views.StartPage"
-             Title="Hungry Hub">
+             NavigationPage.HasNavigationBar="False"
+             Background="{StaticResource BackgroundGradient}">
 
-    <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Spacing="30" Padding="30" VerticalOptions="Center">
 
-        <Image Source="logo.png" 
-               HeightRequest="100"
-               HorizontalOptions="Center"/>
+                <!-- Лого -->
+                <Frame HeightRequest="120" 
+                       WidthRequest="120" 
+                       CornerRadius="60"
+                       HorizontalOptions="Center"
+                       BackgroundColor="White"
+                       Padding="25">
+                    <Label Text="🍔"
+                           FontSize="55"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
 
-        <Label Text="Hungry Hub"
-               FontSize="32"
-               HorizontalOptions="Center"
-               FontAttributes="Bold"/>
+                <Label Text="Hungry Hub"
+                       Style="{StaticResource TitleLabel}"
+                       FontSize="36"/>
 
-        <Label Text="Доставка на храна"
-               HorizontalOptions="Center"
-               TextColor="Gray"/>
+                <Label Text="Вкусна храна, бърза доставка"
+                       Style="{StaticResource SubtitleLabel}"/>
 
-        <ActivityIndicator IsRunning="{Binding IsChecking}"
-                          IsVisible="{Binding IsChecking}"/>
+                <ActivityIndicator IsRunning="{Binding IsChecking}"
+                                   IsVisible="{Binding IsChecking}"
+                                   Color="White"/>
 
-        <!-- Бутони за нелогнати потребители -->
-        <VerticalStackLayout Spacing="10"
-                             IsVisible="{Binding IsNotLoggedIn}">
-            <Button Text="Вход"
-                    Command="{Binding GoToLoginCommand}"
-                    BackgroundColor="#2196F3"/>
+                <!-- Бутони за нелогнати потребители -->
+                <VerticalStackLayout Spacing="15"
+                                     IsVisible="{Binding IsNotLoggedIn}">
+                    <Button Text="ВХОД"
+                            Command="{Binding GoToLoginCommand}"
+                            Style="{StaticResource PrimaryButton}"/>
 
-            <Button Text="Регистрация"
-                    Command="{Binding GoToRegisterCommand}"
-                    BackgroundColor="#4CAF50"/>
-        </VerticalStackLayout>
+                    <Button Text="РЕГИСТРАЦИЯ"
+                            Command="{Binding GoToRegisterCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            BorderColor="White"
+                            BorderWidth="2"/>
+                </VerticalStackLayout>
 
-        <!-- Бутони за логнати потребители -->
-        <VerticalStackLayout Spacing="10"
-                             IsVisible="{Binding IsLoggedIn}">
-            <Label Text="{Binding WelcomeMessage}"
-                   HorizontalOptions="Center"/>
+                <!-- Бутони за логнати потребители -->
+                <VerticalStackLayout Spacing="15"
+                                     IsVisible="{Binding IsLoggedIn}">
+                    <Label Text="{Binding WelcomeMessage}"
+                           FontSize="18"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           FontAttributes="Bold"
+                           Margin="0,0,0,20"/>
 
-            <Button Text="Начало"
-                    Command="{Binding GoToHomeCommand}"
-                    BackgroundColor="#2196F3"/>
+                    <Button Text="НАЧАЛО"
+                            Command="{Binding GoToHomeCommand}"
+                            Style="{StaticResource PrimaryButton}"/>
 
-            <Button Text="Изход"
-                    Command="{Binding LogoutCommand}"
-                    BackgroundColor="#F44336"/>
-        </VerticalStackLayout>
-    </VerticalStackLayout>
+                    <Button Text="ИЗХОД"
+                            Command="{Binding LogoutCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            FontSize="16"
+                            FontAttributes="Bold"
+                            CornerRadius="25"
+                            HeightRequest="50"
+                            BorderColor="White"
+                            BorderWidth="2"/>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Долен декоративен елемент -->
+        <BoxView HeightRequest="150"
+                 BackgroundColor="White"
+                 Opacity="0.05"
+                 AbsoluteLayout.LayoutBounds="0,1,1,0.2"
+                 AbsoluteLayout.LayoutFlags="All" />
+    </Grid>
 </ContentPage>

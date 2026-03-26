@@ -24,6 +24,7 @@ public class CompleteUserProfileViewModel : BaseViewModel
         _locationService = locationService;
         _navigationService = navigationService;
 
+        GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());
         SaveProfileCommand = new Command(async () => await ExecuteSaveProfileAsync());
         PickImageCommand = new Command(async () => await ExecutePickImageAsync());
         UseCurrentLocationCommand = new Command(async () => await ExecuteUseCurrentLocationAsync());
@@ -71,7 +72,7 @@ public class CompleteUserProfileViewModel : BaseViewModel
             OnPropertyChanged();
         }
     }
-
+    public ICommand GoBackCommand { get; }
     public ICommand SaveProfileCommand { get; }
     public ICommand PickImageCommand { get; }
 

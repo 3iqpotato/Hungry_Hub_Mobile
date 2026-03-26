@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hungry_Hub_Mobile.Views.User.CompleteUserProfilePage"
              xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
-             Title="Завършете профила">
+             NavigationPage.HasNavigationBar="False"
+             Background="{StaticResource BackgroundGradient}">
 
     <ContentPage.Resources>
         <ResourceDictionary>
@@ -11,88 +12,165 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
 
-            <Label Text="Завършете своя профил"
-                   FontSize="24"
-                   HorizontalOptions="Center"
-                   FontAttributes="Bold"/>
+                <!-- Бутон за назад - прост и надежден -->
+                <Button Text="←"
+                        Command="{Binding GoBackCommand}"
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        FontSize="36"
+                        FontAttributes="Bold"
+                        WidthRequest="60"
+                        HeightRequest="60"
+                        HorizontalOptions="Start"
+                        Margin="-10,-20,0,0"/>
 
-            <Label Text="Моля попълнете вашите данни"
-                   HorizontalOptions="Center"
-                   TextColor="Gray"/>
+                <!-- Лого/Иконка -->
+                <Frame HeightRequest="100" 
+                       WidthRequest="100" 
+                       CornerRadius="50"
+                       HorizontalOptions="Center"
+                       BackgroundColor="White"
+                       Padding="20"
+                       Margin="0,0,0,20">
+                    <Label Text="📝"
+                           FontSize="48"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
 
-            <!-- Profile Image -->
-            <Frame HeightRequest="100" 
-                   WidthRequest="100" 
-                   CornerRadius="50"
-                   HorizontalOptions="Center"
-                   BorderColor="LightGray">
-                <Image Source="{Binding ProfileImage}"
-                       Aspect="AspectFill"
-                       HeightRequest="100"
-                       WidthRequest="100">
-                    <Image.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
-                    </Image.GestureRecognizers>
-                </Image>
-            </Frame>
+                <Label Text="Завършете своя профил"
+                       Style="{StaticResource TitleLabel}"
+                       FontSize="28"/>
 
-            <Label Text="Натиснете за да добавите снимка"
-                   HorizontalOptions="Center"
-                   FontSize="12"
-                   TextColor="Gray">
-                <Label.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
-                </Label.GestureRecognizers>
-            </Label>
+                <Label Text="Моля попълнете вашите данни"
+                       Style="{StaticResource SubtitleLabel}"/>
 
-            <!-- Name поле -->
-            <Entry Placeholder="Име"
-                   Text="{Binding Name}"
-                   ReturnType="Next"/>
+                <!-- Форма за попълване -->
+                <Frame CornerRadius="20"
+                       BackgroundColor="White"
+                       Padding="20"
+                       Margin="0,15">
+                    <VerticalStackLayout Spacing="15">
 
-            <!-- Phone поле -->
-            <Entry Placeholder="Телефон"
-                   Text="{Binding PhoneNumber}"
-                   Keyboard="Telephone"
-                   ReturnType="Next"/>
+                        <!-- Profile Image -->
+                        <Frame HeightRequest="100" 
+                               WidthRequest="100" 
+                               CornerRadius="50"
+                               HorizontalOptions="Center"
+                               BackgroundColor="#F0F0F0"
+                               Padding="0">
+                            <Image Source="{Binding ProfileImage}"
+                                   Aspect="AspectFill"
+                                   HeightRequest="100"
+                                   WidthRequest="100">
+                                <Image.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
+                                </Image.GestureRecognizers>
+                            </Image>
+                        </Frame>
 
-            <!-- Address поле -->
-            <Editor Placeholder="Адрес"
-                    Text="{Binding Address}"
-                    AutoSize="TextChanges"
-                    HeightRequest="100"/>
+                        <Label Text="📷 Натиснете за да добавите снимка"
+                               HorizontalOptions="Center"
+                               FontSize="12"
+                               TextColor="{StaticResource PrimaryColor}"
+                               FontAttributes="Bold"
+                               Margin="0,5">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding PickImageCommand}"/>
+                            </Label.GestureRecognizers>
+                        </Label>
 
-            <Button Grid.Row="1" Grid.Column="1"
-            Text="📍"
-            Command="{Binding UseCurrentLocationCommand}"
-            BackgroundColor="#2196F3"
-            TextColor="White"
-            FontSize="20"
-            WidthRequest="50"
-            HeightRequest="50"
-            CornerRadius="25"
-            Margin="0,5,0,0"
-            VerticalOptions="Start"/>
+                        <!-- Име поле -->
+                        <Label Text="Име"
+                               TextColor="{StaticResource DarkColor}"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               Margin="0,5,0,0"/>
+                        <Entry Placeholder="Вашето име"
+                               Text="{Binding Name}"
+                               ReturnType="Next"/>
 
-            <!-- Error message -->
-            <Label Text="{Binding ErrorMessage}"
-                   TextColor="Red"
-                   IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
-                   HorizontalOptions="Center"/>
+                        <!-- Телефон поле -->
+                        <Label Text="Телефон"
+                               TextColor="{StaticResource DarkColor}"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               Margin="0,5,0,0"/>
+                        <Entry Placeholder="0888 123 456"
+                               Text="{Binding PhoneNumber}"
+                               Keyboard="Telephone"
+                               ReturnType="Next"/>
 
-            <!-- Save бутон -->
-            <Button Text="Запази"
-                    Command="{Binding SaveProfileCommand}"
-                    IsEnabled="{Binding IsNotBusy}"
-                    BackgroundColor="#4CAF50"/>
+                        <!-- Адрес поле с бутон за локация -->
+                        <Label Text="Адрес"
+                               TextColor="{StaticResource DarkColor}"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               Margin="0,5,0,0"/>
 
-            <!-- Activity indicator -->
-            <ActivityIndicator IsRunning="{Binding IsBusy}"
-                              IsVisible="{Binding IsBusy}"/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Editor Grid.Column="0"
+                                    Placeholder="Вашият адрес"
+                                    Text="{Binding Address}"
+                                    AutoSize="TextChanges"
+                                    HeightRequest="80"
+                                    Margin="0,0,10,0"/>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                            <Button Grid.Column="1"
+                                    Text="📍"
+                                    Command="{Binding UseCurrentLocationCommand}"
+                                    BackgroundColor="{StaticResource PrimaryColor}"
+                                    TextColor="White"
+                                    FontSize="24"
+                                    WidthRequest="50"
+                                    HeightRequest="50"
+                                    CornerRadius="25"
+                                    VerticalOptions="Start"/>
+                        </Grid>
+
+                        <!-- Локация пояснение -->
+                        <HorizontalStackLayout Spacing="5" 
+                                               HorizontalOptions="Center"
+                                               Margin="0,5,0,0">
+                            <Label Text="📍"
+                                   FontSize="12"
+                                   TextColor="{StaticResource PrimaryColor}"/>
+                            <Label Text="Натиснете бутона за да използвате текущата ви локация"
+                                   FontSize="10"
+                                   TextColor="Gray"
+                                   HorizontalOptions="Center"/>
+                        </HorizontalStackLayout>
+
+                        <!-- Error message -->
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="{StaticResource PrimaryColor}"
+                               FontSize="12"
+                               IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
+                               HorizontalOptions="Center"
+                               Margin="0,10"/>
+
+                        <!-- Save бутон -->
+                        <Button Text="ЗАПАЗИ"
+                                Command="{Binding SaveProfileCommand}"
+                                IsEnabled="{Binding IsNotBusy}"
+                                BackgroundColor="{StaticResource PrimaryColor}"
+                                TextColor="White"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                CornerRadius="25"
+                                HeightRequest="50"
+                                Margin="0,10,0,0"/>
+
+                        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                           IsVisible="{Binding IsBusy}"
+                                           Color="{StaticResource PrimaryColor}"/>
+                    </VerticalStackLayout>
+                </Frame>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>
