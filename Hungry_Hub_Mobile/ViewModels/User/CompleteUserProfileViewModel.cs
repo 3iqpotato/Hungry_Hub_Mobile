@@ -1,4 +1,5 @@
 ﻿using System.Windows.Input;
+using Hungry_Hub_Mobile.Core.Constants;
 using Hungry_Hub_Mobile.Core.DTOs.Users;
 using Hungry_Hub_Mobile.Services.Interfaces;
 
@@ -139,12 +140,19 @@ public class CompleteUserProfileViewModel : BaseViewModel
                 Title = "Изберете снимка"
             });
 
-            if (result != null)
+            if (result == null)
+                return;
+
+            // Проверка на размера ПРЕДИ да запазваме пътя
+            var fileInfo = new FileInfo(result.FullPath);
+            if (fileInfo.Length > AppConstants.MaxImageSizeBytes)
             {
-                // Запазваме пътя до снимката
-                ProfileImage = result.FullPath;
-                // Тук може да качиш снимката към сървъра
+                ErrorMessage = $"Снимката е твърде голяма. Максималният размер е {AppConstants.MaxImageSizeLabel}.";
+                return;
             }
+
+            ProfileImage = result.FullPath;
+            ErrorMessage = null; // изчисти стара грешка ако има
         }
         catch (Exception ex)
         {

@@ -53,7 +53,12 @@ public class UserProfileService : BaseApiService, IUserProfileService
             }
 
             var response = await _httpClient.PostAsync(ApiRoutes.Users.CompleteProfile, content);
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorJson = await response.Content.ReadAsStringAsync();
+                var message = ParseDjangoError(errorJson);
+                throw new HttpRequestException(message);
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<CompleteProfileResponseDto>(json);
@@ -102,7 +107,12 @@ public class UserProfileService : BaseApiService, IUserProfileService
 
         // ← само това се промени, всичко друго е същото
         var response = await _httpClient.PutAsync(url, content);
-        response.EnsureSuccessStatusCode();
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorJson = await response.Content.ReadAsStringAsync();
+            var message = ParseDjangoError(errorJson);
+            throw new HttpRequestException(message);
+        }
 
         var json = await response.Content.ReadAsStringAsync();
         var result = JsonSerializer.Deserialize<EditProfileResponseDto>(json);

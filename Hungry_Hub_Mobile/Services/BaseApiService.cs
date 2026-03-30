@@ -139,4 +139,35 @@ public abstract class BaseApiService
             throw new HttpRequestException($"HTTP {(int)response.StatusCode}: {error}");
         }
     }
+
+    protected string ParseDjangoError(string errorJson)
+    {
+        try
+        {
+            var doc = JsonDocument.Parse(errorJson);
+            var messages = new List<string>();
+
+            foreach (var prop in doc.RootElement.EnumerateObject())
+            {
+                // Django връща {"img": ["грешка"], "name": ["грешка"]}
+                if (prop.Value.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var item in prop.Value.EnumerateArray())
+                        messages.Add(item.GetString() ?? "");
+                }
+                else if (prop.Value.ValueKind == JsonValueKind.String)
+                {
+                    messages.Add(prop.Value.GetString() ?? "");
+                }
+            }
+
+            return messages.Count > 0
+                ? string.Join("\n", messages)
+                : "Възникна грешка.";
+        }
+        catch
+        {
+            return "Възникна грешка.";
+        }
+    }
 }

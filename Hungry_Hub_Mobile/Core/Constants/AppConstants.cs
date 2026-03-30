@@ -39,4 +39,7 @@ public static class AppConstants
         public const string CartItems = "cart_items";
         public const string LastLoggedInUser = "last_user";
     }
+
+    public const long MaxImageSizeBytes = 5 * 1024 * 1024; // 5 MB
+    public const string MaxImageSizeLabel = "5 MB";
 }
