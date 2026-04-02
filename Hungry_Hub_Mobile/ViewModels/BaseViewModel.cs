@@ -58,6 +58,18 @@ public class BaseViewModel : INotifyPropertyChanged
             ErrorMessage = null;
             await operation();
         }
+        catch (HttpRequestException ex)
+        {
+            // Извади само JSON частта след "HTTP 401: "
+            var message = ex.Message;
+            var jsonStart = message.IndexOf('{');
+            if (jsonStart >= 0)
+            {
+                var json = message.Substring(jsonStart);
+                message = ParseApiError(json);
+            }
+            ErrorMessage = message;
+        }
         catch (Exception ex)
         {
             ErrorMessage = errorMessage ?? ex.Message;
@@ -66,6 +78,34 @@ public class BaseViewModel : INotifyPropertyChanged
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    private string ParseApiError(string json)
+    {
+        try
+        {
+            var doc = System.Text.Json.JsonDocument.Parse(json);
+
+            // {"detail": "Грешен email или парола"}
+            if (doc.RootElement.TryGetProperty("detail", out var detail))
+                return detail.GetString() ?? "Грешка.";
+
+            // {"email": ["..."]} или {"img": ["..."]}
+            var messages = new List<string>();
+            foreach (var prop in doc.RootElement.EnumerateObject())
+            {
+                if (prop.Value.ValueKind == System.Text.Json.JsonValueKind.Array)
+                    foreach (var item in prop.Value.EnumerateArray())
+                        messages.Add(item.GetString() ?? "");
+                else if (prop.Value.ValueKind == System.Text.Json.JsonValueKind.String)
+                    messages.Add(prop.Value.GetString() ?? "");
+            }
+            return messages.Count > 0 ? string.Join("\n", messages) : "Грешка.";
+        }
+        catch
+        {
+            return json;
         }
     }
 }

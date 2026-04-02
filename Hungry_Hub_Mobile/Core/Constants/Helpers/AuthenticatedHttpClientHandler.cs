@@ -8,41 +8,31 @@ public class AuthenticatedHttpClientHandler : HttpClientHandler
     private const int MaxRetries = 1; // Само един опит за refresh
 
     protected override async Task<HttpResponseMessage> SendAsync(
-        HttpRequestMessage request,
-        CancellationToken cancellationToken)
+    HttpRequestMessage request,
+    CancellationToken cancellationToken)
     {
-        // Клонирай request-а за да може да се използва повторно при refresh
         var clonedRequest = await CloneHttpRequestMessageAsync(request);
-
-        // Опитай първо с текущия token
         var response = await SendWithTokenAsync(clonedRequest, cancellationToken);
 
-        // Ако получим 401, опитай да refresh-неш token-а
-        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        // Не опитвай refresh на login/register
+        var isAuthEndpoint = request.RequestUri?.ToString().Contains("/accounts/login/") == true ||
+                             request.RequestUri?.ToString().Contains("/accounts/register/") == true;
+
+        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized && !isAuthEndpoint)
         {
             System.Diagnostics.Debug.WriteLine("🔑 Получен 401 Unauthorized - опит за refresh...");
-
-            // Освободи ресурсите на първия response
             response.Dispose();
 
-            // Опитай да refresh-неш token-а
             var refreshSuccess = await TryRefreshTokenAsync();
-
             if (refreshSuccess)
             {
                 System.Diagnostics.Debug.WriteLine("✅ Token-ът е обновен, повторен опит на заявката...");
-
-                // Създай ново копие на оригиналния request
                 var retryRequest = await CloneHttpRequestMessageAsync(request);
-
-                // Изпрати отново с новия token
                 response = await SendWithTokenAsync(retryRequest, cancellationToken);
             }
             else
             {
                 System.Diagnostics.Debug.WriteLine("❌ Refresh failed - redirect to login");
-
-                // Ако refresh не успее, изчисти tokens и върни потребителя към login
                 await HandleRefreshFailureAsync();
             }
         }
