@@ -1,5 +1,4 @@
 ﻿using System.Windows.Input;
-using Hungry_Hub_Mobile.Core.DTOs.Auth;        // ← ДОБАВИ ТОВА за UserAccountDto
 using Hungry_Hub_Mobile.Core.DTOs.Restaurants;
 using Hungry_Hub_Mobile.Core.DTOs.Users;
 using Hungry_Hub_Mobile.Core.Helpers;
@@ -27,11 +26,11 @@ public class UserHomeViewModel : BaseViewModel
         _navigationService = navigationService;
 
         // Команди
-        LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
+        GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));
         GoToCartCommand = new Command(async () => await _navigationService.GoToAsync("cart"));
         GoToOrdersCommand = new Command(async () => await _navigationService.GoToAsync("my-orders"));
-        // В конструктора - промени командата за профил
         GoToProfileCommand = new Command(async () => await _navigationService.GoToAsync("user/profile"));
+        LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
         RefreshCommand = new Command(async () => await LoadUserHomeAsync());
         SelectRestaurantCommand = new Command<RestaurantMiniDto>(async (restaurant) =>
             await ExecuteSelectRestaurantAsync(restaurant));
@@ -71,10 +70,11 @@ public class UserHomeViewModel : BaseViewModel
     }
 
     // Команди
-    public ICommand LogoutCommand { get; }
+    public ICommand GoToHomeCommand { get; }
     public ICommand GoToCartCommand { get; }
     public ICommand GoToOrdersCommand { get; }
     public ICommand GoToProfileCommand { get; }
+    public ICommand LogoutCommand { get; }
     public ICommand RefreshCommand { get; }
     public ICommand SelectRestaurantCommand { get; }
 
@@ -84,10 +84,6 @@ public class UserHomeViewModel : BaseViewModel
         {
             IsRefreshing = true;
 
-            // 🔥 МАХНАХМЕ user - не ни трябва
-            // var user = await TokenStorage.GetUserAsync<UserAccountDto>();
-
-            // 🔥 ИЗПОЛЗВАМЕ директно GetProfileIdAsync
             var profileId = await TokenStorage.GetProfileIdAsync();
 
             if (profileId.HasValue)
@@ -121,8 +117,6 @@ public class UserHomeViewModel : BaseViewModel
         }
     }
 
-    // 🔥 МАХНАХМЕ GetProfileIdAsync - вече го има в TokenStorage
-
     private async Task ExecuteLogoutAsync()
     {
         await ExecuteAsync(async () =>
@@ -138,11 +132,10 @@ public class UserHomeViewModel : BaseViewModel
         {
             System.Diagnostics.Debug.WriteLine($"👉 Избран ресторант: {restaurant.Name} (ID: {restaurant.Id})");
 
-            // Подай restaurantId като параметър
             var parameters = new Dictionary<string, object>
-        {
-            { "restaurantId", restaurant.Id }
-        };
+            {
+                { "restaurantId", restaurant.Id }
+            };
 
             await _navigationService.GoToAsync("restaurant/details", parameters);
         }

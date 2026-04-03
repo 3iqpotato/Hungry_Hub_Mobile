@@ -22,7 +22,7 @@ namespace Hungry_Hub_Mobile;
 
 public static class MauiProgram
 {
-    public static IServiceProvider Services { get; private set; }
+    public static IServiceProvider? Services { get; private set; }
     public static MauiApp CreateMauiApp()
 
     {
@@ -46,6 +46,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ICartService, CartService>();
         builder.Services.AddSingleton<IOrderService, OrderService>();
         builder.Services.AddSingleton<ILocationService, LocationService>();
+        builder.Services.AddSingleton<AppShell>();
 
         // ========== VIEWMODELS ==========
         builder.Services.AddTransient<StartPageViewModel>();

@@ -158,14 +158,9 @@ public class NavigationService : INavigationService
             "my_orders" => typeof(Views.Orders.MyOrdersPage),
             "order_detail" => typeof(Views.Orders.OrderDetailPage),
             "restaurant/details" => typeof(Views.User.RestaurantDetailPage),
-            //"supplier/home" => typeof(Views.Supplier.SupplierHomePage),
-            //"restaurant/home" => typeof(Views.Restaurant.RestaurantHomePage),
             "complete_user_profile" => typeof(Views.User.CompleteUserProfilePage),
             "complete_supplier_profile" => typeof(Views.Supplier.CompleteSupplierProfilePage),
             "complete_restaurant_profile" => typeof(Views.Restaurant.CompleteRestaurantProfilePage),
-            //"cart" => typeof(Views.User.CartPage),           // ← за после
-            //"my-orders" => typeof(Views.User.OrdersPage),    // ← за после
-            //"user/profile" => typeof(Views.User.ProfilePage), // ← за после
             _ => null
         };
     }

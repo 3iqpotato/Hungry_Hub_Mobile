@@ -9,5 +9,5 @@ public class UserHomeDto
     public UserProfileDto Profile { get; set; } = new();
 
     [JsonPropertyName("restaurants")]
-    public List<RestaurantMiniDto> Restaurants { get; set; } = new();
+    public List<RestaurantMiniDto> Restaurants { get; set; }
 }

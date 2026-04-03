@@ -3,69 +3,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hungry_Hub_Mobile.Views.User.CartPage"
              xmlns:viewModels="clr-namespace:Hungry_Hub_Mobile.ViewModels.User" 
-    xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
+             xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
+             NavigationPage.HasNavigationBar="False"
              Title="Моята количка">
 
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
             <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
-            <!-- ← ВЪРНИ ТОВА -->
-
-            <!-- Шаблон за артикул в количката -->
             <DataTemplate x:Key="CartItemTemplate">
-                <Frame Margin="10,5" 
-                       Padding="10"
-                       CornerRadius="10"
-                       BorderColor="LightGray"
-                       BackgroundColor="White">
+                <Frame Margin="10,5" Padding="10" CornerRadius="10"
+                       BorderColor="LightGray" BackgroundColor="White">
                     <Grid ColumnDefinitions="80,*,Auto,Auto" RowDefinitions="Auto,Auto">
-
-                        <!-- Снимка (ако има) -->
                         <Frame Grid.RowSpan="2" Grid.Column="0"
-                               HeightRequest="60" 
-                               WidthRequest="60" 
-                               CornerRadius="10"
-                               BorderColor="LightGray"
-                               Padding="0">
-                            
-                            <Image Source="{Binding Img}"
-                                   Aspect="AspectFill"
-                                   HeightRequest="60"
-                                   WidthRequest="60"/>
+                               HeightRequest="60" WidthRequest="60"
+                               CornerRadius="10" BorderColor="LightGray" Padding="0">
+                            <Image Source="{Binding Img}" Aspect="AspectFill"
+                                   HeightRequest="60" WidthRequest="60"/>
                         </Frame>
-
-                        <!-- Име на продукта -->
-                        <Label Grid.Row="0" Grid.Column="1"
-                               Text="{Binding ArticleName}"
-                               FontSize="16"
-                               FontAttributes="Bold"
-                               Margin="10,0,0,0"/>
-
-                        <!-- Количество -->
+                        <Label Grid.Row="0" Grid.Column="1" Text="{Binding ArticleName}"
+                               FontSize="16" FontAttributes="Bold" Margin="10,0,0,0"/>
                         <Label Grid.Row="1" Grid.Column="1"
                                Text="{Binding Quantity, StringFormat='Количество: {0}'}"
-                               FontSize="14"
-                               TextColor="Gray"
-                               Margin="10,0,0,0"/>
-
-                        <!-- Цена -->
+                               FontSize="14" TextColor="Gray" Margin="10,0,0,0"/>
                         <Label Grid.Row="0" Grid.Column="2"
                                Text="{Binding PriceDecimal, StringFormat='{0:F2} лв'}"
-                               FontSize="14"
-                               FontAttributes="Bold"
-                               TextColor="#2196F3"
-                               VerticalOptions="Center"/>
-
-                        <!-- Бутон за премахване -->
+                               FontSize="14" FontAttributes="Bold"
+                               TextColor="#2196F3" VerticalOptions="Center"/>
                         <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="3"
-                                Text="✖"
-                                BackgroundColor="#F44336"
-                                TextColor="White"
-                                FontSize="16"
-                                CornerRadius="20"
-                                WidthRequest="40"
-                                HeightRequest="40"
+                                Text="✖" BackgroundColor="#F44336" TextColor="White"
+                                FontSize="16" CornerRadius="20"
+                                WidthRequest="40" HeightRequest="40"
                                 VerticalOptions="Center"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:CartViewModel}}, Path=RemoveItemCommand}"
                                 CommandParameter="{Binding .}"/>
@@ -75,49 +43,17 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto,Auto,Auto,Auto">
+    <Grid RowDefinitions="Auto,*,Auto,Auto,Auto,Auto,Auto,Auto">
 
-        <!-- Горна лента -->
-        <Grid Grid.Row="0"
-              Padding="10,5"
-              BackgroundColor="#2196F3"
-              ColumnDefinitions="Auto,*,Auto,Auto,Auto">
-
-            <Button Grid.Column="0"
-                    Text="Изход"
+        <!-- ГОРНА ЛЕНТА -->
+        <Grid Grid.Row="0" Padding="15,10" BackgroundColor="#2196F3"
+              ColumnDefinitions="*,Auto">
+            <Label Grid.Column="0" Text="Hungry Hub" FontSize="22"
+                   FontAttributes="Bold" TextColor="White" VerticalOptions="Center"/>
+            <Button Grid.Column="1" Text="Изход"
                     Command="{Binding LogoutCommand}"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
-                    FontSize="14"/>
-
-            <Label Grid.Column="1"
-                   Text="Моята количка"
-                   FontSize="18"
-                   FontAttributes="Bold"
-                   TextColor="White"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"/>
-
-            <Button Grid.Column="2"
-                    Text="👤"
-                    Command="{Binding GoToProfileCommand}"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
-                    FontSize="18"/>
-
-            <Button Grid.Column="3"
-                    Text="🏠"
-                    Command="{Binding GoToHomeCommand}"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
-                    FontSize="18"/>
-
-            <Button Grid.Column="4"
-                    Text="📦"
-                    Command="{Binding GoToOrdersCommand}"
-                    BackgroundColor="Transparent"
-                    TextColor="White"
-                    FontSize="18"/>
+                    BackgroundColor="Transparent" TextColor="White"
+                    FontSize="14" Padding="5,0"/>
         </Grid>
 
         <!-- Списък с артикули -->
@@ -125,91 +61,87 @@
                         ItemsSource="{Binding Cart.Items}"
                         ItemTemplate="{StaticResource CartItemTemplate}"
                         VerticalOptions="FillAndExpand">
-
             <CollectionView.EmptyView>
-                <VerticalStackLayout Spacing="10" 
-                                     Padding="20"
-                                     VerticalOptions="Center"
-                                     HorizontalOptions="Center">
-                    <Label Text="🛒"
-                           FontSize="64"
-                           HorizontalOptions="Center"/>
-                    <Label Text="Количката е празна"
-                           FontSize="18"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center"/>
+                <VerticalStackLayout Spacing="10" Padding="20"
+                                     VerticalOptions="Center" HorizontalOptions="Center">
+                    <Label Text="🛒" FontSize="64" HorizontalOptions="Center"/>
+                    <Label Text="Количката е празна" FontSize="18"
+                           FontAttributes="Bold" HorizontalOptions="Center"/>
                     <Label Text="Добавете продукти от менюто"
-                           FontSize="14"
-                           TextColor="Gray"
-                           HorizontalOptions="Center"/>
+                           FontSize="14" TextColor="Gray" HorizontalOptions="Center"/>
                     <Button Text="Към ресторантите"
                             Command="{Binding GoToHomeCommand}"
-                            BackgroundColor="#2196F3"
-                            TextColor="White"
-                            Margin="0,20,0,0"/>
+                            BackgroundColor="#2196F3" TextColor="White" Margin="0,20,0,0"/>
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
         </CollectionView>
 
-        <!-- Сума на продуктите -->
-        <Label Grid.Row="2"
-               Text="{Binding SubtotalText}"
-               FontSize="16"
-               HorizontalOptions="End"
-               Margin="20,10"/>
+        <!-- Сума -->
+        <Label Grid.Row="2" Text="{Binding SubtotalText}"
+               FontSize="16" HorizontalOptions="End" Margin="20,10"/>
 
-        <!-- Такса доставка (ако има) -->
-        <Label Grid.Row="3"
-               Text="{Binding DeliveryFeeText}"
-               FontSize="14"
-               TextColor="Gray"
-               HorizontalOptions="End"
-               Margin="20,5"
-               IsVisible="{Binding ShowDeliveryFee}"/>
+        <!-- Доставка -->
+        <Label Grid.Row="3" Text="{Binding DeliveryFeeText}"
+               FontSize="14" TextColor="Gray" HorizontalOptions="End"
+               Margin="20,5" IsVisible="{Binding ShowDeliveryFee}"/>
 
         <!-- Общо -->
-        <Label Grid.Row="4"
-               Text="{Binding TotalText}"
-               FontSize="18"
-               FontAttributes="Bold"
-               TextColor="#2196F3"
-               HorizontalOptions="End"
-               Margin="20,10,20,20"/>
+        <Label Grid.Row="4" Text="{Binding TotalText}"
+               FontSize="18" FontAttributes="Bold" TextColor="#2196F3"
+               HorizontalOptions="End" Margin="20,10,20,5"/>
 
-        <!-- Долни бутони -->
-        <Grid Grid.Row="5"
-              Padding="20"
-              ColumnDefinitions="*,*"
+        <!-- Бутони checkout -->
+        <Grid Grid.Row="5" Padding="20,5" ColumnDefinitions="*,*"
               IsVisible="{Binding Cart.IsEmpty, Converter={StaticResource InverseBoolConverter}}">
-
-            <Button Grid.Column="0"
-                    Text="Продължи пазаруването"
+            <Button Grid.Column="0" Text="Продължи пазаруването"
                     Command="{Binding GoToHomeCommand}"
-                    BackgroundColor="#9E9E9E"
-                    TextColor="White"
-                    Margin="5"/>
-
-            <Button Grid.Column="1"
-                    Text="Поръчай сега"
+                    BackgroundColor="#9E9E9E" TextColor="White" Margin="5"/>
+            <Button Grid.Column="1" Text="Поръчай сега"
                     Command="{Binding CheckoutCommand}"
-                    IsVisible="{Binding IsEmpty, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=invert}"
-                    BackgroundColor="#4CAF50"
-                    TextColor="White"
-                    Margin="5"/>
+                    BackgroundColor="#4CAF50" TextColor="White" Margin="5"/>
         </Grid>
 
-        <!-- Активност и грешки -->
+        <!-- Грешка / зареждане -->
         <Grid Grid.Row="6">
-            <ActivityIndicator IsRunning="{Binding IsBusy}"
-                              IsVisible="{Binding IsBusy}"
-                              VerticalOptions="Center"
-                              Color="#2196F3"/>
-
-            <Label Text="{Binding ErrorMessage}"
-                   TextColor="Red"
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}"
+                               VerticalOptions="Center" Color="#2196F3"/>
+            <Label Text="{Binding ErrorMessage}" TextColor="Red"
                    IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
-                   HorizontalOptions="Center"
-                   Margin="10"/>
+                   HorizontalOptions="Center" Margin="10"/>
         </Grid>
+
+        <!-- ДОЛНА НАВИГАЦИЯ -->
+        <Grid Grid.Row="7" BackgroundColor="#2196F3" Padding="0,8"
+              ColumnDefinitions="*,*,*,*">
+            <VerticalStackLayout Grid.Column="0" Spacing="2" HorizontalOptions="Center">
+                <Label Text="🏠" FontSize="22" HorizontalOptions="Center"/>
+                <Label Text="Начало" FontSize="11" TextColor="White" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoToHomeCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="1" Spacing="2" HorizontalOptions="Center">
+                <Label Text="🛒" FontSize="22" HorizontalOptions="Center"/>
+                <Label Text="Количка" FontSize="11" TextColor="White" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoToCartCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="2" Spacing="2" HorizontalOptions="Center">
+                <Label Text="📦" FontSize="22" HorizontalOptions="Center"/>
+                <Label Text="Поръчки" FontSize="11" TextColor="White" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoToOrdersCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+            <VerticalStackLayout Grid.Column="3" Spacing="2" HorizontalOptions="Center">
+                <Label Text="👤" FontSize="22" HorizontalOptions="Center"/>
+                <Label Text="Профил" FontSize="11" TextColor="White" HorizontalOptions="Center"/>
+                <VerticalStackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding GoToProfileCommand}"/>
+                </VerticalStackLayout.GestureRecognizers>
+            </VerticalStackLayout>
+        </Grid>
+
     </Grid>
 </ContentPage>

@@ -60,6 +60,9 @@ public class RestaurantMiniDto
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
+    [JsonPropertyName("address")]
+    public string Address { get; set; } = string.Empty;
+
     private string? _img;
 
     [JsonPropertyName("img")]

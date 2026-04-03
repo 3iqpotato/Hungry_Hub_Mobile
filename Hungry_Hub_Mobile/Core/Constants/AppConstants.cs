@@ -4,7 +4,7 @@ public static class AppConstants
 {
     // Базов API URL - различен според средата
 #if DEBUG
-    public const string BaseApiUrl = "http://10.0.2.2:8000/";
+    public const string BaseApiUrl = "https://hungryhub.azurewebsites.net/";
 #else
     public const string BaseApiUrl = "https://hungryhub.azurewebsites.net/";
 #endif
@@ -39,4 +39,7 @@ public static class AppConstants
         public const string CartItems = "cart_items";
         public const string LastLoggedInUser = "last_user";
     }
+
+    public const long MaxImageSizeBytes = 5 * 1024 * 1024; // 5 MB
+    public const string MaxImageSizeLabel = "5 MB";
 }

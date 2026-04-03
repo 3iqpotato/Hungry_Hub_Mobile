@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hungry_Hub_Mobile.Views.User.EditProfilePage"
              xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
+             NavigationPage.HasNavigationBar="False"
              Title="Редактиране на профил">
 
     <ContentPage.Resources>

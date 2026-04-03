@@ -30,9 +30,9 @@ public class LocationService : ILocationService
             // Вземи текущата локация
             var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest
             {
-                DesiredAccuracy = GeolocationAccuracy.Medium,
+                DesiredAccuracy = GeolocationAccuracy.Best,
                 Timeout = TimeSpan.FromSeconds(30)
-            });
+            });   
 
             if (location == null)
             {

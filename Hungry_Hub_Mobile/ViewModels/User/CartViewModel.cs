@@ -25,11 +25,13 @@ public class CartViewModel : BaseViewModel
         _authService = authService ?? throw new ArgumentNullException(nameof(authService));
 
         GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));
+        GoToCartCommand = new Command(async () => await _navigationService.GoToAsync("cart"));
+        GoToOrdersCommand = new Command(async () => await _navigationService.GoToAsync("my_orders")); // беше my-orders
         GoToProfileCommand = new Command(async () => await _navigationService.GoToAsync("user/profile"));
-        GoToOrdersCommand = new Command(async () => await _navigationService.GoToAsync("my-orders"));
         LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
         RemoveItemCommand = new Command<CartItemDto>(async (item) => await ExecuteRemoveItemAsync(item));
         CheckoutCommand = new Command(async () => await ExecuteCheckoutAsync());
+
 
         //Task.Run(LoadCartAsync);
     }
@@ -77,7 +79,7 @@ public class CartViewModel : BaseViewModel
     public bool ShowDeliveryFee => Cart.DeliveryFeeDecimal > 0;
 
     public ICommand GoToHomeCommand { get; }
-    public ICommand RefreshCommand { get; }
+    public ICommand GoToCartCommand { get; }  // липсваше
     public ICommand GoToProfileCommand { get; }
     public ICommand GoToOrdersCommand { get; }
     public ICommand LogoutCommand { get; }

@@ -3,73 +3,137 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Hungry_Hub_Mobile.Views.Auth.RegisterPage"
              xmlns:converters="clr-namespace:Hungry_Hub_Mobile.Converters"
-             Title="Регистрация">
+             NavigationPage.HasNavigationBar="False"
+             Background="{StaticResource BackgroundGradient}">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
-        </ResourceDictionary>
-    </ContentPage.Resources>
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
 
-    <ScrollView>
-        <VerticalStackLayout Spacing="20" Padding="30" VerticalOptions="Center">
+                <!-- Хедър с бутон за назад -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-            <Label Text="Hungry Hub"
-                   FontSize="32"
-                   HorizontalOptions="Center"
-                   FontAttributes="Bold"/>
+                    <Button Grid.Column="0"
+                            Text="←"
+                            Command="{Binding GoBackCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="White"
+                            FontSize="32"
+                            FontAttributes="Bold"
+                            WidthRequest="60"
+                            HeightRequest="60"
+                            HorizontalOptions="Start"
+                            VerticalOptions="Start"
+                            Margin="-10,-10,0,0"/>
 
-            <Label Text="Създайте нов профил"
-                   HorizontalOptions="Center"
-                   TextColor="Gray"/>
+                    <Label Grid.Column="1"
+                           Text=""
+                           HorizontalOptions="Center"/>
+                </Grid>
 
-            <!-- Email поле -->
-            <Entry Placeholder="Gmail"
-                   Text="{Binding Email}"
-                   Keyboard="Email"
-                   ReturnType="Next"/>
+                <!-- Лого -->
+                <Frame HeightRequest="100" 
+                       WidthRequest="100" 
+                       CornerRadius="50"
+                       HorizontalOptions="Center"
+                       BackgroundColor="White"
+                       Padding="20"
+                       Margin="0,0,0,20">
+                    <Label Text="🍔"
+                           FontSize="48"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+                </Frame>
 
-            <!-- Парола поле -->
-            <Entry Placeholder="Парола"
-                   Text="{Binding Password}"
-                   IsPassword="True"
-                   ReturnType="Next"/>
+                <Label Text="Създайте профил"
+                       Style="{StaticResource TitleLabel}"
+                       FontSize="28"/>
 
-            <!-- Потвърди парола поле -->
-            <Entry Placeholder="Потвърдете парола"
-                   Text="{Binding ConfirmPassword}"
-                   IsPassword="True"
-                   ReturnType="Done"/>
+                <Label Text="Присъединете се към нас"
+                       Style="{StaticResource SubtitleLabel}"/>
 
-            <!-- Грешка -->
-            <Label Text="{Binding ErrorMessage}"
-                   TextColor="Red"
-                   FontSize="14"
-                   LineBreakMode="WordWrap"
-                   IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
-                   HorizontalOptions="Fill"
-                   VerticalOptions="Center" />
+                <!-- Форма за регистрация -->
+                <Frame CornerRadius="20"
+                       BackgroundColor="White"
+                       Padding="20"
+                       Margin="0,20">
+                    <VerticalStackLayout Spacing="15">
 
-            <!-- Регистрация бутон -->
-            <Button Text="Регистрация"
-                    Command="{Binding RegisterCommand}"
-                    IsEnabled="{Binding IsNotBusy}"
-                    BackgroundColor="#4CAF50"
-                    TextColor="White"/>
+                        <Label Text="Имейл"
+                               TextColor="#2D2D2D"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
 
-            <ActivityIndicator IsRunning="{Binding IsBusy}"
-                               IsVisible="{Binding IsBusy}"/>
+                        <Entry Placeholder="your@gmail.com"
+                               Text="{Binding Email}"
+                               Keyboard="Email"
+                               ReturnType="Next"/>
 
-            <!-- Линк за вход -->
-            <HorizontalStackLayout HorizontalOptions="Center">
-                <Label Text="Вече имате профил? "/>
-                <Label Text="Вход"
-                       TextColor="Blue">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding GoToLoginCommand}"/>
-                    </Label.GestureRecognizers>
-                </Label>
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
-    </ScrollView>
+                        <Label Text="Парола"
+                               TextColor="#2D2D2D"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               Margin="0,10,0,0"/>
+
+                        <Entry Placeholder="••••••••"
+                               Text="{Binding Password}"
+                               IsPassword="True"
+                               ReturnType="Next"/>
+
+                        <Label Text="Потвърдете парола"
+                               TextColor="#2D2D2D"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               Margin="0,10,0,0"/>
+
+                        <Entry Placeholder="••••••••"
+                               Text="{Binding ConfirmPassword}"
+                               IsPassword="True"
+                               ReturnType="Done"/>
+
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="#FF6B35"
+                               FontSize="12"
+                               IsVisible="{Binding ErrorMessage, Converter={StaticResource IsNotNullConverter}}"
+                               HorizontalOptions="Center"
+                               Margin="0,5"/>
+
+                        <Button Text="РЕГИСТРАЦИЯ"
+                                Command="{Binding RegisterCommand}"
+                                IsEnabled="{Binding IsNotBusy}"
+                                BackgroundColor="#FF6B35"
+                                TextColor="White"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                CornerRadius="25"
+                                HeightRequest="50"
+                                Margin="0,20,0,0"/>
+
+                        <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                           IsVisible="{Binding IsBusy}"
+                                           Color="#FF6B35"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Линк за вход -->
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="5">
+                    <Label Text="Вече имате профил?"
+                           TextColor="White"
+                           Opacity="0.9"/>
+                    <Label Text="Вход"
+                           TextColor="White"
+                           FontAttributes="Bold"
+                           TextDecorations="Underline">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding GoToLoginCommand}"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>

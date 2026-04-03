@@ -54,10 +54,50 @@ public class CartItemDto
     //    get => string.IsNullOrEmpty(_img) ? null : $"http://10.0.2.2:8000/media/{_img}";  // for local use
     //    set => _img = value;
     //}
+    //public string? Img
+    //{
+    //    get
+    //    {
+    //        var result = string.IsNullOrWhiteSpace(_img) ? null : _img;
+    //        System.Diagnostics.Debug.WriteLine($"CartItemDto Img getter returns: '{result}'");
+    //        return result;
+    //    }
+    //    set
+    //    {
+    //        _img = value;
+    //        System.Diagnostics.Debug.WriteLine($"CartItemDto article_img raw value: '{value}'");
+    //    }
+
+    //}
     public string? Img
     {
-        get => string.IsNullOrEmpty(_img) ? null : _img;
-        set => _img = value;
+        get
+        {
+            if (string.IsNullOrWhiteSpace(_img))
+            {
+                System.Diagnostics.Debug.WriteLine("CartItemDto Img getter returns: null");
+                return null;
+            }
+
+            string result;
+
+            if (_img.StartsWith("http://") || _img.StartsWith("https://"))
+            {
+                result = _img;
+            }
+            else
+            {
+                result = $"https://hungryhubstorage.blob.core.windows.net/media/{_img}";
+            }
+
+            System.Diagnostics.Debug.WriteLine($"CartItemDto Img getter returns: '{result}'");
+            return result;
+        }
+        set
+        {
+            _img = value;
+            System.Diagnostics.Debug.WriteLine($"CartItemDto article_img raw value: '{value}'");
+        }
     }
 
     [JsonPropertyName("article_name")]

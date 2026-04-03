@@ -13,6 +13,55 @@
             <converters:IsGreaterThanOneConverter x:Key="IsGreaterThanOneConverter"/>
             <converters:IsGreaterThanTwoConverter x:Key="IsGreaterThanTwoConverter"/>
 
+            <!-- Цветове -->
+            <Color x:Key="PrimaryColor">#8B0000</Color>
+            <Color x:Key="SecondaryColor">#A52A2A</Color>
+            <Color x:Key="AccentColor">#CD5C5C</Color>
+            <Color x:Key="DarkColor">#2D2D2D</Color>
+            <Color x:Key="LightColor">#F9F9F9</Color>
+
+            <!-- Градиент за фон -->
+            <LinearGradientBrush x:Key="BackgroundGradient" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="{StaticResource PrimaryColor}" Offset="0.0" />
+                <GradientStop Color="{StaticResource SecondaryColor}" Offset="1.0" />
+            </LinearGradientBrush>
+
+            <!-- Стил за бутони -->
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="TextColor" Value="{StaticResource PrimaryColor}"/>
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="CornerRadius" Value="25"/>
+                <Setter Property="HeightRequest" Value="50"/>
+                <Setter Property="Margin" Value="0,10,0,0"/>
+            </Style>
+
+            <!-- Стил за Entry -->
+            <Style TargetType="Entry">
+                <Setter Property="BackgroundColor" Value="White"/>
+                <Setter Property="TextColor" Value="{StaticResource DarkColor}"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="HeightRequest" Value="45"/>
+                <Setter Property="Margin" Value="0,5"/>
+            </Style>
+
+            <!-- Стил за Label заглавия -->
+            <Style x:Key="TitleLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="32"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+            </Style>
+
+            <Style x:Key="SubtitleLabel" TargetType="Label">
+                <Setter Property="FontSize" Value="16"/>
+                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="Opacity" Value="0.9"/>
+                <Setter Property="HorizontalOptions" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,0,20"/>
+            </Style>
+
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />

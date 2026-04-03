@@ -18,6 +18,7 @@ public partial class App : Application
 
     protected override Window CreateWindow(IActivationState? activationState)
     {
+        //return new Window(_serviceProvider.GetService<AppShell>());
         // Вземи StartPage от DI контейнера
         var startPage = _serviceProvider.GetService<StartPage>();
 
