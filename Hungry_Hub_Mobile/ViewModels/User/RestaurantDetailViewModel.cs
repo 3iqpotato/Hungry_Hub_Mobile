@@ -1,6 +1,5 @@
 ﻿using Hungry_Hub_Mobile.Core.DTOs.Articles;
 using Hungry_Hub_Mobile.Core.DTOs.Restaurants;
-using Hungry_Hub_Mobile.Services;
 using Hungry_Hub_Mobile.Services.Interfaces;
 using System.Windows.Input;
 
@@ -11,13 +10,13 @@ public class RestaurantDetailViewModel : BaseViewModel
     private readonly IRestaurantMenuService _menuService;
     private readonly INavigationService _navigationService;
     private readonly ICartService _cartService;
+    private readonly IAuthService _authService;  // ← ДОБАВИ
 
     private RestaurantMiniDto _restaurant = new();
     private MenuDto _menu = new();
     private List<ArticleDto> _articles = new();
-    private string _selectedFilter;
+    private string _selectedFilter = "Всички";  // ← инициализирай с стойност
     private int _restaurantId;
-
 
     // Списък с налични филтри
     public List<string> FoodFilters { get; } = new()
@@ -42,19 +41,26 @@ public class RestaurantDetailViewModel : BaseViewModel
     public RestaurantDetailViewModel(
         IRestaurantMenuService menuService,
         INavigationService navigationService,
-        ICartService cartService)
-
+        ICartService cartService,
+        IAuthService authService)  // ← ДОБАВИ IAuthService
     {
         _menuService = menuService;
-        _cartService = cartService;
         _navigationService = navigationService;
+        _cartService = cartService;
+        _authService = authService;
 
+        // 🔥 КОМАНДИ ЗА НАВИГАЦИЯ (долно меню)
+        GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));
+        GoToCartCommand = new Command(async () => await _navigationService.GoToAsync("cart"));
+        GoToOrdersCommand = new Command(async () => await _navigationService.GoToAsync("my-orders"));
+        GoToProfileCommand = new Command(async () => await _navigationService.GoToAsync("user/profile"));
+        LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
 
+        // 🔥 СЪЩЕСТВУВАЩИ КОМАНДИ
         GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());
         FilterChangedCommand = new Command<string>(async (filter) => await ApplyFilterAsync(filter));
         SelectArticleCommand = new Command<ArticleDto>(async (article) => await ExecuteSelectArticleAsync(article));
         AddToCartCommand = new Command<ArticleDto>(async (article) => await ExecuteAddToCartAsync(article));
-        _cartService=cartService;
     }
 
     public RestaurantMiniDto Restaurant
@@ -97,10 +103,17 @@ public class RestaurantDetailViewModel : BaseViewModel
         }
     }
 
+    // 🔥 НОВИ КОМАНДИ ЗА НАВИГАЦИЯ
+    public ICommand GoToHomeCommand { get; }
+    public ICommand GoToCartCommand { get; }
+    public ICommand GoToOrdersCommand { get; }
+    public ICommand GoToProfileCommand { get; }
+    public ICommand LogoutCommand { get; }
+
+    // 🔥 СЪЩЕСТВУВАЩИ КОМАНДИ
     public ICommand GoBackCommand { get; }
     public ICommand FilterChangedCommand { get; }
     public ICommand SelectArticleCommand { get; }
-
     public ICommand AddToCartCommand { get; }
 
     // Метод за инициализация с параметри
@@ -123,7 +136,6 @@ public class RestaurantDetailViewModel : BaseViewModel
 
             if (response?.Success == true)
             {
-                // Покажи съобщение за успех
                 await Application.Current.MainPage.DisplayAlert(
                     "Добавено",
                     $"{article.Name} е добавен в количката",
@@ -143,6 +155,7 @@ public class RestaurantDetailViewModel : BaseViewModel
         try
         {
             IsBusy = true;
+            ErrorMessage = string.Empty;
 
             string? filterType = SelectedFilter == "Всички" ? null : SelectedFilter;
 
@@ -168,8 +181,6 @@ public class RestaurantDetailViewModel : BaseViewModel
         }
     }
 
-
-
     private async Task ApplyFilterAsync(string filter)
     {
         if (SelectedFilter != filter)
@@ -183,7 +194,6 @@ public class RestaurantDetailViewModel : BaseViewModel
     {
         if (article != null)
         {
-            // Тук после ще добавим навигация към детайли на артикул или добавяне в количка
             System.Diagnostics.Debug.WriteLine($"👉 Избран артикул: {article.Name}");
 
             var parameters = new Dictionary<string, object>
@@ -193,5 +203,18 @@ public class RestaurantDetailViewModel : BaseViewModel
             };
             // await _navigationService.GoToAsync("article/details", parameters);
         }
+    }
+
+    private async Task ExecuteLogoutAsync()
+    {
+        await ExecuteAsync(async () =>
+        {
+            System.Diagnostics.Debug.WriteLine("👉 Logout от детайли на ресторант...");
+
+            if (_authService != null)
+                await _authService.LogoutAsync();
+
+            await _navigationService.GoToAsync("start");
+        }, "Грешка при изход");
     }
 }

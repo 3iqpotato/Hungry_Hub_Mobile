@@ -1,4 +1,5 @@
 ﻿using Hungry_Hub_Mobile.Core.Constants;
+using Hungry_Hub_Mobile.Core.DTOs.Restaurants;
 using Hungry_Hub_Mobile.Core.DTOs.Users;
 using Hungry_Hub_Mobile.Core.Helpers;
 using Hungry_Hub_Mobile.Services.Interfaces;
