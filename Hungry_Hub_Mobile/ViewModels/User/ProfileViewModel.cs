@@ -21,7 +21,8 @@ public class ProfileViewModel : BaseViewModel
 
         GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));
         GoToEditCommand = new Command(async () => await _navigationService.GoToAsync("user/edit-profile"));
-
+        GoToCartCommand = new Command(async () => await _navigationService.GoToAsync("cart"));
+        GoToOrdersCommand = new Command(async () => await _navigationService.GoToAsync("my-orders"));
         //Task.Run(LoadProfileAsync);
 
     }
@@ -39,7 +40,8 @@ public class ProfileViewModel : BaseViewModel
 
     public ICommand GoToHomeCommand { get; }
     public ICommand GoToEditCommand { get; }
-
+    public ICommand GoToCartCommand { get; }
+    public ICommand GoToOrdersCommand { get; }
     public async Task LoadProfileAsync()
     {
         try

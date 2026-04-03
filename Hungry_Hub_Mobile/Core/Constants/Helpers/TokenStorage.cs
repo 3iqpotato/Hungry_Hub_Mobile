@@ -257,7 +257,7 @@ public static class TokenStorage
     }
 
 
-
+    // тук локално проверяваме дали токена е изтекъл за да не товаря сървърчето че в azure не е много евтино :)
 public static bool IsTokenValid(string token)
 {
     if (string.IsNullOrEmpty(token))

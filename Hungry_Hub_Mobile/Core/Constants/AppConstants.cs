@@ -4,7 +4,7 @@ public static class AppConstants
 {
     // Базов API URL - различен според средата
 #if DEBUG
-    public const string BaseApiUrl = "http://10.0.2.2:8000/";
+    public const string BaseApiUrl = "https://hungryhub.azurewebsites.net/";
 #else
     public const string BaseApiUrl = "https://hungryhub.azurewebsites.net/";
 #endif
