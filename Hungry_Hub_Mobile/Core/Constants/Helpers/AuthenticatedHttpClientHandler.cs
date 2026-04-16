@@ -16,7 +16,8 @@ public class AuthenticatedHttpClientHandler : HttpClientHandler
 
         // Не опитвай refresh на login/register
         var isAuthEndpoint = request.RequestUri?.ToString().Contains("/accounts/login/") == true ||
-                             request.RequestUri?.ToString().Contains("/accounts/register/") == true;
+                     request.RequestUri?.ToString().Contains("/accounts/register/") == true ||
+                     request.RequestUri?.ToString().Contains("/accounts/token/refresh/") == true; // ← ДОБАВИ ТОВА
 
         if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized && !isAuthEndpoint)
         {

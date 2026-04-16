@@ -29,7 +29,7 @@ public class StartPageViewModel : BaseViewModel
         System.Diagnostics.Debug.WriteLine("🔥 StartPageViewModel constructor END");
 
         // Провери статуса при зареждане
-        Task.Run(CheckLoginStatus);
+        //Task.Run(CheckLoginStatus);
     }
 
     public bool IsLoggedIn

@@ -134,6 +134,8 @@ public class AuthService : BaseApiService, IAuthService
     {
         try
         {
+            var oldUserJson = await SecureStorage.Default.GetAsync("user_data");
+            System.Diagnostics.Debug.WriteLine($"[BEFORE REFRESH] user_data = {oldUserJson}");
             var refreshToken = await TokenStorage.GetRefreshTokenAsync();
             if (string.IsNullOrEmpty(refreshToken))
                 return false;
@@ -154,10 +156,11 @@ public class AuthService : BaseApiService, IAuthService
                 // Запазваме новия access token (refresh token остава същия)
                 await TokenStorage.SaveTokensAsync(response.Access, refreshToken);
 
-                if (response.User != null)
-                {
-                    await TokenStorage.SaveUserAsync(response.User);
-                }
+                //if (response.User != null)
+                //{
+                //    System.Diagnostics.Debug.WriteLine($"не би трябвало да влизаме тук!!!");
+                //    await TokenStorage.SaveUserAsync(response.User);
+                //}
                 return true;
             }
 

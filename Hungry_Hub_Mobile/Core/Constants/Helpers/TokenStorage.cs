@@ -162,6 +162,7 @@ public static class TokenStorage
             }
 
             // Ако refresh не успее, изчисти всичко
+            System.Diagnostics.Debug.WriteLine("🗑️ RemoveTokens() се вика! refreshed = false");
             RemoveTokens();
             return false;
         }
