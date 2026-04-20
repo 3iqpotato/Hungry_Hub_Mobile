@@ -119,6 +119,5 @@ public class UserProfileService : BaseApiService, IUserProfileService
         return result?.Profile ?? throw new Exception("Празен отговор от сървъра");
     }
 
-    // Добави и този response DTO във файл
 }
 

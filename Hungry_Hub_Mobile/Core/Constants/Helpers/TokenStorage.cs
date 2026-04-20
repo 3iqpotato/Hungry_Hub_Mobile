@@ -18,32 +18,20 @@ public static class TokenStorage
     {
         try
         {
-            // Запази tokens
             await SecureStorage.Default.SetAsync(AccessTokenKey, response.Access);
             await SecureStorage.Default.SetAsync(RefreshTokenKey, response.Refresh);
 
-            // Запази user данни
             if (response.User != null)
             {
-                var userJson = JsonSerializer.Serialize(response.User);
-                await SecureStorage.Default.SetAsync(UserKey, userJson);
+                await SecureStorage.Default.SetAsync(UserKey, JsonSerializer.Serialize(response.User));
                 await SecureStorage.Default.SetAsync(UserTypeKey, response.User.Type);
             }
 
             if (response.ProfileId.HasValue)
-            {
                 await SecureStorage.Default.SetAsync(ProfileIdKey, response.ProfileId.Value.ToString());
-                System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id в storage: {response.ProfileId.Value}");
-            }
-
-            // Запази дали има профил и накъде да отиде
-            bool hasProfile = response.ProfileId.HasValue || string.IsNullOrEmpty(response.Next);
-            await SecureStorage.Default.SetAsync(HasProfileKey, hasProfile.ToString());
 
             if (!string.IsNullOrEmpty(response.Next))
-            {
                 await SecureStorage.Default.SetAsync(NextRouteKey, response.Next);
-            }
         }
         catch (Exception ex)
         {
@@ -139,34 +127,19 @@ public static class TokenStorage
     {
         var token = await GetAccessTokenAsync();
 
-        // 1. Провери дали има token
         if (string.IsNullOrEmpty(token))
-            return false;
-
-        // 2. Провери дали token-ът не е изтекъл (локално)
-        if (!IsTokenValid(token))
         {
-            System.Diagnostics.Debug.WriteLine("⏰ Token-ът е изтекъл, опит за refresh...");
-
-            // 3. Опитай да го обновиш
-            var authService = MauiProgram.Services.GetService<IAuthService>();
-            if (authService != null)
-            {
-                var refreshed = await authService.RefreshTokenAsync();
-                if (refreshed)
-                {
-                    // Вземи новия token
-                    token = await GetAccessTokenAsync();
-                    return !string.IsNullOrEmpty(token) && IsTokenValid(token);
-                }
-            }
-
-            // Ако refresh не успее, изчисти всичко
-            System.Diagnostics.Debug.WriteLine("🗑️ RemoveTokens() се вика! refreshed = false");
-            RemoveTokens();
+            System.Diagnostics.Debug.WriteLine("❌ Няма token");
             return false;
         }
 
+        if (!IsTokenValid(token))
+        {
+            System.Diagnostics.Debug.WriteLine("⏰ Token-ът е изтекъл");
+            return false;
+        }
+
+        System.Diagnostics.Debug.WriteLine("✅ Token е валиден");
         return true;
     }
 

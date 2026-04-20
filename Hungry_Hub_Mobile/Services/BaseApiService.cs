@@ -79,7 +79,7 @@ public abstract class BaseApiService
 
             var result = JsonSerializer.Deserialize<TResponse>(responseJson, _jsonOptions);
 
-            if (result is CartDto cart)
+            if (result is CartDto cart)   // това е направено за дебъг цели иначе знам че нарушава ооп правила но тествам нещо ако съм забравил да го махна сори :(
             {
                 System.Diagnostics.Debug.WriteLine($"=== ДЕСЕРИАЛИЗИРАН CART ===");
                 System.Diagnostics.Debug.WriteLine($"Cart ID: {cart.Id}");

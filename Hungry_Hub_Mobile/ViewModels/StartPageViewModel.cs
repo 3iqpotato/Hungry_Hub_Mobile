@@ -128,7 +128,7 @@ public class StartPageViewModel : BaseViewModel
             IsChecking = true;
             System.Diagnostics.Debug.WriteLine("👉 Проверка на login статус...");
 
-            var isAuthenticated = await TokenStorage.IsAuthenticatedAsync();
+            var isAuthenticated = await _authService.IsAuthenticatedAsync();
             System.Diagnostics.Debug.WriteLine($"📊 isAuthenticated: {isAuthenticated}");
 
             if (isAuthenticated)

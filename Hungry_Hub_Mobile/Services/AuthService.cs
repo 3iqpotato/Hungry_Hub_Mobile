@@ -36,24 +36,24 @@ public class AuthService : BaseApiService, IAuthService
                 // 🔥 Първо запази целия response (това вече включва profile_id)
                 await TokenStorage.SaveLoginResponseAsync(response);
 
-                // 🔥 После запази и user данните
-                if (response.User != null)
-                {
-                    await TokenStorage.SaveUserAsync(response.User);
-                }
+                //// 🔥 После запази и user данните
+                //if (response.User != null) Глупости от чата вече се прави всичко в токен сториджа няма нужда от тези неща само се повтаряше код!
+                //{
+                //    await TokenStorage.SaveUserAsync(response.User);
+                //}
 
-                // 🔥 И отделно profile_id ако го има
-                if (response.ProfileId.HasValue)
-                {
-                    await TokenStorage.SaveProfileIdAsync(response.ProfileId.Value);
-                    System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id: {response.ProfileId.Value}");
-                }
+                //// 🔥 И отделно profile_id ако го има
+                //if (response.ProfileId.HasValue)
+                //{
+                //    await TokenStorage.SaveProfileIdAsync(response.ProfileId.Value);
+                //    System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id: {response.ProfileId.Value}");
+                //}
 
-                if (!string.IsNullOrEmpty(response.Next))
-                {
-                    await TokenStorage.SaveNextRouteAsync(response.Next);
-                    System.Diagnostics.Debug.WriteLine($"✅ Запазен next route: {response.Next}");
-                }
+                //if (!string.IsNullOrEmpty(response.Next))
+                //{
+                //    await TokenStorage.SaveNextRouteAsync(response.Next);
+                //    System.Diagnostics.Debug.WriteLine($"✅ Запазен next route: {response.Next}");
+                //}
             }
 
             return response;
@@ -108,16 +108,16 @@ public class AuthService : BaseApiService, IAuthService
                 });
             }
 
-            if (response.ProfileId.HasValue)
-            {
-                await TokenStorage.SaveProfileIdAsync(response.ProfileId.Value);
-                System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id от register: {response.ProfileId.Value}");
-            }
+            //if (response.ProfileId.HasValue)
+            //{
+            //    await TokenStorage.SaveProfileIdAsync(response.ProfileId.Value);
+            //    System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id от register: {response.ProfileId.Value}");
+            //}
 
-            if (response.User != null)
-            {
-                await TokenStorage.SaveUserAsync(response.User);
-            }
+            //if (response.User != null)
+            //{
+            //    await TokenStorage.SaveUserAsync(response.User);
+            //}  повтарящ се код не ни трява 
 
             return response;
         }
@@ -188,10 +188,35 @@ public class AuthService : BaseApiService, IAuthService
         }
     }
 
-    // Проверка дали е логнат
+    // Проверка дали е логнат и рефрешване ако токена е изтекъл тук е сложена защото е по добре тук отколкото в сториджа 
     public async Task<bool> IsAuthenticatedAsync()
     {
-        return await TokenStorage.IsAuthenticatedAsync();
+        var token = await TokenStorage.GetAccessTokenAsync();
+
+        if (string.IsNullOrEmpty(token))
+        {
+            System.Diagnostics.Debug.WriteLine("❌ Няма token");
+            return false;
+        }
+
+        if (TokenStorage.IsTokenValid(token))
+        {
+            System.Diagnostics.Debug.WriteLine("✅ Token е валиден");
+            return true;
+        }
+
+        System.Diagnostics.Debug.WriteLine("⏰ Token-ът е изтекъл, опит за refresh...");
+        var refreshed = await RefreshTokenAsync();
+
+        if (!refreshed)
+        {
+            System.Diagnostics.Debug.WriteLine("🗑️ Refresh неуспешен, чистим tokens");
+            TokenStorage.RemoveTokens();
+            return false;
+        }
+
+        System.Diagnostics.Debug.WriteLine("✅ Refresh успешен");
+        return true;
     }
 
     // Взема текущия потребител
