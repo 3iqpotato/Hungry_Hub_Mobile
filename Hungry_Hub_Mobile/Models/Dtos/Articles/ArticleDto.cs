@@ -141,25 +141,3 @@ public class ArticleCreateUpdateDto
     [JsonPropertyName("menu")]
     public int MenuId { get; set; }  // В Django е menu (ID), тук го именуваме MenuId
 }
-
-// За enum стойностите на type (може да ползваме за dropdown в UI)
-//public static class ArticleTypes
-//{
-//    public const string Salads = "salads";
-//    public const string Appetizers = "appetizers";
-//    public const string MainCourse = "main_course";
-//    public const string Desserts = "desserts";
-
-//    // За показване в UI - хубави имена
-//    public static string GetDisplayName(string type)
-//    {
-//        return type switch
-//        {
-//            Salads => "Салати",
-//            Appetizers => "Предястия",
-//            MainCourse => "Основни ястия",
-//            Desserts => "Десерти",
-//            _ => type
-//        };
-//    }
-//}
