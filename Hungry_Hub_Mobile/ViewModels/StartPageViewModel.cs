@@ -139,7 +139,7 @@ public class StartPageViewModel : BaseViewModel
                 System.Diagnostics.Debug.WriteLine($"📊 userType: {userType}");
                 System.Diagnostics.Debug.WriteLine($"📊 user: {user?.Email}");
 
-                WelcomeMessage = $"Добре дошли, {user?.Email ?? "потребител"}!";
+                WelcomeMessage = $"Добре дошли, {FormatDisplayName(user?.Email)}!";
                 IsLoggedIn = true;
             }
             else
@@ -214,5 +214,25 @@ public class StartPageViewModel : BaseViewModel
 
             System.Diagnostics.Debug.WriteLine("✅ Успешен logout");
         }, "Грешка при изход");
+    }
+
+    private string FormatDisplayName(string email)
+    {
+        if (string.IsNullOrEmpty(email))
+            return "потребител";
+
+        var atIndex = email.IndexOf('@');
+        if (atIndex > 0)
+        {
+            var username = email.Substring(0, atIndex);
+
+            // Ако е твърде дълго, съкрати
+            if (username.Length > 15)
+                return username.Substring(0, 12) + "...";
+
+            return username;
+        }
+
+        return email;
     }
 }

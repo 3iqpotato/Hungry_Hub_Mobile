@@ -1,43 +1,52 @@
-﻿using System.Net.Http.Headers;
-using Hungry_Hub_Mobile.Services.Interfaces;
+﻿using Hungry_Hub_Mobile.Services.Interfaces;
+using System.Diagnostics;
+using System.Net;
+using System.Net.Http.Headers;
 
 namespace Hungry_Hub_Mobile.Core.Helpers;
 
 public class AuthenticatedHttpClientHandler : HttpClientHandler
 {
     private const int MaxRetries = 1; // Само един опит за refresh
-
+    private int _retryCount = 0; /// added limit!
     protected override async Task<HttpResponseMessage> SendAsync(
-    HttpRequestMessage request,
-    CancellationToken cancellationToken)
+        HttpRequestMessage request,
+        CancellationToken cancellationToken)
     {
-        var clonedRequest = await CloneHttpRequestMessageAsync(request);
-        var response = await SendWithTokenAsync(clonedRequest, cancellationToken);
+        // Клонираме ПРЕДИ първото изпращане, за да запазим Content-а за евентуален retry
+        var clonedForRetry = await CloneHttpRequestMessageAsync(request);
 
-        // Не опитвай refresh на login/register
+        var response = await SendWithTokenAsync(request, cancellationToken); // използваме оригинала
+
         var isAuthEndpoint = request.RequestUri?.ToString().Contains("/accounts/login/") == true ||
-                     request.RequestUri?.ToString().Contains("/accounts/register/") == true ||
-                     request.RequestUri?.ToString().Contains("/accounts/token/refresh/") == true; // ← ДОБАВИ ТОВА
+                             request.RequestUri?.ToString().Contains("/accounts/register/") == true ||
+                             request.RequestUri?.ToString().Contains("/accounts/token/refresh/") == true;
 
-        if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized && !isAuthEndpoint)
+        if (response.StatusCode == HttpStatusCode.Unauthorized && !isAuthEndpoint && _retryCount < MaxRetries)
         {
-            System.Diagnostics.Debug.WriteLine("🔑 Получен 401 Unauthorized - опит за refresh...");
+            Debug.WriteLine("🔑 Получен 401 - опит за refresh...");
             response.Dispose();
+            _retryCount++;
 
             var refreshSuccess = await TryRefreshTokenAsync();
             if (refreshSuccess)
             {
-                System.Diagnostics.Debug.WriteLine("✅ Token-ът е обновен, повторен опит на заявката...");
-                var retryRequest = await CloneHttpRequestMessageAsync(request);
-                response = await SendWithTokenAsync(retryRequest, cancellationToken);
+                Debug.WriteLine("✅ Token обновен, retry...");
+                response = await SendWithTokenAsync(clonedForRetry, cancellationToken); // използваме клонинга
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("❌ Refresh failed - redirect to login");
+                clonedForRetry.Dispose(); // почистваме ако не се използва
+                Debug.WriteLine("❌ Refresh failed");
                 await HandleRefreshFailureAsync();
             }
         }
+        else
+        {
+            clonedForRetry.Dispose(); // не ни трябва, почистваме
+        }
 
+        _retryCount = 0;
         return response;
     }
 
@@ -60,7 +69,7 @@ public class AuthenticatedHttpClientHandler : HttpClientHandler
     {
         try
         {
-            var authService = MauiProgram.Services.GetService<IAuthService>();
+            var authService = MauiProgram.Services.GetService<IAuthService>(); // не е правилно но вече е късно за оправяне ще трябва всички сървиси да се оправят защото ставя кръгова зависимост!!!
             if (authService != null)
             {
                 return await authService.RefreshTokenAsync();
@@ -89,9 +98,9 @@ public class AuthenticatedHttpClientHandler : HttpClientHandler
                 if (Application.Current?.MainPage is NavigationPage navPage)
                 {
                     // Изчисти целия навигационен стек и отиди на login
-                    await navPage.Navigation.PopToRootAsync();
-                    await navigationService.GoToAsync("login");
+                    await navPage.Navigation.PopToRootAsync();  
                 }
+                await navigationService.GoToAsync("login");
             }
         });
     }
