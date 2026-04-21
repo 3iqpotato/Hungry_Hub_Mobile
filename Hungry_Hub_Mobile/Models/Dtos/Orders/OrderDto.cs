@@ -4,25 +4,25 @@ using System.Text.Json.Serialization;
 namespace Hungry_Hub_Mobile.Core.DTOs.Orders;
 
 // Статуси на поръчка
-public static class OrderStatus
-{
-    public const string Pending = "pending";
-    public const string ReadyForPickup = "ready_for_pickup";
-    public const string OnDelivery = "on_delivery";
-    public const string Delivered = "delivered";
+//public static class OrderStatus
+//{
+//    public const string Pending = "pending";
+//    public const string ReadyForPickup = "ready_for_pickup";
+//    public const string OnDelivery = "on_delivery";
+//    public const string Delivered = "delivered";
 
-    public static string GetDisplayName(string status)
-    {
-        return status switch
-        {
-            Pending => "Чакаща",
-            ReadyForPickup => "Готова за вземане",
-            OnDelivery => "В доставка",
-            Delivered => "Доставена",
-            _ => status
-        };
-    }
-}
+//    public static string GetDisplayName(string status)
+//    {
+//        return status switch
+//        {
+//            Pending => "Чакаща",
+//            ReadyForPickup => "Готова за вземане",
+//            OnDelivery => "В доставка",
+//            Delivered => "Доставена",
+//            _ => status
+//        };
+//    }
+//}
 
 public class CreateOrderResponseDto
 {
@@ -146,28 +146,28 @@ public class OrderDto
         }
     }
 
-    public string StatusDisplayName => GetStatusDisplayName(Status);
-    public string FormattedTotal => $"{TotalPriceDecimal:F2} лв";
-    public string FormattedDeliveryFee => $"{DeliveryFeeDecimal:F2} лв";
-    public string FormattedDateTime => OrderDateTime.ToString("dd.MM.yyyy HH:mm");
-    public int ItemsCount => Items?.Count ?? 0;
+    //    public string StatusDisplayName => GetStatusDisplayName(Status);
+    //    public string FormattedTotal => $"{TotalPriceDecimal:F2} лв";
+    //    public string FormattedDeliveryFee => $"{DeliveryFeeDecimal:F2} лв";
+    //    public string FormattedDateTime => OrderDateTime.ToString("dd.MM.yyyy HH:mm");
+    //    public int ItemsCount => Items?.Count ?? 0;
 
-    // 🔥 Обновени helper properties
-    public bool HasRestaurant => RestaurantId != null;
-    public string DisplayRestaurantAddress => !string.IsNullOrEmpty(RestaurantAddress) ? RestaurantAddress : "Няма адрес";
-    public string DisplayRestaurantPhone => !string.IsNullOrEmpty(RestaurantPhone) ? RestaurantPhone : "Няма телефон";
+    //    // 🔥 Обновени helper properties
+    //    public bool HasRestaurant => RestaurantId != null;
+    //    public string DisplayRestaurantAddress => !string.IsNullOrEmpty(RestaurantAddress) ? RestaurantAddress : "Няма адрес";
+    //    public string DisplayRestaurantPhone => !string.IsNullOrEmpty(RestaurantPhone) ? RestaurantPhone : "Няма телефон";
 
-    private string GetStatusDisplayName(string status)
-    {
-        return status switch
-        {
-            "pending" => "Чакаща",
-            "ready_for_pickup" => "Готова за вземане",
-            "on_delivery" => "В доставка",
-            "delivered" => "Доставена",
-            _ => status
-        };
-    }
+    //    private string GetStatusDisplayName(string status)
+    //    {
+    //        return status switch
+    //        {
+    //            "pending" => "Чакаща",
+    //            "ready_for_pickup" => "Готова за вземане",
+    //            "on_delivery" => "В доставка",
+    //            "delivered" => "Доставена",
+    //            _ => status
+    //        };
+    //    }
 }
 
 

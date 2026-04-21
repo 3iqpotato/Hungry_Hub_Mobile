@@ -102,7 +102,7 @@ public class OrderDetailViewModel : BaseViewModel
     public string StatusText => GetStatusText(Order?.Status);
     public bool HasRestaurant => Order?.RestaurantId != null;
     public string RestaurantAddress => Order?.RestaurantName ?? "Не е наличен";
-    public string RestaurantPhone => Order?.RestaurantName ?? "Не е наличен"; // Ако нямаме телефон, ползваме име
+    public string RestaurantPhone => Order?.RestaurantPhone ?? "Не е наличен";
     public int ItemsCount => Order?.Items?.Count ?? 0;
 
     public ICommand RefreshCommand { get; }

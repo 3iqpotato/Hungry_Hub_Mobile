@@ -1,6 +1,7 @@
-﻿using System.Windows.Input;
-using Hungry_Hub_Mobile.Core.DTOs.Orders;
+﻿using Hungry_Hub_Mobile.Core.DTOs.Orders;
 using Hungry_Hub_Mobile.Services.Interfaces;
+using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Hungry_Hub_Mobile.ViewModels.Orders;
 
@@ -10,37 +11,37 @@ public class MyOrdersViewModel : BaseViewModel
     private readonly INavigationService _navigationService;
     private readonly IAuthService _authService;
 
-    private List<OrderDto> _orders = new();
+    private ObservableCollection<MyOrderItemViewModel> _orders = new();
     private bool _isRefreshing;
-    private OrderDto? _selectedOrder;
+    private MyOrderItemViewModel? _selectedOrder;
 
     public MyOrdersViewModel(
         IOrderService orderService,
         INavigationService navigationService,
-        IAuthService authService)  // ← ДОБАВИ IAuthService
+        IAuthService authService)
     {
         _orderService = orderService;
         _navigationService = navigationService;
-        _authService = authService;  // ← ДОБАВИ
+        _authService = authService;
 
-        // 🔥 КОМАНДИ ЗА НАВИГАЦИЯ (като в CartViewModel)
+        // Навигационни команди
         GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));
         GoToCartCommand = new Command(async () => await _navigationService.GoToAsync("cart"));
         GoToOrdersCommand = new Command(async () => await _navigationService.GoToAsync("my-orders"));
         GoToProfileCommand = new Command(async () => await _navigationService.GoToAsync("user/profile"));
         LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
 
-        // 🔥 СЪЩЕСТВУВАЩИ КОМАНДИ
+        // Съществуващи команди
         LoadOrdersCommand = new Command(async () => await LoadOrdersAsync());
         RefreshCommand = new Command(async () => await LoadOrdersAsync());
-        SelectOrderCommand = new Command<OrderDto>(async (order) => await ExecuteSelectOrderAsync(order));
+        SelectOrderCommand = new Command<MyOrderItemViewModel>(async (order) => await ExecuteSelectOrderAsync(order));
         GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());
 
         // Зареди поръчките
-        Task.Run(LoadOrdersAsync);
+        //Task.Run(LoadOrdersAsync);
     }
 
-    public List<OrderDto> Orders
+    public ObservableCollection<MyOrderItemViewModel> Orders
     {
         get => _orders;
         set
@@ -62,7 +63,7 @@ public class MyOrdersViewModel : BaseViewModel
         }
     }
 
-    public OrderDto? SelectedOrder
+    public MyOrderItemViewModel? SelectedOrder
     {
         get => _selectedOrder;
         set
@@ -75,14 +76,14 @@ public class MyOrdersViewModel : BaseViewModel
     public bool HasOrders => Orders.Any();
     public string EmptyMessage => "Все още нямате поръчки";
 
-    // 🔥 НОВИ КОМАНДИ ЗА НАВИГАЦИЯ
+    // Навигационни команди
     public ICommand GoToHomeCommand { get; }
     public ICommand GoToCartCommand { get; }
     public ICommand GoToOrdersCommand { get; }
     public ICommand GoToProfileCommand { get; }
     public ICommand LogoutCommand { get; }
 
-    // 🔥 СЪЩЕСТВУВАЩИ КОМАНДИ
+    // Съществуващи команди
     public ICommand LoadOrdersCommand { get; }
     public ICommand RefreshCommand { get; }
     public ICommand SelectOrderCommand { get; }
@@ -101,8 +102,14 @@ public class MyOrdersViewModel : BaseViewModel
 
             if (orders != null)
             {
-                Orders = orders;
-                System.Diagnostics.Debug.WriteLine($"✅ Заредени {orders.Count} поръчки");
+                var items = orders.Select(MyOrderItemViewModel.FromDto).ToList();
+                Orders = new ObservableCollection<MyOrderItemViewModel>(items);
+
+                System.Diagnostics.Debug.WriteLine($"✅ Заредени {Orders.Count} поръчки");
+            }
+            else
+            {
+                Orders = new ObservableCollection<MyOrderItemViewModel>();
             }
         }
         catch (Exception ex)
@@ -116,7 +123,7 @@ public class MyOrdersViewModel : BaseViewModel
         }
     }
 
-    private async Task ExecuteSelectOrderAsync(OrderDto? order)
+    private async Task ExecuteSelectOrderAsync(MyOrderItemViewModel? order)
     {
         if (order == null) return;
 
@@ -140,16 +147,13 @@ public class MyOrdersViewModel : BaseViewModel
         }
     }
 
-    // 🔥 МЕТОД ЗА ЛОГАУТ
     private async Task ExecuteLogoutAsync()
     {
         await ExecuteAsync(async () =>
         {
             System.Diagnostics.Debug.WriteLine("👉 Logout от поръчките...");
 
-            if (_authService != null)
-                await _authService.LogoutAsync();
-
+            await _authService.LogoutAsync();
             await _navigationService.GoToAsync("start");
 
             System.Diagnostics.Debug.WriteLine("✅ Успешен logout от поръчките");

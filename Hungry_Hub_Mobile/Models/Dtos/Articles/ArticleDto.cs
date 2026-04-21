@@ -143,23 +143,23 @@ public class ArticleCreateUpdateDto
 }
 
 // За enum стойностите на type (може да ползваме за dropdown в UI)
-public static class ArticleTypes
-{
-    public const string Salads = "salads";
-    public const string Appetizers = "appetizers";
-    public const string MainCourse = "main_course";
-    public const string Desserts = "desserts";
+//public static class ArticleTypes
+//{
+//    public const string Salads = "salads";
+//    public const string Appetizers = "appetizers";
+//    public const string MainCourse = "main_course";
+//    public const string Desserts = "desserts";
 
-    // За показване в UI - хубави имена
-    public static string GetDisplayName(string type)
-    {
-        return type switch
-        {
-            Salads => "Салати",
-            Appetizers => "Предястия",
-            MainCourse => "Основни ястия",
-            Desserts => "Десерти",
-            _ => type
-        };
-    }
-}
+//    // За показване в UI - хубави имена
+//    public static string GetDisplayName(string type)
+//    {
+//        return type switch
+//        {
+//            Salads => "Салати",
+//            Appetizers => "Предястия",
+//            MainCourse => "Основни ястия",
+//            Desserts => "Десерти",
+//            _ => type
+//        };
+//    }
+//}
