@@ -77,15 +77,6 @@ public class RestaurantMiniDto
         get => string.IsNullOrEmpty(_img) ? null : _img;
         set => _img = value;
     }
-
-    //[JsonPropertyName("rating")]
-    //public double Rating { get; set; }
-
-    //[JsonPropertyName("delivery_fee")]
-    //public decimal DeliveryFee { get; set; }
-
-    //[JsonPropertyName("discount")]
-    //public decimal? Discount { get; set; }
 }
 
 // Пълен детайл за ресторант - съответства на RestaurantSerializer
