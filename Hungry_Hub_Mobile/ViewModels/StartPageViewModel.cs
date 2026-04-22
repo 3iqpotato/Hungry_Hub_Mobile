@@ -139,7 +139,7 @@ public class StartPageViewModel : BaseViewModel
                 System.Diagnostics.Debug.WriteLine($"📊 userType: {userType}");
                 System.Diagnostics.Debug.WriteLine($"📊 user: {user?.Email}");
 
-                WelcomeMessage = $"Добре дошли, {FormatDisplayName(user?.Email)}!";
+                WelcomeMessage = $"Добре дошли, {FormatDisplayName(user?.Email)} !";
                 IsLoggedIn = true;
             }
             else
