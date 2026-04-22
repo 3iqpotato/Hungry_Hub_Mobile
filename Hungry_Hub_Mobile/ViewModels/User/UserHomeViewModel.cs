@@ -83,27 +83,11 @@ public class UserHomeViewModel : BaseViewModel
         try
         {
             IsRefreshing = true;
-
-            var profileId = await TokenStorage.GetProfileIdAsync();
-
-            if (profileId.HasValue)
+            var data = await _userHomeService.GetUserHomeAsync();
+            if (data != null)
             {
-                System.Diagnostics.Debug.WriteLine($"👉 Зареждане на user home за profileId: {profileId.Value}");
-
-                var data = await _userHomeService.GetUserHomeAsync(profileId.Value);
-
-                if (data != null)
-                {
-                    UserProfile = data.Profile;
-                    Restaurants = data.Restaurants;
-
-                    System.Diagnostics.Debug.WriteLine($"✅ Заредени {Restaurants.Count} ресторанта");
-                }
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("❌ Няма profile_id в storage!");
-                ErrorMessage = "Грешка: Няма profile_id. Моля влезте отново.";
+                UserProfile = data.Profile;
+                Restaurants = data.Restaurants;
             }
         }
         catch (Exception ex)

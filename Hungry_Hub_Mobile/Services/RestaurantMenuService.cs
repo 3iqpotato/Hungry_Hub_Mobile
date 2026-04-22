@@ -7,9 +7,7 @@ namespace Hungry_Hub_Mobile.Services;
 
 public class RestaurantMenuService : BaseApiService, IRestaurantMenuService
 {
-    public RestaurantMenuService() : base()
-    {
-    }
+    public RestaurantMenuService(HttpClient httpClient) : base(httpClient) { }
 
     public async Task<MenuForUsersDto> GetMenuForUsersAsync(int restaurantId, string? foodType = null)
     {

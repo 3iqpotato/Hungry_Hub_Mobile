@@ -9,7 +9,7 @@ namespace Hungry_Hub_Mobile.Services;
 
 public class SupplierProfileService : BaseApiService, ISupplierProfileService
 {
-    public SupplierProfileService() : base()
+    public SupplierProfileService(HttpClient httpClient) : base(httpClient)
     {
     }
 

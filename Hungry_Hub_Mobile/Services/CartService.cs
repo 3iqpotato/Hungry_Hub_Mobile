@@ -9,7 +9,8 @@ namespace Hungry_Hub_Mobile.Services;
 
 public class CartService : BaseApiService, ICartService
 {
-    public CartService() : base()
+    // HttpClient идва от DI
+    public CartService(HttpClient httpClient) : base(httpClient)
     {
     }
 
@@ -19,13 +20,11 @@ public class CartService : BaseApiService, ICartService
         {
             System.Diagnostics.Debug.WriteLine($"👉 Добавяне на артикул {articleId} в количката");
 
-            // POST към /api/orders/add-to-cart/{articleId}/
             var response = await PostAsync<object, AddToCartResponseDto>(
                 ApiRoutes.Orders.AddToCart(articleId),
-                new { });  // Празен обект, защото article_id е в URL-то
+                new { });
 
             System.Diagnostics.Debug.WriteLine($"✅ Добавено в количката. Успех: {response?.Success}");
-
             return response;
         }
         catch (Exception ex)
@@ -35,7 +34,7 @@ public class CartService : BaseApiService, ICartService
         }
     }
 
-    public async Task<CartResponseDto> GetCartAsync()  // ← Промени типа на връщане
+    public async Task<CartResponseDto> GetCartAsync()
     {
         try
         {
@@ -43,15 +42,11 @@ public class CartService : BaseApiService, ICartService
 
             var profileId = await TokenStorage.GetProfileIdAsync();
             if (!profileId.HasValue)
-            {
                 throw new Exception("Няма profile_id");
-            }
 
-            // Това вече връща CartResponseDto
             var response = await GetAsync<CartResponseDto>(ApiRoutes.Users.UserCart(profileId.Value));
 
             System.Diagnostics.Debug.WriteLine($"✅ Количката заредена. Брой артикули: {response?.Cart?.Items?.Count ?? 0}");
-
             return response;
         }
         catch (Exception ex)
@@ -67,18 +62,17 @@ public class CartService : BaseApiService, ICartService
         {
             System.Diagnostics.Debug.WriteLine($"👉 Премахване на артикул: {cartItemId}");
 
-            var url = ApiRoutes.Orders.RemoveFromCart(cartItemId);
-            var response = await PostAsync<object, CartResponseDto>(url, new { });  
+            var response = await PostAsync<object, CartResponseDto>(
+                ApiRoutes.Orders.RemoveFromCart(cartItemId),
+                new { });
 
             System.Diagnostics.Debug.WriteLine($"✅ Премахнат артикул. Items в cart: {response?.Cart?.Items?.Count ?? 0}");
-
             return response.Cart;
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"❌ Грешка при премахване: {ex.Message}");
-            throw; // прави се за да я хване вю модела и да покаже на потребителя!!!
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка при премахване: {ex}");
+            throw;
         }
     }
-
 }

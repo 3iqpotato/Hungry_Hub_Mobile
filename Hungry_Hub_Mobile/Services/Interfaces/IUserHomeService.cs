@@ -10,4 +10,6 @@ public interface IUserHomeService
     /// </summary>
     Task<UserHomeDto> GetUserHomeAsync(int profileId);
 
+    Task<UserHomeDto> GetUserHomeAsync();
+
 }

@@ -7,9 +7,7 @@ namespace Hungry_Hub_Mobile.Services;
 
 public class OrderService : BaseApiService, IOrderService
 {
-    public OrderService() : base()
-    {
-    }
+    public OrderService(HttpClient httpClient) : base(httpClient) { }
 
     public async Task<CreateOrderResponseDto> CreateOrderAsync()
     {

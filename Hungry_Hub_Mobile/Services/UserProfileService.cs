@@ -11,7 +11,7 @@ namespace Hungry_Hub_Mobile.Services;
 
 public class UserProfileService : BaseApiService, IUserProfileService
 {
-    public UserProfileService() : base()
+    public UserProfileService(HttpClient httpClient) : base(httpClient)
     {
     }
 

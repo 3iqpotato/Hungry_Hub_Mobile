@@ -69,18 +69,49 @@ public class AuthenticatedHttpClientHandler : HttpClientHandler
     {
         try
         {
-            var authService = MauiProgram.Services.GetService<IAuthService>(); // не е правилно но вече е късно за оправяне ще трябва всички сървиси да се оправят защото ставя кръгова зависимост!!!
-            if (authService != null)
+            var refreshToken = await TokenStorage.GetRefreshTokenAsync();
+            if (string.IsNullOrEmpty(refreshToken))
             {
-                return await authService.RefreshTokenAsync();
+                Debug.WriteLine("❌ Няма refresh token");
+                return false;
             }
+
+            Debug.WriteLine("🔄 Опит за refresh на token...");
+
+            // 🔥 ВАЖНО: Използваме base.SendAsync за да заобиколим handler-a
+            var request = new HttpRequestMessage(HttpMethod.Post, "api/accounts/token/refresh/");
+
+            var body = System.Text.Json.JsonSerializer.Serialize(new { refresh = refreshToken });
+            request.Content = new StringContent(body, System.Text.Encoding.UTF8, "application/json");
+
+            var response = await base.SendAsync(request, CancellationToken.None);
+            var json = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Debug.WriteLine($"❌ Refresh failed: {response.StatusCode} - {json}");
+                return false;
+            }
+
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+
+            if (doc.RootElement.TryGetProperty("access", out var accessToken))
+            {
+                var newAccessToken = accessToken.GetString() ?? string.Empty;
+                if (string.IsNullOrEmpty(newAccessToken)) return false;
+                await TokenStorage.SaveTokensAsync(newAccessToken, refreshToken);
+                Debug.WriteLine("✅ Token обновен успешно");
+                return true;
+            }
+
+            Debug.WriteLine("❌ Няма 'access' property в response");
+            return false;
         }
         catch (Exception ex)
         {
-            System.Diagnostics.Debug.WriteLine($"❌ Грешка при refresh: {ex.Message}");
+            Debug.WriteLine($"❌ Грешка при refresh: {ex.Message}");
+            return false;
         }
-
-        return false;
     }
 
     private async Task HandleRefreshFailureAsync()

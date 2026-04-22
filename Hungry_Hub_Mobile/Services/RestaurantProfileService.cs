@@ -9,9 +9,8 @@ namespace Hungry_Hub_Mobile.Services;
 
 public class RestaurantProfileService : BaseApiService, IRestaurantProfileService
 {
-    public RestaurantProfileService() : base()
-    {
-    }
+    public RestaurantProfileService(HttpClient httpClient) : base(httpClient) { }
+
 
     public async Task<RestaurantProfileResponseDto> GetProfileAsync()
     {

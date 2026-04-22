@@ -1,4 +1,6 @@
-﻿using Hungry_Hub_Mobile.Services;
+﻿using Hungry_Hub_Mobile.Core.Constants;
+using Hungry_Hub_Mobile.Core.Helpers;
+using Hungry_Hub_Mobile.Services;
 using Hungry_Hub_Mobile.Services.Interfaces;
 using Hungry_Hub_Mobile.ViewModels;
 using Hungry_Hub_Mobile.ViewModels.Auth;
@@ -35,6 +37,17 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
+
+        builder.Services.AddSingleton<AuthenticatedHttpClientHandler>();
+
+        builder.Services.AddSingleton(sp =>
+        {
+            var handler = sp.GetRequiredService<AuthenticatedHttpClientHandler>();
+            return new HttpClient(handler)
+            {
+                BaseAddress = new Uri(AppConstants.FullBaseApiUrl)
+            };
+        });
         // ========== SERVICES ==========
         builder.Services.AddSingleton<IAuthService, AuthService>();
         builder.Services.AddSingleton<INavigationService, NavigationService>();

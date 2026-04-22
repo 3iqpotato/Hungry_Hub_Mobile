@@ -8,7 +8,7 @@ namespace Hungry_Hub_Mobile.Services;
 
 public class UserHomeService : BaseApiService, IUserHomeService
 {
-    public UserHomeService() : base()
+    public UserHomeService(HttpClient httpClient) : base(httpClient)
     {
     }
 
@@ -25,5 +25,14 @@ public class UserHomeService : BaseApiService, IUserHomeService
             System.Diagnostics.Debug.WriteLine($"❌ Грешка при вземане на user home: {ex}");
             throw;
         }
+    }
+
+    public async Task<UserHomeDto> GetUserHomeAsync()
+    {
+        var profileId = await TokenStorage.GetProfileIdAsync();
+        if (!profileId.HasValue)
+            throw new Exception("Няма profile_id");
+
+        return await GetAsync<UserHomeDto>(ApiRoutes.Users.UserHome(profileId.Value));
     }
 }

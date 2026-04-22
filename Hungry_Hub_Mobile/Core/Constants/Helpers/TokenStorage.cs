@@ -33,7 +33,7 @@ public static class TokenStorage
             if (!string.IsNullOrEmpty(response.Next))
                 await SecureStorage.Default.SetAsync(NextRouteKey, response.Next);
 
-            bool hasProfile = response.ProfileId.HasValue && string.IsNullOrEmpty(response.Next);
+            bool hasProfile = response.ProfileId.HasValue;
             await SecureStorage.Default.SetAsync(HasProfileKey, hasProfile.ToString());
         }
         catch (Exception ex)
