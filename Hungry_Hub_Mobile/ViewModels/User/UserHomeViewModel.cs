@@ -36,7 +36,7 @@ public class UserHomeViewModel : BaseViewModel
             await ExecuteSelectRestaurantAsync(restaurant));
 
         // Зареди данните
-        Task.Run(LoadUserHomeAsync);
+        //Task.Run(LoadUserHomeAsync);
     }
 
     public UserProfileDto UserProfile
@@ -78,7 +78,7 @@ public class UserHomeViewModel : BaseViewModel
     public ICommand RefreshCommand { get; }
     public ICommand SelectRestaurantCommand { get; }
 
-    private async Task LoadUserHomeAsync()
+    public async Task LoadUserHomeAsync()
     {
         try
         {

@@ -79,7 +79,7 @@ public class CompleteUserProfileViewModel : BaseViewModel
 
     public ICommand UseCurrentLocationCommand { get; }
 
-    private async Task LoadExistingProfile()
+    public async Task LoadExistingProfile()
     {
         try
         {

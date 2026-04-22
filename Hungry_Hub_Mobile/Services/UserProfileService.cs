@@ -119,5 +119,11 @@ public class UserProfileService : BaseApiService, IUserProfileService
         return result?.Profile ?? throw new Exception("Празен отговор от сървъра");
     }
 
+    public async Task<int?> GetCurrentProfileIdAsync()
+    {
+        // Взимаме profile_id от TokenStorage (това е OK, защото Service-ът има право)
+        return await TokenStorage.GetProfileIdAsync();
+    }
+
 }
 

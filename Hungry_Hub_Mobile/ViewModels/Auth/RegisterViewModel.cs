@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows.Input;
+using Hungry_Hub_Mobile.Core.Constants;
 using Hungry_Hub_Mobile.Core.DTOs.Auth;
 using Hungry_Hub_Mobile.Core.Helpers;
 using Hungry_Hub_Mobile.Services.Interfaces;
@@ -14,16 +15,6 @@ public class RegisterViewModel : BaseViewModel
     private string _email;
     private string _password;
     private string _confirmPassword;
-
-    // 🔥 МАХНАТО - вече няма нужда
-    // public List<string> UserTypes { get; } = new()
-    // {
-    //     "user",
-    //     "supplier", 
-    //     "restaurant"
-    // };
-    //
-    // public string SelectedUserType { get; set; }
 
     public RegisterViewModel(IAuthService authService, INavigationService navigationService)
     {
@@ -100,19 +91,10 @@ public class RegisterViewModel : BaseViewModel
                 System.Diagnostics.Debug.WriteLine("✅ Успешна регистрация!");
                 System.Diagnostics.Debug.WriteLine($"👉 Next route: {response.Next}");
 
-                if (response.ProfileId.HasValue)
-                {
-                    await TokenStorage.SaveProfileIdAsync(response.ProfileId.Value);
-                }
-
                 if (!string.IsNullOrEmpty(response.Next))
-                {
                     await _navigationService.GoToAsync(response.Next);
-                }
                 else
-                {
-                    await _navigationService.GoToAsync("///start");
-                }
+                    await _navigationService.GoToAsync("start");
             }
             else
             {
@@ -145,7 +127,7 @@ public class RegisterViewModel : BaseViewModel
         }
         else
         {
-            if (Password.Length < 6)
+            if (Password.Length < AppConstants.Validation.MinPasswordLength)
             {
                 errors.Add("• Паролата трябва да е поне 6 символа.");
             }

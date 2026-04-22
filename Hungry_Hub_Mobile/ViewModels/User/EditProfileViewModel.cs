@@ -34,7 +34,7 @@ public class EditProfileViewModel : BaseViewModel
         UseCurrentLocationCommand = new Command(async () => await ExecuteUseCurrentLocationAsync());
 
         // Зареди съществуващия профил
-        Task.Run(LoadProfileAsync);
+        //Task.Run(LoadProfileAsync);
     }
 
     public string Name
@@ -83,13 +83,13 @@ public class EditProfileViewModel : BaseViewModel
 
     public ICommand UseCurrentLocationCommand { get; }
 
-    private async Task LoadProfileAsync()
+    public async Task LoadProfileAsync()
     {
         try
         {
             IsBusy = true;
 
-            var profileId = await TokenStorage.GetProfileIdAsync();
+            var profileId = await _userProfileService.GetCurrentProfileIdAsync();  //TODO
             if (!profileId.HasValue)
             {
                 ErrorMessage = "Не е намерен profile_id";

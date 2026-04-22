@@ -153,4 +153,19 @@ public class AuthService : BaseApiService, IAuthService
     {
         return await TokenStorage.GetUserAsync<UserAccountDto>();
     }
+
+    public async Task<string?> GetUserTypeAsync()
+    {
+        return await TokenStorage.GetUserTypeAsync();
+    }
+
+    public async Task<bool> HasCompleteProfileAsync()
+    {
+        return await TokenStorage.HasCompleteProfileAsync();
+    }
+
+    public async Task<string?> GetNextRouteAsync()
+    {
+        return await TokenStorage.GetNextRouteAsync();
+    }
 }

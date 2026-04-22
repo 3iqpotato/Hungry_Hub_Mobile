@@ -22,5 +22,7 @@ public interface IUserProfileService
     Task<CompleteProfileResponseDto> UpdateProfileAsync(UpdateUserProfileDto profile,
     byte[]? imageBytes = null,
     string? imageFileName = null);
+
+    Task<int?> GetCurrentProfileIdAsync();
 }
 

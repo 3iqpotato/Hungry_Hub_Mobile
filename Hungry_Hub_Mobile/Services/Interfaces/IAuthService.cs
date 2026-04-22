@@ -33,4 +33,8 @@ public interface IAuthService
     /// Взема текущия потребител
     /// </summary>
     Task<UserAccountDto> GetCurrentUserAsync();
+
+    Task<string?> GetUserTypeAsync();
+    Task<bool> HasCompleteProfileAsync();
+    Task<string?> GetNextRouteAsync();
 }

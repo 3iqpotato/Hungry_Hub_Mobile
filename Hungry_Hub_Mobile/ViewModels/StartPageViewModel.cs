@@ -133,8 +133,8 @@ public class StartPageViewModel : BaseViewModel
 
             if (isAuthenticated)
             {
-                var userType = await TokenStorage.GetUserTypeAsync();
-                var user = await TokenStorage.GetUserAsync<UserAccountDto>();
+                var userType = await _authService.GetUserTypeAsync();
+                var user = await _authService.GetCurrentUserAsync();
 
                 System.Diagnostics.Debug.WriteLine($"📊 userType: {userType}");
                 System.Diagnostics.Debug.WriteLine($"📊 user: {user?.Email}");
@@ -167,9 +167,9 @@ public class StartPageViewModel : BaseViewModel
         {
             System.Diagnostics.Debug.WriteLine("👉 Навигация към home...");
 
-            var hasProfile = await TokenStorage.HasCompleteProfileAsync();
-            var userType = await TokenStorage.GetUserTypeAsync();
-            var nextRoute = await TokenStorage.GetNextRouteAsync();
+            var hasProfile = await _authService.HasCompleteProfileAsync();
+            var userType = await _authService.GetUserTypeAsync();
+            var nextRoute = await _authService.GetNextRouteAsync();
 
             System.Diagnostics.Debug.WriteLine($"📊 hasProfile: {hasProfile}");
             System.Diagnostics.Debug.WriteLine($"📊 userType: {userType}");

@@ -78,7 +78,7 @@ public class CheckoutViewModel : BaseViewModel
     public ICommand GoBackCommand { get; }
 
 
-    private async Task LoadCartAsync()
+    public async Task LoadCartAsync()
     {
         try
         {

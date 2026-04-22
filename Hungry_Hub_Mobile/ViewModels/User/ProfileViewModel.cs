@@ -48,7 +48,7 @@ public class ProfileViewModel : BaseViewModel
         {
             IsBusy = true;
 
-            var profileId = await TokenStorage.GetProfileIdAsync();
+            var profileId = await _userProfileService.GetCurrentProfileIdAsync();
             if (profileId.HasValue)
             {
                 System.Diagnostics.Debug.WriteLine($"👉 Зареждане на профил за profileId: {profileId.Value}");
