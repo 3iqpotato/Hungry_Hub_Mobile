@@ -14,7 +14,8 @@ public class ProfileViewModel : BaseViewModel
 
     public ProfileViewModel(
         IUserProfileService userProfileService,
-        INavigationService navigationService)
+        IAuthService authService,
+        INavigationService navigationService) : base(authService, navigationService)
     {
         _userProfileService = userProfileService;
         _navigationService = navigationService;

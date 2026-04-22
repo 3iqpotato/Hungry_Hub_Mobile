@@ -17,7 +17,8 @@ public class CompleteSupplierProfileViewModel : BaseViewModel
 
     public CompleteSupplierProfileViewModel(
         ISupplierProfileService supplierProfileService,
-        INavigationService navigationService)
+        IAuthService authService,
+        INavigationService navigationService) : base(authService, navigationService)
     {
         _supplierProfileService = supplierProfileService;
         _navigationService = navigationService;

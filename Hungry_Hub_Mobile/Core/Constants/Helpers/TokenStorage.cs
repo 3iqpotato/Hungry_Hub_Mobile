@@ -236,34 +236,47 @@ public static class TokenStorage
 
     // тук локално проверяваме дали токена е изтекъл за да не товаря сървърчето че в azure не е много евтино :)
 public static bool IsTokenValid(string token)
-{
-    if (string.IsNullOrEmpty(token))
-        return false;
+    {
+        if (string.IsNullOrEmpty(token))
+            return false;
     
-    try
-    {
-        var handler = new JwtSecurityTokenHandler();
-        var jwtToken = handler.ReadJwtToken(token);
-        
-        // Провери дали token-ът е изтекъл
-        var exp = jwtToken.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
-        if (exp != null)
+        try
         {
-            var expDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(exp)).UtcDateTime;
-            if (expDate < DateTime.UtcNow)
-            {
-                System.Diagnostics.Debug.WriteLine("⏰ Token-ът е изтекъл");
-                return false;
-            }
-        }
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
         
-        return true;
+            // Провери дали token-ът е изтекъл
+            var exp = jwtToken.Claims.FirstOrDefault(c => c.Type == "exp")?.Value;
+            if (exp != null)
+            {
+                var expDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(exp)).UtcDateTime;
+                if (expDate < DateTime.UtcNow)
+                {
+                    System.Diagnostics.Debug.WriteLine("⏰ Token-ът е изтекъл");
+                    return false;
+                }
+            }
+        
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
-    catch
+
+    public static async Task SaveHasProfileAsync(bool hasProfile)
     {
-        return false;
+        try
+        {
+            await SecureStorage.Default.SetAsync(HasProfileKey, hasProfile.ToString());
+            System.Diagnostics.Debug.WriteLine($"✅ Записан has_profile: {hasProfile}");
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"❌ Грешка при запис на has_profile: {ex.Message}");
+        }
     }
-}
 
 
 }

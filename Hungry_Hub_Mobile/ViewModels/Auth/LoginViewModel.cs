@@ -13,7 +13,7 @@ public class LoginViewModel : BaseViewModel
     private string _email;
     private string _password;
 
-    public LoginViewModel(IAuthService authService, INavigationService navigationService)
+    public LoginViewModel(IAuthService authService, INavigationService navigationService) : base(authService, navigationService)
     {
         _authService = authService;
         _navigationService = navigationService;

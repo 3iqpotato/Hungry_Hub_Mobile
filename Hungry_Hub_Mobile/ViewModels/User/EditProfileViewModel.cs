@@ -21,7 +21,8 @@ public class EditProfileViewModel : BaseViewModel
     public EditProfileViewModel(
         IUserProfileService userProfileService,
         ILocationService locationService,
-        INavigationService navigationService)
+        IAuthService authService,
+        INavigationService navigationService) : base(authService, navigationService)
 
     {
         _userProfileService = userProfileService;

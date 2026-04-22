@@ -9,7 +9,7 @@ namespace Hungry_Hub_Mobile.ViewModels.User;
 public class UserHomeViewModel : BaseViewModel
 {
     private readonly IUserHomeService _userHomeService;
-    private readonly IAuthService _authService;
+
     private readonly INavigationService _navigationService;
 
     private UserProfileDto _userProfile = new();
@@ -19,10 +19,9 @@ public class UserHomeViewModel : BaseViewModel
     public UserHomeViewModel(
         IUserHomeService userHomeService,
         IAuthService authService,
-        INavigationService navigationService)
+        INavigationService navigationService) : base(authService, navigationService)
     {
         _userHomeService = userHomeService;
-        _authService = authService;
         _navigationService = navigationService;
 
         // Команди
@@ -30,7 +29,7 @@ public class UserHomeViewModel : BaseViewModel
         GoToCartCommand = new Command(async () => await _navigationService.GoToAsync("cart"));
         GoToOrdersCommand = new Command(async () => await _navigationService.GoToAsync("my-orders"));
         GoToProfileCommand = new Command(async () => await _navigationService.GoToAsync("user/profile"));
-        LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
+        //LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
         RefreshCommand = new Command(async () => await LoadUserHomeAsync());
         SelectRestaurantCommand = new Command<RestaurantMiniDto>(async (restaurant) =>
             await ExecuteSelectRestaurantAsync(restaurant));
@@ -74,7 +73,7 @@ public class UserHomeViewModel : BaseViewModel
     public ICommand GoToCartCommand { get; }
     public ICommand GoToOrdersCommand { get; }
     public ICommand GoToProfileCommand { get; }
-    public ICommand LogoutCommand { get; }
+    //public ICommand LogoutCommand { get; }
     public ICommand RefreshCommand { get; }
     public ICommand SelectRestaurantCommand { get; }
 
@@ -101,14 +100,14 @@ public class UserHomeViewModel : BaseViewModel
         }
     }
 
-    private async Task ExecuteLogoutAsync()
-    {
-        await ExecuteAsync(async () =>
-        {
-            await _authService.LogoutAsync();
-            await _navigationService.GoToAsync("start");
-        }, "Грешка при изход");
-    }
+    //private async Task ExecuteLogoutAsync()
+    //{
+    //    await ExecuteAsync(async () =>
+    //    {
+    //        await _authService.LogoutAsync();
+    //        await _navigationService.GoToAsync("start");
+    //    }, "Грешка при изход");
+    //}
 
     private async Task ExecuteSelectRestaurantAsync(RestaurantMiniDto restaurant)
     {

@@ -65,10 +65,20 @@ public class UserProfileService : BaseApiService, IUserProfileService
 
             System.Diagnostics.Debug.WriteLine($"✅ Профилът обновен. Next: {result?.Next}");
 
-            if (result?.ProfileId.HasValue == true)
+            if (result != null)
             {
-                await TokenStorage.SaveProfileIdAsync(result.ProfileId.Value);
-                System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id: {result.ProfileId.Value}");
+                if (result.ProfileId.HasValue)
+                {
+                    await TokenStorage.SaveProfileIdAsync(result.ProfileId.Value);
+                    System.Diagnostics.Debug.WriteLine($"✅ Запазен profile_id: {result.ProfileId.Value}");
+                }
+
+                await TokenStorage.SaveHasProfileAsync(true);
+
+                if (!string.IsNullOrWhiteSpace(result.Next))
+                    await TokenStorage.SaveNextRouteAsync(result.Next);
+                else
+                    await TokenStorage.SaveNextRouteAsync("user_home");
             }
 
             return result;

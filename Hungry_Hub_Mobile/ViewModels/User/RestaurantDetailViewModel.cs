@@ -42,7 +42,7 @@ public class RestaurantDetailViewModel : BaseViewModel
         IRestaurantMenuService menuService,
         INavigationService navigationService,
         ICartService cartService,
-        IAuthService authService)  // ← ДОБАВИ IAuthService
+        IAuthService authService) : base(authService, navigationService)   // ← ДОБАВИ IAuthService
     {
         _menuService = menuService;
         _navigationService = navigationService;

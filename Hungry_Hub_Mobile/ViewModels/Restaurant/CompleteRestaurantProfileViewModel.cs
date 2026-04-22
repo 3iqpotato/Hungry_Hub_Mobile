@@ -16,7 +16,8 @@ public class CompleteRestaurantProfileViewModel : BaseViewModel
 
     public CompleteRestaurantProfileViewModel(
         IRestaurantProfileService restaurantProfileService,
-        INavigationService navigationService)
+        IAuthService authService,
+        INavigationService navigationService) : base(authService, navigationService)
     {
         _restaurantProfileService = restaurantProfileService;
         _navigationService = navigationService;

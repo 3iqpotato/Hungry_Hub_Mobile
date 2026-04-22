@@ -68,7 +68,7 @@
                                            TextColor="Gray"
                                            Margin="10,0"/>
                                     <Label Grid.Column="2"
-                                           Text="{Binding TotalPrice, StringFormat='{0:F2} лв'}"
+                                           Text="{Binding TotalPriceDecimal, StringFormat='{}{0:F2} лв'}"
                                            FontAttributes="Bold"/>
                                 </Grid>
                             </Frame>

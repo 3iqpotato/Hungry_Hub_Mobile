@@ -16,13 +16,13 @@ public class OrderDetailViewModel : BaseViewModel
     private bool _canPickup;
     private bool _isRefreshing;
 
-    public OrderDetailViewModel(IOrderService orderService, INavigationService navigationService)
+    public OrderDetailViewModel(IOrderService orderService, IAuthService authService, INavigationService navigationService) : base(authService, navigationService)
     {
         _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
         _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
 
         RefreshCommand = new Command(async () => await LoadOrderDetailAsync());
-        GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());
+        GoBackCommand = new Command(async () => await _navigationService.GoToAsync("my-orders"));
     }
     public int OrderId
     {
@@ -36,7 +36,17 @@ public class OrderDetailViewModel : BaseViewModel
             // Зареди детайлите веднага щом получим ID
             if (value > 0)
             {
-                MainThread.BeginInvokeOnMainThread(async () => await LoadOrderDetailAsync());
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        await LoadOrderDetailAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        ErrorMessage = ex.Message;
+                    }
+                });
             }
         }
     }

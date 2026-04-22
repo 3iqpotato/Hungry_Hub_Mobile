@@ -1,14 +1,26 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Hungry_Hub_Mobile.Services.Interfaces;
 
 namespace Hungry_Hub_Mobile.ViewModels;
 
-public class BaseViewModel : INotifyPropertyChanged
+public abstract class BaseViewModel : INotifyPropertyChanged
 {
+    private readonly IAuthService _authService;
+    private readonly INavigationService _navigationService;
+    
     private bool _isBusy;
     private string _title;
     private string _errorMessage;
+
+    protected BaseViewModel(IAuthService authService, INavigationService navigationService)
+    {
+        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+        
+        LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
+    }
 
     public bool IsBusy
     {
@@ -43,6 +55,8 @@ public class BaseViewModel : INotifyPropertyChanged
         }
     }
 
+    public ICommand LogoutCommand { get; }
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -50,8 +64,23 @@ public class BaseViewModel : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
+    protected virtual async Task ExecuteLogoutAsync()
+    {
+        await ExecuteAsync(async () =>
+        {
+            System.Diagnostics.Debug.WriteLine("👉 Изпълняване на логаут от базовия клас...");
+            
+            await _authService.LogoutAsync();
+            await _navigationService.GoToAsync("start");
+            
+            System.Diagnostics.Debug.WriteLine("✅ Успешен логаут");
+        }, "Грешка при изход");
+    }
+
     protected async Task ExecuteAsync(Func<Task> operation, string errorMessage = null)
     {
+        if (IsBusy) return;
+        
         try
         {
             IsBusy = true;
@@ -60,7 +89,6 @@ public class BaseViewModel : INotifyPropertyChanged
         }
         catch (HttpRequestException ex)
         {
-            // Извади само JSON частта след "HTTP 401: "
             var message = ex.Message;
             var jsonStart = message.IndexOf('{');
             if (jsonStart >= 0)
@@ -87,11 +115,9 @@ public class BaseViewModel : INotifyPropertyChanged
         {
             var doc = System.Text.Json.JsonDocument.Parse(json);
 
-            // {"detail": "Грешен email или парола"}
             if (doc.RootElement.TryGetProperty("detail", out var detail))
                 return detail.GetString() ?? "Грешка.";
 
-            // {"email": ["..."]} или {"img": ["..."]}
             var messages = new List<string>();
             foreach (var prop in doc.RootElement.EnumerateObject())
             {

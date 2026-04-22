@@ -16,7 +16,7 @@ public class RegisterViewModel : BaseViewModel
     private string _password;
     private string _confirmPassword;
 
-    public RegisterViewModel(IAuthService authService, INavigationService navigationService)
+    public RegisterViewModel(IAuthService authService, INavigationService navigationService) : base(authService, navigationService)
     {
         _authService = authService;
         _navigationService = navigationService;

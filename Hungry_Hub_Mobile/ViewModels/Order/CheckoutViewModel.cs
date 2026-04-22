@@ -20,7 +20,8 @@ public class CheckoutViewModel : BaseViewModel
         IOrderService orderService,
         ICartService cartService,
         IUserProfileService userProfileService,
-        INavigationService navigationService)
+        IAuthService authService,
+        INavigationService navigationService) : base(authService, navigationService)
     {
         _orderService = orderService;
         _cartService = cartService;
@@ -70,9 +71,9 @@ public class CheckoutViewModel : BaseViewModel
     }
 
     public bool IsCartEmpty => Cart?.IsEmpty ?? true;
-    public string FormattedSubtotal => $"{Cart?.Subtotal:F2} лв";
-    public string FormattedDeliveryFee => $"{Cart?.DeliveryFee:F2} лв";
-    public string FormattedTotal => $"{Cart?.Total:F2} лв";
+    public string FormattedSubtotal => $"{Cart?.SubtotalDecimal:F2} лв";
+    public string FormattedDeliveryFee => $"{Cart?.DeliveryFeeDecimal:F2} лв";
+    public string FormattedTotal => $"{Cart?.TotalDecimal:F2} лв";
     public bool HasDeliveryFee => Cart?.DeliveryFeeDecimal > 0; // TODO moze da e problem 
     public ICommand PlaceOrderCommand { get; }
     public ICommand GoBackCommand { get; }
@@ -138,36 +139,24 @@ public class CheckoutViewModel : BaseViewModel
             {
                 System.Diagnostics.Debug.WriteLine($"✅ Поръчката създадена! ID: {response.OrderId}");
 
-                // 🔥 Използвай MainThread за навигация
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
                     try
                     {
-                        // Първо покажи съобщението
                         await Application.Current.MainPage.DisplayAlert(
                             "Успех",
                             $"Поръчката ви е създадена успешно! Номер: {response.OrderId}",
                             "OK");
 
-                        // 🔥 МАЛКА ПАУЗА
-                        await Task.Delay(100);
+                        // 🔥 ЧИСТО САМО С _navigationService
+                        var parameters = new Dictionary<string, object>
+                    {
+                        { "orderId", response.OrderId }
+                    };
 
-                        // 🔥 ПРОВЕРКА ЗА NULL
-                        if (Shell.Current != null)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"👉 Навигация към order_detail?orderId={response.OrderId}");
-                            await Shell.Current.GoToAsync($"order_detail?orderId={response.OrderId}");
-                        }
-                        else if (_navigationService != null)
-                        {
-                            System.Diagnostics.Debug.WriteLine("⚠️ Shell.Current е null, ползвам _navigationService");
-                            var parameters = new Dictionary<string, object> { { "orderId", response.OrderId } };
-                            await _navigationService.GoToAsync("order_detail", parameters);
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine("❌ Няма навигационен сервис!");
-                        }
+                        await _navigationService.GoToAsync("order_detail", parameters);
+
+                        System.Diagnostics.Debug.WriteLine($"✅ Навигация към детайли на поръчка {response.OrderId}");
                     }
                     catch (Exception ex)
                     {
@@ -175,7 +164,6 @@ public class CheckoutViewModel : BaseViewModel
                     }
                 });
             }
-
         }, "Грешка при създаване на поръчка");
     }
 }

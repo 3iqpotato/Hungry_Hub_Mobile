@@ -18,7 +18,7 @@ public class CartViewModel : BaseViewModel
     public CartViewModel(
         ICartService cartService,
         IAuthService authService,
-        INavigationService navigationService)
+        INavigationService navigationService) : base(authService, navigationService)
     {
         _cartService = cartService;
         _navigationService = navigationService;
@@ -28,7 +28,7 @@ public class CartViewModel : BaseViewModel
         GoToCartCommand = new Command(async () => await _navigationService.GoToAsync("cart"));
         GoToOrdersCommand = new Command(async () => await _navigationService.GoToAsync("my_orders")); // беше my-orders
         GoToProfileCommand = new Command(async () => await _navigationService.GoToAsync("user/profile"));
-        LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
+        //LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
         RemoveItemCommand = new Command<CartItemDto>(async (item) => await ExecuteRemoveItemAsync(item));
         CheckoutCommand = new Command(async () => await ExecuteCheckoutAsync());
 
@@ -82,7 +82,7 @@ public class CartViewModel : BaseViewModel
     public ICommand GoToCartCommand { get; }  // липсваше
     public ICommand GoToProfileCommand { get; }
     public ICommand GoToOrdersCommand { get; }
-    public ICommand LogoutCommand { get; }
+    //public ICommand LogoutCommand { get; }
     public ICommand RemoveItemCommand { get; }
     public ICommand CheckoutCommand { get; }
 
@@ -150,18 +150,18 @@ public class CartViewModel : BaseViewModel
         await _navigationService.GoToAsync("checkout");
     }
 
-    private async Task ExecuteLogoutAsync()
-    {
-        await ExecuteAsync(async () =>
-        {
-            System.Diagnostics.Debug.WriteLine("👉 Logout от количката...");
+    //private async Task ExecuteLogoutAsync()
+    //{
+    //    await ExecuteAsync(async () =>
+    //    {
+    //        System.Diagnostics.Debug.WriteLine("👉 Logout от количката...");
 
-            await _authService.LogoutAsync();
+    //        await _authService.LogoutAsync();
 
-            // Отиди на началната страница
-            await _navigationService.GoToAsync("start");
+    //        // Отиди на началната страница
+    //        await _navigationService.GoToAsync("start");
 
-            System.Diagnostics.Debug.WriteLine("✅ Успешен logout от количката");
-        }, "Грешка при изход");
-    }
+    //        System.Diagnostics.Debug.WriteLine("✅ Успешен logout от количката");
+    //    }, "Грешка при изход");
+    //}
 }

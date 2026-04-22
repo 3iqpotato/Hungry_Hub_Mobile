@@ -14,7 +14,7 @@ public class StartPageViewModel : BaseViewModel
     private bool _isChecking = true;
     private string _welcomeMessage;
 
-    public StartPageViewModel(IAuthService authService, INavigationService navigationService)
+    public StartPageViewModel(IAuthService authService, INavigationService navigationService) : base(authService, navigationService)
     {
         // Проверка дали услугите са инжектирани правилно
         _authService = authService ?? throw new ArgumentNullException(nameof(authService));
@@ -24,7 +24,7 @@ public class StartPageViewModel : BaseViewModel
         GoToLoginCommand = new Command(async () => await ExecuteGoToLogin());
         GoToRegisterCommand = new Command(async () => await ExecuteGoToRegister());
         GoToHomeCommand = new Command(async () => await NavigateToHome());
-        LogoutCommand = new Command(async () => await ExecuteLogout());
+        //LogoutCommand = new Command(async () => await ExecuteLogout());
 
         System.Diagnostics.Debug.WriteLine("🔥 StartPageViewModel constructor END");
 
@@ -68,7 +68,7 @@ public class StartPageViewModel : BaseViewModel
     public ICommand GoToLoginCommand { get; }
     public ICommand GoToRegisterCommand { get; }
     public ICommand GoToHomeCommand { get; }
-    public ICommand LogoutCommand { get; }
+    //public ICommand LogoutCommand { get; }
 
     // 👇 ДОБАВЕНИ МЕТОДИ
     private async Task ExecuteGoToLogin()
@@ -199,22 +199,22 @@ public class StartPageViewModel : BaseViewModel
         }, "Грешка при навигация към началната страница");
     }
 
-    private async Task ExecuteLogout()
-    {
-        await ExecuteAsync(async () =>
-        {
-            System.Diagnostics.Debug.WriteLine("👉 Изпълнение на logout...");
+    //private async Task ExecuteLogout()
+    //{
+    //    await ExecuteAsync(async () =>
+    //    {
+    //        System.Diagnostics.Debug.WriteLine("👉 Изпълнение на logout...");
 
-            await _authService.LogoutAsync();
+    //        await _authService.LogoutAsync();
 
-            IsLoggedIn = false;
-            WelcomeMessage = string.Empty;
+    //        IsLoggedIn = false;
+    //        WelcomeMessage = string.Empty;
 
-            await _navigationService.GoToAsync("///start");
+    //        await _navigationService.GoToAsync("///start");
 
-            System.Diagnostics.Debug.WriteLine("✅ Успешен logout");
-        }, "Грешка при изход");
-    }
+    //        System.Diagnostics.Debug.WriteLine("✅ Успешен logout");
+    //    }, "Грешка при изход");
+    //}
 
     private string FormatDisplayName(string email)
     {

@@ -19,7 +19,8 @@ public class CompleteUserProfileViewModel : BaseViewModel
     public CompleteUserProfileViewModel(
         IUserProfileService userProfileService,
         ILocationService locationService,
-        INavigationService navigationService)
+        IAuthService authService,
+        INavigationService navigationService) : base(authService, navigationService)
     {
         _userProfileService = userProfileService;
         _locationService = locationService;
@@ -31,7 +32,7 @@ public class CompleteUserProfileViewModel : BaseViewModel
         UseCurrentLocationCommand = new Command(async () => await ExecuteUseCurrentLocationAsync());
 
         // Зареди съществуващия профил ако има
-        Task.Run(LoadExistingProfile);
+        //Task.Run(LoadExistingProfile);
     }
 
     public string Name
