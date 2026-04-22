@@ -8,9 +8,9 @@ namespace Hungry_Hub_Mobile.ViewModels.User;
 public class RestaurantDetailViewModel : BaseViewModel
 {
     private readonly IRestaurantMenuService _menuService;
-    private readonly INavigationService _navigationService;
+    //private readonly INavigationService _navigationService;
     private readonly ICartService _cartService;
-    private readonly IAuthService _authService;  // ← ДОБАВИ
+    //private readonly IAuthService _authService;  // ← ДОБАВИ
 
     private RestaurantMiniDto _restaurant = new();
     private MenuDto _menu = new();
@@ -45,9 +45,9 @@ public class RestaurantDetailViewModel : BaseViewModel
         IAuthService authService) : base(authService, navigationService)   // ← ДОБАВИ IAuthService
     {
         _menuService = menuService;
-        _navigationService = navigationService;
+        //_navigationService = navigationService;
         _cartService = cartService;
-        _authService = authService;
+        //_authService = authService;
 
         // 🔥 КОМАНДИ ЗА НАВИГАЦИЯ (долно меню)
         GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));

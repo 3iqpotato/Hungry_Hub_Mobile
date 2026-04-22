@@ -10,7 +10,7 @@ public class CheckoutViewModel : BaseViewModel
     private readonly IOrderService _orderService;
     private readonly ICartService _cartService;
     private readonly IUserProfileService _userProfileService;
-    private readonly INavigationService _navigationService;
+    //private readonly INavigationService _navigationService;
 
     private CartDto _cart = new();
     private bool _isProcessing;
@@ -26,7 +26,7 @@ public class CheckoutViewModel : BaseViewModel
         _orderService = orderService;
         _cartService = cartService;
         _userProfileService = userProfileService;
-        _navigationService = navigationService;
+        //_navigationService = navigationService;
 
         PlaceOrderCommand = new Command(async () => await ExecutePlaceOrderAsync());
         GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());

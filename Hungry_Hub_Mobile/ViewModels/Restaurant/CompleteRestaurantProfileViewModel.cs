@@ -7,7 +7,7 @@ namespace Hungry_Hub_Mobile.ViewModels.Restaurant;
 public class CompleteRestaurantProfileViewModel : BaseViewModel
 {
     private readonly IRestaurantProfileService _restaurantProfileService;
-    private readonly INavigationService _navigationService;
+    //private readonly INavigationService _navigationService;
 
     private string _name;
     private string _phoneNumber;
@@ -20,7 +20,7 @@ public class CompleteRestaurantProfileViewModel : BaseViewModel
         INavigationService navigationService) : base(authService, navigationService)
     {
         _restaurantProfileService = restaurantProfileService;
-        _navigationService = navigationService;
+        //_navigationService = navigationService;
 
         SaveProfileCommand = new Command(async () => await ExecuteSaveProfileAsync());
         PickImageCommand = new Command(async () => await ExecutePickImageAsync());

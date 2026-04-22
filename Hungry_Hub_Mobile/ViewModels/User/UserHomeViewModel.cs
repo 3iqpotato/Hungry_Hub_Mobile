@@ -10,7 +10,7 @@ public class UserHomeViewModel : BaseViewModel
 {
     private readonly IUserHomeService _userHomeService;
 
-    private readonly INavigationService _navigationService;
+    //private readonly INavigationService _navigationService;
 
     private UserProfileDto _userProfile = new();
     private List<RestaurantMiniDto> _restaurants = new();
@@ -22,7 +22,7 @@ public class UserHomeViewModel : BaseViewModel
         INavigationService navigationService) : base(authService, navigationService)
     {
         _userHomeService = userHomeService;
-        _navigationService = navigationService;
+        //_navigationService = navigationService;
 
         // Команди
         GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));

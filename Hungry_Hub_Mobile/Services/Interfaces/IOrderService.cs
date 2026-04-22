@@ -12,7 +12,7 @@ public interface IOrderService
     /// <summary>
     /// Взема поръчка по ID
     /// </summary>
-    Task<OrderDto> GetOrderAsync(int orderId);
+    //Task<OrderDto> GetOrderAsync(int orderId);
 
     /// <summary>
     /// Взема всички поръчки на потребителя

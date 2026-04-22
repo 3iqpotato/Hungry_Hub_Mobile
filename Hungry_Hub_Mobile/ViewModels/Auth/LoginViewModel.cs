@@ -7,16 +7,16 @@ namespace Hungry_Hub_Mobile.ViewModels.Auth;
 
 public class LoginViewModel : BaseViewModel
 {
-    private readonly IAuthService _authService;
-    private readonly INavigationService _navigationService;
+    //private readonly IAuthService _authService;
+    //private readonly INavigationService _navigationService;
 
     private string _email;
     private string _password;
 
     public LoginViewModel(IAuthService authService, INavigationService navigationService) : base(authService, navigationService)
     {
-        _authService = authService;
-        _navigationService = navigationService;
+        //_authService = authService;
+        //_navigationService = navigationService;
 
         LoginCommand = new Command(async () => await ExecuteLoginAsync());
         GoToRegisterCommand = new Command(async () => await ExecuteGoToRegisterAsync());

@@ -167,9 +167,6 @@ public class OrderDetailDto : OrderDto
     [JsonPropertyName("user_name")]
     public string UserName { get; set; } = string.Empty;
 
-    [JsonPropertyName("restaurant_phone")]
-    public string? RestaurantPhone { get; set; }
-
     [JsonPropertyName("supplier_phone")]
     public string? SupplierPhone { get; set; }
 }

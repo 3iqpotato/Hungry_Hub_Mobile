@@ -12,8 +12,6 @@ public partial class App : Application
         InitializeComponent();
         _serviceProvider = serviceProvider;
 
-        // Стартираме с StartPage, но го създаваме през DI
-        //MainPage = new NavigationPage(_serviceProvider.GetService<StartPage>());
     }
 
     protected override Window CreateWindow(IActivationState? activationState)

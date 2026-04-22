@@ -7,8 +7,8 @@ namespace Hungry_Hub_Mobile.ViewModels;
 
 public abstract class BaseViewModel : INotifyPropertyChanged
 {
-    private readonly IAuthService _authService;
-    private readonly INavigationService _navigationService;
+    protected readonly IAuthService _authService;
+    protected readonly INavigationService _navigationService;
     
     private bool _isBusy;
     private string _title;

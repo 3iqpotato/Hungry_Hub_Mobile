@@ -9,7 +9,7 @@ public class CompleteUserProfileViewModel : BaseViewModel
 {
     private readonly IUserProfileService _userProfileService;
     private readonly ILocationService _locationService;
-    private readonly INavigationService _navigationService;
+    //private readonly INavigationService _navigationService;
 
     private string _name;
     private string _phoneNumber;
@@ -24,7 +24,7 @@ public class CompleteUserProfileViewModel : BaseViewModel
     {
         _userProfileService = userProfileService;
         _locationService = locationService;
-        _navigationService = navigationService;
+        //_navigationService = navigationService;
 
         GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());
         SaveProfileCommand = new Command(async () => await ExecuteSaveProfileAsync());

@@ -8,8 +8,8 @@ namespace Hungry_Hub_Mobile.ViewModels.Orders;
 public class MyOrdersViewModel : BaseViewModel
 {
     private readonly IOrderService _orderService;
-    private readonly INavigationService _navigationService;
-    private readonly IAuthService _authService;
+    //private readonly INavigationService _navigationService;
+    //private readonly IAuthService _authService;
 
     private ObservableCollection<MyOrderItemViewModel> _orders = new();
     private bool _isRefreshing;
@@ -21,8 +21,8 @@ public class MyOrdersViewModel : BaseViewModel
         IAuthService authService) : base(authService, navigationService)
     {
         _orderService = orderService;
-        _navigationService = navigationService;
-        _authService = authService;
+        //_navigationService = navigationService;
+        //_authService = authService;
 
         // Навигационни команди
         GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));

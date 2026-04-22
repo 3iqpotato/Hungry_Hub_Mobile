@@ -30,24 +30,24 @@ public class OrderService : BaseApiService, IOrderService
         }
     }
 
-    public async Task<OrderDto> GetOrderAsync(int orderId)
-    {
-        try
-        {
-            System.Diagnostics.Debug.WriteLine($"👉 Вземане на поръчка {orderId}");
+    //public async Task<OrderDto> GetOrderAsync(int orderId)
+    //{
+    //    try
+    //    {
+    //        System.Diagnostics.Debug.WriteLine($"👉 Вземане на поръчка {orderId}");
 
-            var order = await GetAsync<OrderDto>(ApiRoutes.Orders.OrderDetail(orderId));
+    //        var order = await GetAsync<OrderDto>(ApiRoutes.Orders.OrderDetail(orderId));
 
-            System.Diagnostics.Debug.WriteLine($"✅ Поръчката взета. Статус: {order?.Status}");
+    //        System.Diagnostics.Debug.WriteLine($"✅ Поръчката взета. Статус: {order?.Status}");
 
-            return order;
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"❌ Грешка: {ex.Message}");
-            throw;
-        }
-    }
+    //        return order;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        System.Diagnostics.Debug.WriteLine($"❌ Грешка: {ex.Message}");
+    //        throw;
+    //    }
+    //}
 
     public async Task<List<OrderDto>> GetMyOrdersAsync()
     {

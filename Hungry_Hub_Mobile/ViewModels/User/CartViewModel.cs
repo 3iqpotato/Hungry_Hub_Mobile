@@ -7,8 +7,8 @@ namespace Hungry_Hub_Mobile.ViewModels.User;
 public class CartViewModel : BaseViewModel
 {
     private readonly ICartService _cartService;
-    private readonly IAuthService _authService;
-    private readonly INavigationService _navigationService;
+    //private readonly IAuthService _authService;
+    //private readonly INavigationService _navigationService;
 
     private CartDto _cart = new();
     private int _userProfileId;
@@ -21,8 +21,8 @@ public class CartViewModel : BaseViewModel
         INavigationService navigationService) : base(authService, navigationService)
     {
         _cartService = cartService;
-        _navigationService = navigationService;
-        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        //_navigationService = navigationService;
+        //_authService = authService ?? throw new ArgumentNullException(nameof(authService));
 
         GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));
         GoToCartCommand = new Command(async () => await _navigationService.GoToAsync("cart"));

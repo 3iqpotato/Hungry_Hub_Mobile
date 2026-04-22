@@ -8,7 +8,7 @@ namespace Hungry_Hub_Mobile.ViewModels.User;
 public class ProfileViewModel : BaseViewModel
 {
     private readonly IUserProfileService _userProfileService;
-    private readonly INavigationService _navigationService;
+    //private readonly INavigationService _navigationService;
 
     private UserProfileDto _profile = new();
 
@@ -18,7 +18,7 @@ public class ProfileViewModel : BaseViewModel
         INavigationService navigationService) : base(authService, navigationService)
     {
         _userProfileService = userProfileService;
-        _navigationService = navigationService;
+        //_navigationService = navigationService;
 
         GoToHomeCommand = new Command(async () => await _navigationService.GoToAsync("user_home"));
         GoToEditCommand = new Command(async () => await _navigationService.GoToAsync("user/edit-profile"));

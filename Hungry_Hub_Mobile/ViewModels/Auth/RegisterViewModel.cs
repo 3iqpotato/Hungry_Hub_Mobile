@@ -9,8 +9,8 @@ namespace Hungry_Hub_Mobile.ViewModels.Auth;
 
 public class RegisterViewModel : BaseViewModel
 {
-    private readonly IAuthService _authService;
-    private readonly INavigationService _navigationService;
+    //private readonly IAuthService _authService;
+    //private readonly INavigationService _navigationService;
 
     private string _email;
     private string _password;
@@ -18,8 +18,8 @@ public class RegisterViewModel : BaseViewModel
 
     public RegisterViewModel(IAuthService authService, INavigationService navigationService) : base(authService, navigationService)
     {
-        _authService = authService;
-        _navigationService = navigationService;
+        //_authService = authService;
+        //_navigationService = navigationService;
 
         RegisterCommand = new Command(async () => await ExecuteRegisterAsync());
         GoToLoginCommand = new Command(async () => await _navigationService.GoToAsync("login"));

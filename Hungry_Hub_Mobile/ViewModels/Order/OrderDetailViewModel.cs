@@ -8,7 +8,7 @@ namespace Hungry_Hub_Mobile.ViewModels.Orders;
 public class OrderDetailViewModel : BaseViewModel
 {
     private readonly IOrderService _orderService;
-    private readonly INavigationService _navigationService;
+    //private readonly INavigationService _navigationService;
 
     private int _orderId;
     private OrderDto _order = new();
@@ -19,7 +19,7 @@ public class OrderDetailViewModel : BaseViewModel
     public OrderDetailViewModel(IOrderService orderService, IAuthService authService, INavigationService navigationService) : base(authService, navigationService)
     {
         _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
-        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+        //_navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
 
         RefreshCommand = new Command(async () => await LoadOrderDetailAsync());
         GoBackCommand = new Command(async () => await _navigationService.GoToAsync("my-orders"));

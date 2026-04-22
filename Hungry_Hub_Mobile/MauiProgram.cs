@@ -14,10 +14,6 @@ using Hungry_Hub_Mobile.Views.Orders;
 using Hungry_Hub_Mobile.Views.Restaurant;
 using Hungry_Hub_Mobile.Views.Supplier;
 using Hungry_Hub_Mobile.Views.User;
-
-//using Hungry_Hub_Mobile.Views.User;        // За CompleteUserProfilePage
-//using Hungry_Hub_Mobile.Views.Supplier;     // За CompleteSupplierProfilePage
-//using Hungry_Hub_Mobile.Views.Restaurant;   // За CompleteRestaurantProfilePage
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Hungry_Hub_Mobile;
@@ -94,10 +90,7 @@ public static class MauiProgram
         builder.Services.AddTransient<MyOrdersPage>();
         builder.Services.AddTransient<OrderDetailPage>();
 
-        // ⚠️ ВАЖНО: Страници за попълване на профил (ако ги създадем после)
-        // builder.Services.AddTransient<CompleteUserProfilePage>();
-        // builder.Services.AddTransient<CompleteSupplierProfilePage>();
-        // builder.Services.AddTransient<CompleteRestaurantProfilePage>();
+
         var app = builder.Build();
         Services = app.Services;  // Запази Services за достъп отвсякъде
 

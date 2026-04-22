@@ -58,7 +58,7 @@ public class RestaurantMiniDto
     public int Id { get; set; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [JsonPropertyName("address")]
     public string Address { get; set; } = string.Empty;
@@ -86,19 +86,19 @@ public class RestaurantDetailDto
     public int Id { get; set; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [JsonPropertyName("img")]
-    public string Img { get; set; }
+    public string Img { get; set; } = string.Empty;
 
     [JsonPropertyName("phone_number")]
-    public string PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; } = string.Empty;
 
     [JsonPropertyName("address")]
-    public string Address { get; set; }
+    public string Address { get; set; } = string.Empty;
 
     [JsonPropertyName("rating")]
-    public double Rating { get; set; }
+    public double Rating { get; set; } 
 
     [JsonPropertyName("delivery_fee")]
     public string DeliveryFee { get; set; } = "0.00";
@@ -144,7 +144,7 @@ public class MenuDto
     public int Id { get; set; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [JsonPropertyName("restaurant")]
     public int RestaurantId { get; set; }  // В Django е restaurant (ID)
@@ -163,16 +163,16 @@ public class MenuDto
 public class RestaurantUpdateDto
 {
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [JsonPropertyName("img")]
-    public string Img { get; set; }
+    public string Img { get; set; } = string.Empty;
 
     [JsonPropertyName("phone_number")]
-    public string PhoneNumber { get; set; }
+    public string PhoneNumber { get; set; } = string.Empty;
 
     [JsonPropertyName("address")]
-    public string Address { get; set; }
+    public string Address { get; set; } = string.Empty;
 
     [JsonPropertyName("delivery_fee")]
     public decimal DeliveryFee { get; set; }
@@ -185,7 +185,7 @@ public class RestaurantUpdateDto
 public class RestaurantHomeDto
 {
     [JsonPropertyName("restaurant")]
-    public RestaurantDetailDto Restaurant { get; set; }
+    public RestaurantDetailDto Restaurant { get; set; }  = new();
 
     [JsonPropertyName("today_orders")]
     public int TodayOrdersCount { get; set; }

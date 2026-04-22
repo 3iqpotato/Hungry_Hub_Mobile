@@ -9,7 +9,7 @@ namespace Hungry_Hub_Mobile.ViewModels.User;
 public class EditProfileViewModel : BaseViewModel
 {
     private readonly IUserProfileService _userProfileService;
-    private readonly INavigationService _navigationService;
+    //private readonly INavigationService _navigationService;
     private readonly ILocationService _locationService;
 
     private string _name;
@@ -27,7 +27,7 @@ public class EditProfileViewModel : BaseViewModel
     {
         _userProfileService = userProfileService;
         _locationService = locationService;
-        _navigationService = navigationService;
+        //_navigationService = navigationService;
 
         SaveCommand = new Command(async () => await ExecuteSaveAsync());
         CancelCommand = new Command(async () => await _navigationService.GoBackAsync());
