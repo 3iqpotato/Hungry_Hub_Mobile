@@ -54,7 +54,6 @@ public class RestaurantDetailViewModel : BaseViewModel
         GoToCartCommand = new Command(async () => await _navigationService.GoToAsync("cart"));
         GoToOrdersCommand = new Command(async () => await _navigationService.GoToAsync("my-orders"));
         GoToProfileCommand = new Command(async () => await _navigationService.GoToAsync("user/profile"));
-        LogoutCommand = new Command(async () => await ExecuteLogoutAsync());
 
         // 🔥 СЪЩЕСТВУВАЩИ КОМАНДИ
         GoBackCommand = new Command(async () => await _navigationService.GoBackAsync());
@@ -108,7 +107,6 @@ public class RestaurantDetailViewModel : BaseViewModel
     public ICommand GoToCartCommand { get; }
     public ICommand GoToOrdersCommand { get; }
     public ICommand GoToProfileCommand { get; }
-    public ICommand LogoutCommand { get; }
 
     // 🔥 СЪЩЕСТВУВАЩИ КОМАНДИ
     public ICommand GoBackCommand { get; }
@@ -205,16 +203,4 @@ public class RestaurantDetailViewModel : BaseViewModel
         }
     }
 
-    private async Task ExecuteLogoutAsync()
-    {
-        await ExecuteAsync(async () =>
-        {
-            System.Diagnostics.Debug.WriteLine("👉 Logout от детайли на ресторант...");
-
-            if (_authService != null)
-                await _authService.LogoutAsync();
-
-            await _navigationService.GoToAsync("start");
-        }, "Грешка при изход");
-    }
 }
