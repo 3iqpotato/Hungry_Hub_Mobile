@@ -7,8 +7,8 @@ namespace Hungry_Hub_Mobile.ViewModels;
 
 public class StartPageViewModel : BaseViewModel
 {
-    private readonly IAuthService _authService;
-    private readonly INavigationService _navigationService;
+    //private readonly IAuthService _authService;
+    //private readonly INavigationService _navigationService;
 
     private bool _isLoggedIn;
     private bool _isChecking = true;
@@ -17,8 +17,8 @@ public class StartPageViewModel : BaseViewModel
     public StartPageViewModel(IAuthService authService, INavigationService navigationService) : base(authService, navigationService)
     {
         // Проверка дали услугите са инжектирани правилно
-        _authService = authService ?? throw new ArgumentNullException(nameof(authService));
-        _navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
+        //_authService = authService ?? throw new ArgumentNullException(nameof(authService));
+        //_navigationService = navigationService ?? throw new ArgumentNullException(nameof(navigationService));
 
         // Инициализиране на командите
         GoToLoginCommand = new Command(async () => await ExecuteGoToLogin());
